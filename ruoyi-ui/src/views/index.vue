@@ -63,7 +63,7 @@
           <template #header>
             <div class="card-head">
               <span>库存预警</span>
-              <el-button link type="primary" @click="$router.push('/warehouse/warning')">查看全部</el-button>
+              <el-button link type="primary" @click="go('/warehouse/warning')">查看全部</el-button>
             </div>
           </template>
           <div class="table-wrap">
@@ -86,7 +86,7 @@
           <template #header>
             <div class="card-head">
               <span>消息提醒</span>
-              <el-button link type="primary" @click="$router.push('/msg')">更多</el-button>
+              <el-button link type="primary" @click="go('/msg')">更多</el-button>
             </div>
           </template>
           <div class="msg-list">
@@ -109,6 +109,7 @@
 
 <script setup name="Index">
 import echarts from '@/utils/echarts'
+import { ElMessage } from 'element-plus'
 import { getDashboard, listMessages } from '@/api/garment'
 
 const data = ref({})
@@ -120,6 +121,11 @@ let barChart = null
 const router = useRouter()
 
 function go(path, query) {
+  // 目标页面未注册（当前账号无该菜单权限）时不跳转，避免进入 404
+  if (!router.resolve({ path, query: query || {} }).matched.length) {
+    ElMessage.warning("当前账号没有该模块的访问权限，请联系管理员")
+    return
+  }
   router.push({ path, query })
 }
 // 今日类卡片：跳转时按当天日期过滤，保证列表合计与卡片数值一致
@@ -129,25 +135,25 @@ function todayStr() {
 }
 function goToday(path) {
   const day = todayStr()
-  router.push({ path, query: { beginDate: day, endDate: day } })
+  go(path, { beginDate: day, endDate: day })
 }
 // 今日成品入库取自库存流水，直接定位到当天的「成品入库」流水
 function goFinishIn() {
   const day = todayStr()
-  router.push({ path: '/warehouse/stocklog', query: { bizType: '成品入库', beginDate: day, endDate: day } })
+  go('/warehouse/stocklog', { bizType: '成品入库', beginDate: day, endDate: day })
 }
 function goInventory(stockType) {
-  router.push({ path: '/warehouse/inventory', query: { stockType } })
+  go('/warehouse/inventory', { stockType })
 }
 function goWarning(row) {
   const query = {}
   if (row.style_no) query.styleNo = row.style_no
   if (row.barcode) query.barcode = row.barcode
-  router.push({ path: '/warehouse/warning', query })
+  go('/warehouse/warning', query)
 }
 function goMessage(m) {
   if (!m.page) return
-  router.push({ path: m.page, query: m.query || {} })
+  go(m.page, m.query || {})
 }
 
 function loadData() {
