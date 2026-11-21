@@ -1,13 +1,13 @@
 <template>
   <div class="login">
-    <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
+    <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="off">
       <h3 class="title">{{ title }}</h3>
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
           type="text"
           size="large"
-          auto-complete="off"
+          autocomplete="off"
           placeholder="账号"
         >
           <template #prefix><svg-icon icon-class="user" class="el-input__icon input-icon" /></template>
@@ -18,7 +18,7 @@
           v-model="loginForm.password"
           type="password"
           size="large"
-          auto-complete="off"
+          autocomplete="new-password"
           placeholder="密码"
           @keyup.enter="handleLogin"
         >
@@ -40,7 +40,7 @@
           <img :src="codeUrl" @click="getCode" class="login-code-img"/>
         </div>
       </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+      <el-checkbox v-model="loginForm.rememberMe" v-if="!isMobile" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
       <el-form-item style="width:100%;">
         <el-button
           :loading="loading"
@@ -79,9 +79,12 @@ const route = useRoute()
 const router = useRouter()
 const { proxy } = getCurrentInstance()
 
+// 移动端不预填账号密码，也不读取"记住密码"的本地记录
+const isMobile = /Android|iPhone|iPad|iPod|Mobile|HarmonyOS/i.test(navigator.userAgent) || window.innerWidth <= 768
+
 const loginForm = ref({
-  username: "admin",
-  password: "admin123",
+  username: "",
+  password: "",
   rememberMe: false,
   code: "",
   uuid: ""
@@ -152,6 +155,7 @@ function getCode() {
 }
 
 function getCookie() {
+  if (isMobile) return
   const username = Cookies.get("username")
   const password = Cookies.get("password")
   const rememberMe = Cookies.get("rememberMe")

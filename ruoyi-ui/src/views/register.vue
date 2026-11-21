@@ -7,7 +7,7 @@
           v-model="registerForm.username" 
           type="text" 
           size="large" 
-          auto-complete="off" 
+          autocomplete="off" 
           placeholder="账号"
         >
           <template #prefix><svg-icon icon-class="user" class="el-input__icon input-icon" /></template>
@@ -18,7 +18,7 @@
           v-model="registerForm.password"
           type="password"
           size="large" 
-          auto-complete="off"
+          autocomplete="new-password"
           placeholder="密码"
           @keyup.enter="handleRegister"
         >
@@ -30,7 +30,7 @@
           v-model="registerForm.confirmPassword"
           type="password"
           size="large" 
-          auto-complete="off"
+          autocomplete="new-password"
           placeholder="确认密码"
           @keyup.enter="handleRegister"
         >
@@ -41,7 +41,7 @@
         <el-input
           size="large" 
           v-model="registerForm.code"
-          auto-complete="off"
+          autocomplete="off"
           placeholder="验证码"
           style="width: 63%"
           @keyup.enter="handleRegister"
