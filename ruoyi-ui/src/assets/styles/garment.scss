@@ -1,0 +1,307 @@
+/* ========== 服装厂生产管理系统 通用样式（含移动端适配） ========== */
+
+.page-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: #303133;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.garment-page {
+  .el-card {
+    border-radius: 8px;
+  }
+  .el-card__header {
+    padding: 12px 16px;
+    font-weight: 600;
+  }
+}
+
+/* 表单字段名（含弹窗内的表单）一律单行展示，避免中文字段名被拆行 */
+.el-form .el-form-item__label {
+  white-space: nowrap;
+}
+
+/* 统计卡片：使用 flex 自动铺满整行，避免卡片数量不足时右侧留白 */
+.stat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+
+  .stat-card {
+    flex: 1 1 150px;
+    min-width: 0;
+  }
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+  border-left: 4px solid #409eff;
+  .stat-label {
+    font-size: 13px;
+    color: #909399;
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #303133;
+    line-height: 1.2;
+  }
+  .stat-sub {
+    font-size: 12px;
+    color: #b0b3b8;
+    margin-top: 4px;
+  }
+  &.red { border-left-color: #f56c6c; }
+  &.blue { border-left-color: #409eff; }
+  &.black { border-left-color: #303133; }
+  &.green { border-left-color: #67c23a; }
+  &.orange { border-left-color: #e6a23c; }
+}
+
+/* 三色库存图例 */
+.color-legend {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  flex-wrap: wrap;
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #606266;
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot.cut { background: #f56c6c; }
+    .dot.line { background: #409eff; }
+    .dot.finish { background: #303133; }
+  }
+}
+
+/* 扫码操作区 */
+.scan-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  .scan-input {
+    flex: 1;
+    min-width: 220px;
+  }
+  .el-form-item {
+    margin-bottom: 0;
+  }
+}
+
+.section-card {
+  margin-bottom: 14px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* 操作列按钮保持单行展示 */
+.el-table .op-cell .cell {
+  white-space: nowrap;
+}
+
+/* 表格内容单行展示，避免单号、日期等短内容换行 */
+.el-table .cell {
+  white-space: nowrap;
+  word-break: normal;
+}
+
+.money {
+  color: #f56c6c;
+  font-weight: 600;
+}
+
+.tag-red { color: #f56c6c; }
+.tag-blue { color: #409eff; }
+.tag-black { color: #303133; }
+
+.muted {
+  color: #909399;
+  font-size: 12px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .garment-page {
+    padding: 10px !important;
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    .stat-card {
+      flex: none;
+    }
+  }
+  .stat-card {
+    padding: 10px 12px;
+    .stat-value { font-size: 19px; }
+    .stat-label { font-size: 12px; }
+  }
+  .search-form {
+    .el-form-item {
+      display: block;
+      width: 100%;
+      margin-right: 0 !important;
+    }
+    .el-form-item__content {
+      width: 100%;
+    }
+    .el-input,
+    .el-select,
+    .el-date-editor {
+      width: 100% !important;
+    }
+  }
+  .el-dialog {
+    width: 94% !important;
+    max-width: 94%;
+    margin-top: 6vh !important;
+  }
+  .el-dialog__body {
+    padding: 12px 14px;
+  }
+  .el-message-box {
+    width: 88% !important;
+  }
+  .el-table {
+    font-size: 12px;
+  }
+  .el-table th,
+  .el-table td {
+    padding: 5px 0;
+  }
+  .el-pagination {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .hide-sm {
+    display: none !important;
+  }
+  .toolbar .el-button {
+    flex: 1 1 auto;
+  }
+  .scan-bar {
+    flex-direction: column;
+    align-items: stretch;
+    .scan-input { min-width: 100%; }
+    .el-button { width: 100%; margin-left: 0 !important; }
+    /* 扫码区所有字段在手机上全宽堆叠，控件撑满，方便手机/扫描枪操作 */
+    .el-form-item {
+      width: 100%;
+      margin-right: 0 !important;
+      margin-bottom: 8px;
+    }
+    .el-form-item__content {
+      width: 100%;
+    }
+    .el-input,
+    .el-select,
+    .el-input-number,
+    .el-date-editor {
+      width: 100% !important;
+    }
+  }
+  /* 工具栏按钮在手机上按内容宽度自动换行 */
+  .garment-page .el-row.mb8 {
+    .el-col {
+      flex: 0 0 auto;
+      max-width: none;
+      margin-bottom: 6px;
+    }
+    .top-right-btn {
+      margin-left: auto;
+    }
+  }
+  /* 扫码输入框加大：手机/扫描枪录入更易点，防止 iOS 聚焦缩放 */
+  .scan-bar .scan-input .el-input__inner {
+    height: 46px;
+    font-size: 16px;
+  }
+  .scan-bar .el-button {
+    height: 46px;
+    font-size: 15px;
+  }
+  /* 弹窗表单：手机上改为上下布局（label 在上、控件全宽在下） */
+  .el-dialog {
+    .el-form-item {
+      display: block;
+      margin-bottom: 14px;
+    }
+    .el-form-item__label {
+      float: none;
+      display: block;
+      text-align: left;
+      width: auto !important;
+      height: auto;
+      line-height: 1.6;
+      padding: 0 0 4px;
+    }
+    .el-form-item__content {
+      margin-left: 0 !important;
+      width: 100%;
+    }
+    .el-input,
+    .el-select,
+    .el-date-editor,
+    .el-input-number,
+    .el-cascader,
+    .el-textarea {
+      width: 100% !important;
+    }
+    .el-row .el-col {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  }
+  /* iOS 输入框字号 ≥16px，避免聚焦时页面自动放大 */
+  .el-input__inner,
+  .el-textarea__inner {
+    font-size: 16px !important;
+  }
+  .page-title {
+    font-size: 15px;
+  }
+}
+
+/* 打印标签 */
+@media print {
+  body * { visibility: hidden; }
+  #label-print-area, #label-print-area *,
+  #bundle-print-area, #bundle-print-area * { visibility: visible; }
+  #label-print-area,
+  #bundle-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
