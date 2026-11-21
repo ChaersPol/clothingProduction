@@ -1,32 +1,32 @@
 <template>
   <div class="app-container garment-page dashboard">
     <div class="stat-grid">
-      <div class="stat-card">
+      <div class="stat-card clickable" @click="go('/goods/style')">
         <div class="stat-label">款号总数</div>
         <div class="stat-value">{{ data.styleCount || 0 }}</div>
         <div class="stat-sub">在售 SKU {{ data.skuCount || 0 }} 个</div>
       </div>
-      <div class="stat-card orange">
+      <div class="stat-card orange clickable" @click="goToday('/cut/cutorder')">
         <div class="stat-label">今日裁货</div>
         <div class="stat-value">{{ data.todayCutQty || 0 }}</div>
         <div class="stat-sub">件</div>
       </div>
-      <div class="stat-card green">
+      <div class="stat-card green clickable" @click="goFinishIn">
         <div class="stat-label">今日成品入库</div>
         <div class="stat-value">{{ data.todayInQty || 0 }}</div>
         <div class="stat-sub">件</div>
       </div>
-      <div class="stat-card red">
+      <div class="stat-card red clickable" @click="goToday('/warehouse/outbound')">
         <div class="stat-label">今日出库</div>
         <div class="stat-value">{{ data.todayOutQty || 0 }}</div>
         <div class="stat-sub">金额 ¥{{ data.todayOutAmount || 0 }}</div>
       </div>
-      <div class="stat-card blue">
+      <div class="stat-card blue clickable" @click="go('/workshop/linestock')">
         <div class="stat-label">产线在制扎数</div>
         <div class="stat-value">{{ data.onlineBundles || 0 }}</div>
         <div class="stat-sub">裁片在库 {{ data.cutStockBundles || 0 }} 扎</div>
       </div>
-      <div class="stat-card red">
+      <div class="stat-card red clickable" @click="go('/workshop/linestock', { overdue: 1 })">
         <div class="stat-label">产线超期</div>
         <div class="stat-value">{{ data.overdueBundles || 0 }}</div>
         <div class="stat-sub">停留超过 3 天</div>
@@ -40,9 +40,9 @@
             <div class="card-head">
               <span>三色库存概览</span>
               <div class="color-legend">
-                <span class="legend-item"><i class="dot cut"></i>裁片</span>
-                <span class="legend-item"><i class="dot line"></i>产线</span>
-                <span class="legend-item"><i class="dot finish"></i>成品</span>
+                <span class="legend-item" @click="goInventory('CUT')"><i class="dot cut"></i>裁片</span>
+                <span class="legend-item" @click="goInventory('LINE')"><i class="dot line"></i>产线</span>
+                <span class="legend-item" @click="goInventory('FINISH')"><i class="dot finish"></i>成品</span>
               </div>
             </div>
           </template>
@@ -67,7 +67,7 @@
             </div>
           </template>
           <div class="table-wrap">
-            <el-table :data="data.warnings || []" size="small" max-height="320">
+            <el-table :data="data.warnings || []" size="small" max-height="320" row-class-name="clickable-row" @row-click="goWarning">
               <el-table-column label="款号" prop="style_no" min-width="110" show-overflow-tooltip />
               <el-table-column label="颜色/尺码" min-width="110" show-overflow-tooltip>
                 <template #default="s">{{ s.row.color }} / {{ s.row.size }}</template>
@@ -90,7 +90,7 @@
             </div>
           </template>
           <div class="msg-list">
-            <div v-for="(m, i) in messages" :key="i" class="msg-item">
+            <div v-for="(m, i) in messages" :key="i" class="msg-item" :class="{ clickable: !!m.page }" @click="goMessage(m)">
               <el-tag :type="m.type === 'warning' ? 'danger' : m.type === 'task' ? 'warning' : 'info'" size="small">
                 {{ m.type === 'warning' ? '预警' : m.type === 'task' ? '待办' : '提示' }}
               </el-tag>
@@ -117,6 +117,38 @@ const pieRef = ref()
 const barRef = ref()
 let pieChart = null
 let barChart = null
+const router = useRouter()
+
+function go(path, query) {
+  router.push({ path, query })
+}
+// 今日类卡片：跳转时按当天日期过滤，保证列表合计与卡片数值一致
+function todayStr() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+function goToday(path) {
+  const day = todayStr()
+  router.push({ path, query: { beginDate: day, endDate: day } })
+}
+// 今日成品入库取自库存流水，直接定位到当天的「成品入库」流水
+function goFinishIn() {
+  const day = todayStr()
+  router.push({ path: '/warehouse/stocklog', query: { bizType: '成品入库', beginDate: day, endDate: day } })
+}
+function goInventory(stockType) {
+  router.push({ path: '/warehouse/inventory', query: { stockType } })
+}
+function goWarning(row) {
+  const query = {}
+  if (row.style_no) query.styleNo = row.style_no
+  if (row.barcode) query.barcode = row.barcode
+  router.push({ path: '/warehouse/warning', query })
+}
+function goMessage(m) {
+  if (!m.page) return
+  router.push({ path: m.page, query: m.query || {} })
+}
 
 function loadData() {
   getDashboard().then(res => {
@@ -136,6 +168,11 @@ function renderCharts() {
   }
   if (pieRef.value) {
     pieChart = pieChart || echarts.init(pieRef.value)
+    pieChart.off('click')
+    pieChart.on('click', p => {
+      const map = { 裁片: 'CUT', 产线: 'LINE', 成品: 'FINISH' }
+      goInventory(map[p.name] || '')
+    })
     pieChart.setOption({
       tooltip: { trigger: 'item', formatter: '{b}: {c} 件 ({d}%)' },
       series: [{
@@ -189,6 +226,20 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .dashboard {
+  .stat-card.clickable {
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+  }
+  .legend-item {
+    cursor: pointer;
+  }
+  :deep(.el-table .clickable-row) {
+    cursor: pointer;
+  }
   .card-head {
     display: flex;
     align-items: center;
@@ -213,6 +264,13 @@ onBeforeUnmount(() => {
     padding: 10px 0;
     border-bottom: 1px dashed #ebeef5;
     &:last-child { border-bottom: none; }
+    &.clickable {
+      cursor: pointer;
+      padding-left: 6px;
+      padding-right: 6px;
+      border-radius: 4px;
+      &:hover { background: #f5f7fa; }
+    }
   }
   .msg-title {
     font-size: 13px;

@@ -136,6 +136,14 @@ const dateRange = ref([])
 const form = ref({})
 const scanBarcode = ref('')
 const queryParams = ref({ pageNum: 1, pageSize: 10, outboundNo: undefined, customer: undefined, status: undefined })
+const route = useRoute()
+
+// 支持从首页卡片深链过来，按日期过滤出库单
+watch(() => route.query, q => {
+  dateRange.value = q.beginDate ? [q.beginDate, q.endDate || q.beginDate] : []
+  queryParams.value.pageNum = 1
+  getList()
+}, { immediate: true })
 
 const formTotal = computed(() => (form.value.items || []).reduce((s, i) => s + Number(i.price || 0) * Number(i.qty || 0), 0).toFixed(2))
 
@@ -212,6 +220,4 @@ function getSummary({ columns, data }) {
 function handleExport() {
   proxy.download('garment/outbound/export', { ...queryParams.value }, `outbound_${Date.now()}.xlsx`)
 }
-
-getList()
 </script>

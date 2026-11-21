@@ -79,6 +79,15 @@ const loading = ref(false)
 const total = ref(0)
 const dateRange = ref([])
 const queryParams = ref({ pageNum: 1, pageSize: 20, styleNo: undefined, stockType: undefined, bizType: undefined, bundleNo: undefined })
+const route = useRoute()
+
+// 支持从首页卡片深链过来，按业务类型和日期过滤流水
+watch(() => route.query, q => {
+  queryParams.value.bizType = q.bizType || undefined
+  dateRange.value = q.beginDate ? [q.beginDate, q.endDate || q.beginDate] : []
+  queryParams.value.pageNum = 1
+  getList()
+}, { immediate: true })
 
 function getList() {
   loading.value = true
@@ -96,6 +105,4 @@ function resetQuery() { proxy.resetForm('queryRef'); dateRange.value = []; getLi
 function handleExport() {
   proxy.download('garment/stocklog/export', { ...queryParams.value }, `stocklog_${Date.now()}.xlsx`)
 }
-
-getList()
 </script>

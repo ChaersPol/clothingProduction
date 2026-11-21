@@ -104,7 +104,7 @@ const route = useRoute()
 
 // 支持从消息提醒深链过来，直接定位到指定 SKU
 watch(() => route.query, q => {
-  queryParams.value.stockType = ''
+  queryParams.value.stockType = q.stockType || ''
   queryParams.value.cnName = undefined
   queryParams.value.styleNo = q.styleNo || undefined
   queryParams.value.barcode = q.barcode || undefined

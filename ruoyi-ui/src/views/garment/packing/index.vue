@@ -90,6 +90,14 @@ const total = ref(0)
 const dateRange = ref([])
 const scan = ref({ code: '', qty: 1, packMethod: '袋装', perBag: 1, packer: '' })
 const queryParams = ref({ pageNum: 1, pageSize: 10, bundleNo: undefined, styleNo: undefined, packer: undefined })
+const route = useRoute()
+
+// 支持从首页卡片深链过来，按日期过滤入库记录
+watch(() => route.query, q => {
+  dateRange.value = q.beginDate ? [q.beginDate, q.endDate || q.beginDate] : []
+  queryParams.value.pageNum = 1
+  getList()
+}, { immediate: true })
 
 function getList() {
   loading.value = true
@@ -135,7 +143,6 @@ function submitStockIn() {
   })
 }
 
-getList()
 commonEmployees().then(res => {
   employees.value = res.data || []
   if (employees.value.length) scan.value.packer = employees.value[0].name

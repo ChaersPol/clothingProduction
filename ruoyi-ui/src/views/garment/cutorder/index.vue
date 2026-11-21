@@ -219,10 +219,11 @@ const overdraftMsg = ref('')
 const overdraftReason = ref('')
 const pendingAdd = ref(null)
 
-// 支持从消息提醒深链过来，直接定位到指定状态的裁货单
+// 支持从消息提醒/首页卡片深链过来，直接定位到指定状态、单号或日期的裁货单
 watch(() => route.query, q => {
   queryParams.value.status = q.status || undefined
   queryParams.value.cutNo = q.cutNo || undefined
+  dateRange.value = q.beginDate ? [q.beginDate, q.endDate || q.beginDate] : []
   queryParams.value.pageNum = 1
   getList()
   if (q.action === 'add') {
