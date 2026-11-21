@@ -1664,7 +1664,7 @@ CREATE TABLE `sys_logininfor` (
   PRIMARY KEY (`info_id`),
   KEY `idx_sys_logininfor_s` (`status`),
   KEY `idx_sys_logininfor_lt` (`login_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统访问记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统访问记录';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1673,7 +1673,6 @@ CREATE TABLE `sys_logininfor` (
 
 LOCK TABLES `sys_logininfor` WRITE;
 /*!40000 ALTER TABLE `sys_logininfor` DISABLE KEYS */;
-INSERT INTO `sys_logininfor` VALUES (13,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-21 10:45:21'),(14,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-21 10:45:21'),(15,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 10:55:31'),(16,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-21 11:24:15'),(17,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-21 11:24:27'),(18,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 11:25:06'),(19,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-21 11:25:26'),(20,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-21 11:25:32'),(21,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 11:31:59'),(22,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 11:32:05'),(23,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 11:39:36');
 /*!40000 ALTER TABLE `sys_logininfor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1806,7 +1805,7 @@ CREATE TABLE `sys_oper_log` (
   KEY `idx_sys_oper_log_bt` (`business_type`),
   KEY `idx_sys_oper_log_s` (`status`),
   KEY `idx_sys_oper_log_ot` (`oper_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='操作日志记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='操作日志记录';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1815,7 +1814,6 @@ CREATE TABLE `sys_oper_log` (
 
 LOCK TABLES `sys_oper_log` WRITE;
 /*!40000 ALTER TABLE `sys_oper_log` DISABLE KEYS */;
-INSERT INTO `sys_oper_log` VALUES (1,'退货入库',1,'com.ruoyi.web.controller.garment.BizReturnController.add()','POST',1,'sysadmin','宏钻科技','/garment/return','127.0.0.1','内网IP','{\"badQty\":1,\"color\":\"黑色\",\"customer\":\"测试客户\",\"goodQty\":2,\"operator\":\"sysadmin\",\"params\":{},\"qty\":3,\"reason\":\"测试退货\",\"returnId\":1003,\"returnNo\":\"TH20261121003\",\"size\":\"S\",\"skuId\":1001,\"styleNo\":\"JT03\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-21 10:56:24',29),(2,'退货入库',3,'com.ruoyi.web.controller.garment.BizReturnController.remove()','DELETE',1,'sysadmin','宏钻科技','/garment/return/1003','127.0.0.1','内网IP','[1003] ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-21 10:56:39',10);
 /*!40000 ALTER TABLE `sys_oper_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1973,7 +1971,7 @@ CREATE TABLE `sys_user` (
 
 LOCK TABLES `sys_user` WRITE;
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
-INSERT INTO `sys_user` VALUES (1,100,'admin','管理员','00','admin@hongzuan.com','15888888888','1','','$2b$10$JagxTZ1ZvOMKVMUVdCHMSOyM4h75a9hyDJV2bIsdehTI7LXyUnaWe','0','0','127.0.0.1','2026-11-21 13:45:50','2026-11-21 08:36:37','admin','2026-11-21 08:36:37','','2026-11-21 10:02:18','系统运维保留账号（超级管理员），不对业务开放'),(100,104,'cutting','裁床-老周','00','','','0','','$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2','0','0','',NULL,NULL,'admin','2026-11-21 08:36:38','',NULL,'裁床演示账号'),(101,105,'workshop','车间-李梅','00','','','1','','$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2','0','0','',NULL,NULL,'admin','2026-11-21 08:36:38','',NULL,'车间演示账号'),(102,106,'finishing','后道-王检','00','','','0','','$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2','0','0','',NULL,NULL,'admin','2026-11-21 08:36:38','',NULL,'后道演示账号'),(103,107,'warehouse','仓库-小陈','00','','','0','','$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2','0','0','',NULL,NULL,'admin','2026-11-21 08:36:38','',NULL,'仓库演示账号'),(104,109,'finance','财务-小刘','00','','','1','','$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2','0','0','',NULL,NULL,'admin','2026-11-21 08:36:38','',NULL,'财务演示账号'),(105,100,'sysadmin','系统管理员','00','','13900000000','0','','$2b$10$zBkOEa6m1Wj5RSRnQf5EZu.79lKMsOqTLJZmMCIzDzWaQWSiIqBbO','0','0','127.0.0.1','2026-11-21 11:39:36','2026-11-21 10:02:18','','2026-11-21 10:02:18','',NULL,'系统管理员账号');
+INSERT INTO `sys_user` VALUES (1,100,'admin','管理员','00','admin@hongzuan.com','15888888888','1','','$2b$10$JagxTZ1ZvOMKVMUVdCHMSOyM4h75a9hyDJV2bIsdehTI7LXyUnaWe','0','0','127.0.0.1','2026-11-21 13:45:50','2026-11-21 08:36:37','admin','2026-11-21 08:36:37','','2026-11-21 10:02:18','系统运维保留账号（超级管理员），不对业务开放'),(100,104,'cutting','裁床-老周','00','','','0','','$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2','0','0','',NULL,NULL,'admin','2026-11-21 08:36:38','',NULL,'裁床演示账号'),(101,105,'workshop','车间-李梅','00','','','1','','$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2','0','0','',NULL,NULL,'admin','2026-11-21 08:36:38','',NULL,'车间演示账号'),(102,106,'finishing','后道-王检','00','','','0','','$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2','0','0','',NULL,NULL,'admin','2026-11-21 08:36:38','',NULL,'后道演示账号'),(103,107,'warehouse','仓库-小陈','00','','','0','','$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2','0','0','',NULL,NULL,'admin','2026-11-21 08:36:38','',NULL,'仓库演示账号'),(104,109,'finance','财务-小刘','00','','','1','','$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2','0','0','',NULL,NULL,'admin','2026-11-21 08:36:38','',NULL,'财务演示账号'),(105,100,'sysadmin','系统管理员','00','','13900000000','0','','$2b$10$zBkOEa6m1Wj5RSRnQf5EZu.79lKMsOqTLJZmMCIzDzWaQWSiIqBbO','0','0','127.0.0.1','2026-11-21 13:52:02','2026-11-21 10:02:18','','2026-11-21 10:02:18','',NULL,'系统管理员账号');
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2034,4 +2032,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-21 13:48:01
+-- Dump completed on 2026-11-21 14:03:20
