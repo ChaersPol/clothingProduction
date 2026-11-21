@@ -47,6 +47,49 @@ public class MaterialService
     }
 
     /**
+     * 手工库存调整（盘盈盘亏）：把库存直接改为实盘数量，并写入物资流水
+     */
+    @Transactional
+    public int adjustStock(Long materialId, BigDecimal stockQty, String remark)
+    {
+        if (materialId == null)
+        {
+            throw new ServiceException("请选择物资");
+        }
+        if (stockQty == null || stockQty.compareTo(BigDecimal.ZERO) < 0)
+        {
+            throw new ServiceException("调整后库存不能小于 0");
+        }
+        BizMaterial locked = materialMapper.lockById(materialId);
+        if (locked == null)
+        {
+            throw new ServiceException("物资不存在");
+        }
+        BigDecimal before = locked.getStockQty() == null ? BigDecimal.ZERO : locked.getStockQty();
+        BigDecimal after = stockQty.setScale(2, RoundingMode.HALF_UP);
+        if (before.compareTo(after) == 0)
+        {
+            throw new ServiceException("调整后库存与当前库存一致，无需调整");
+        }
+        materialMapper.updateStock(materialId, after);
+
+        BizMaterialLog log = new BizMaterialLog();
+        log.setMaterialId(locked.getMaterialId());
+        log.setMaterialName(locked.getMaterialName());
+        log.setSpec(locked.getSpec());
+        log.setUnit(locked.getUnit());
+        log.setChangeQty(after.subtract(before).setScale(2, RoundingMode.HALF_UP));
+        log.setBeforeQty(before);
+        log.setAfterQty(after);
+        log.setBizType("手工调整");
+        log.setBizNo("ADJ" + new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date()));
+        log.setOperator(SecurityUtils.getUsername());
+        log.setRemark(StringUtils.isEmpty(remark) ? "实物盘点调整" : remark);
+        materialMapper.insertLog(log);
+        return 1;
+    }
+
+    /**
      * 物资库存自动增减（正数入库、负数出库），按名称+规格自动匹配物资档案，
      * 档案不存在时自动建档（用于未采购先领料的场景，库存允许为负并进入预警）
      */

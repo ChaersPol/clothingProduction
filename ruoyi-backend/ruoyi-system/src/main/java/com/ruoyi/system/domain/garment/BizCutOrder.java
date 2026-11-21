@@ -57,5 +57,11 @@ public class BizCutOrder extends BaseEntity
 
     private Integer bundleCount;
 
+    /** 是否允许超库存领料（需同时填写超领原因） */
+    private Boolean allowOverdraft;
+
+    /** 超领原因 */
+    private String overdraftReason;
+
     private List<BizCutOrderItem> items;
 }

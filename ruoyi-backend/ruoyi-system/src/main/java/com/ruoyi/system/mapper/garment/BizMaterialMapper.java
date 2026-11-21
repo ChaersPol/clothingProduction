@@ -73,8 +73,8 @@ public interface BizMaterialMapper
     List<BizMaterialLog> selectLogList(BizMaterialLog query);
 
     @Insert("""
-        insert into biz_material_log(material_id,material_name,spec,unit,change_qty,before_qty,after_qty,biz_type,biz_no,operator,operate_time)
-        values(#{materialId},#{materialName},#{spec},#{unit},#{changeQty},#{beforeQty},#{afterQty},#{bizType},#{bizNo},#{operator},sysdate())
+        insert into biz_material_log(material_id,material_name,spec,unit,change_qty,before_qty,after_qty,biz_type,biz_no,operator,operate_time,remark)
+        values(#{materialId},#{materialName},#{spec},#{unit},#{changeQty},#{beforeQty},#{afterQty},#{bizType},#{bizNo},#{operator},sysdate(),#{remark})
         """)
     int insertLog(BizMaterialLog log);
 

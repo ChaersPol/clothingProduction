@@ -8,7 +8,9 @@
         <el-input v-model="queryParams.styleNo" placeholder="款号" clearable style="width: 130px" @keyup.enter="handleQuery" />
       </el-form-item>
       <el-form-item label="裁工" prop="cutter">
-        <el-input v-model="queryParams.cutter" placeholder="裁工" clearable style="width: 110px" @keyup.enter="handleQuery" />
+        <el-select v-model="queryParams.cutter" placeholder="裁工" clearable filterable style="width: 120px">
+          <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+        </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="全部" clearable style="width: 120px">
@@ -96,7 +98,11 @@
             <el-form-item label="层数"><el-input-number v-model="form.layerCount" :min="0" controls-position="right" style="width: 100%" /></el-form-item>
           </el-col>
           <el-col :xs="24" :sm="8">
-            <el-form-item label="裁工"><el-input v-model="form.cutter" /></el-form-item>
+            <el-form-item label="裁工">
+              <el-select v-model="form.cutter" placeholder="选择裁工" filterable style="width: 100%">
+                <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="8">
             <el-form-item label="裁货日期"><el-date-picker v-model="form.cutDate" type="date" value-format="YYYY-MM-DD" style="width: 100%" /></el-form-item>
@@ -144,6 +150,22 @@
       </template>
     </el-dialog>
 
+    <el-dialog title="物资库存不足" v-model="overdraftOpen" width="480px" append-to-body>
+      <el-alert type="warning" :closable="false" show-icon :title="overdraftMsg" />
+      <el-form label-width="90px" style="margin-top: 14px">
+        <el-form-item label="超领原因" required>
+          <el-input v-model="overdraftReason" type="textarea" :rows="2" placeholder="如 采购在途、紧急插单、客户催货" />
+        </el-form-item>
+      </el-form>
+      <div class="muted" style="font-size: 12px; color: #909399; padding-left: 4px">
+        确认后将按 BOM 用量照常领料，库存可能变为负数，并在物资流水中记录本次超领原因。
+      </div>
+      <template #footer>
+        <el-button type="primary" :disabled="!overdraftReason" @click="confirmOverdraft">确认超领并保存</el-button>
+        <el-button @click="overdraftOpen = false">取 消</el-button>
+      </template>
+    </el-dialog>
+
     <el-dialog title="裁货明细" v-model="detailOpen" width="720px" append-to-body>
       <el-descriptions :column="2" border size="small">
         <el-descriptions-item label="裁货单号">{{ detail.cutNo }}</el-descriptions-item>
@@ -163,7 +185,7 @@
 
 <script setup name="CutOrder">
 import { useRouter } from 'vue-router'
-import { listCutOrder, getCutOrder, addCutOrder, updateCutOrder, delCutOrder, commonStyles, commonColors, commonSizes } from '@/api/garment'
+import { listCutOrder, getCutOrder, addCutOrder, updateCutOrder, delCutOrder, commonStyles, commonColors, commonSizes, commonEmployees } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -181,6 +203,7 @@ const orderList = ref([])
 const styles = ref([])
 const colors = ref([])
 const sizes = ref([])
+const employees = ref([])
 const loading = ref(false)
 const total = ref(0)
 const open = ref(false)
@@ -190,6 +213,34 @@ const dateRange = ref([])
 const form = ref({})
 const gen = ref({ colors: [], sizes: [], qty: 1 })
 const queryParams = ref({ pageNum: 1, pageSize: 10, cutNo: undefined, styleNo: undefined, cutter: undefined, status: undefined })
+const route = useRoute()
+const overdraftOpen = ref(false)
+const overdraftMsg = ref('')
+const overdraftReason = ref('')
+const pendingAdd = ref(null)
+
+// 支持从消息提醒深链过来，直接定位到指定状态的裁货单
+watch(() => route.query, q => {
+  queryParams.value.status = q.status || undefined
+  queryParams.value.cutNo = q.cutNo || undefined
+  queryParams.value.pageNum = 1
+  getList()
+  if (q.action === 'add') {
+    pendingAdd.value = { ...q }
+    tryPrefill()
+  }
+}, { immediate: true })
+
+// 从库存预警「去补货」跳转过来时，自动打开开单弹窗并预填缺货款色码
+function tryPrefill() {
+  if (!pendingAdd.value || !styles.value.length) return
+  const q = pendingAdd.value
+  pendingAdd.value = null
+  handleAdd()
+  form.value.styleNo = q.styleNo
+  onStyleChange(q.styleNo)
+  form.value.items = [{ layerNo: 1, color: q.color, size: q.size, qty: Number(q.qty) || 1 }]
+}
 const rules = { styleNo: [{ required: true, message: '请选择款号', trigger: 'change' }] }
 
 const totalQty = computed(() => (form.value.items || []).reduce((s, i) => s + Number(i.qty || 0), 0))
@@ -260,7 +311,29 @@ function submitForm() {
       proxy.$modal.msgSuccess('保存成功')
       open.value = false
       getList()
+    }).catch(err => {
+      const msg = (err && (err.message || err.msg)) || ''
+      if (msg.includes('库存不足')) {
+        overdraftMsg.value = msg
+        overdraftReason.value = ''
+        overdraftOpen.value = true
+      }
     })
+  })
+}
+// 确认超领：带原因重新提交
+function confirmOverdraft() {
+  if (!overdraftReason.value) {
+    proxy.$modal.msgWarning('请填写超领原因')
+    return
+  }
+  form.value.allowOverdraft = true
+  form.value.overdraftReason = overdraftReason.value
+  addCutOrder(form.value).then(() => {
+    proxy.$modal.msgSuccess('已超领保存，并记录超领原因')
+    overdraftOpen.value = false
+    open.value = false
+    getList()
   })
 }
 function viewDetail(row) {
@@ -283,8 +356,8 @@ function handleExport() {
   proxy.download('garment/cutorder/export', { ...queryParams.value }, `cutorder_${Date.now()}.xlsx`)
 }
 
-getList()
-commonStyles().then(res => { styles.value = res.data || [] })
+commonStyles().then(res => { styles.value = res.data || []; tryPrefill() })
 commonColors().then(res => { colors.value = res.data || [] })
 commonSizes().then(res => { sizes.value = res.data || [] })
+commonEmployees().then(res => { employees.value = res.data || [] })
 </script>

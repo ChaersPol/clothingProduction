@@ -36,7 +36,7 @@
         </div>
 
         <el-alert type="info" :closable="false" show-icon style="margin-bottom: 10px"
-          title="物资库存全自动联动：采购入库自动增加、裁货开单按 BOM 用量自动领料扣减并生成流水，无需手工登记。" />
+          title="采购入库自动增加、裁货开单按 BOM 自动领料扣减；线下补货或实物盘点后，点行内「库存调整」改为实际数量即可。" />
 
         <div class="table-wrap">
           <el-table v-loading="loading" :data="list" border>
@@ -61,8 +61,9 @@
                 <el-tag v-else type="success" size="small">正常</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="操作" class-name="op-cell" width="120" align="center" fixed="right">
+            <el-table-column label="操作" class-name="op-cell" width="180" align="center" fixed="right">
               <template #default="s">
+                <el-button link type="primary" @click="handleAdjust(s.row)">库存调整</el-button>
                 <el-button link type="primary" @click="handleMinStock(s.row)">安全库存</el-button>
               </template>
             </el-table-column>
@@ -81,6 +82,7 @@
               <el-option label="采购入库" value="采购入库" />
               <el-option label="生产领料" value="生产领料" />
               <el-option label="领料退回" value="领料退回" />
+              <el-option label="手工调整" value="手工调整" />
             </el-select>
           </el-form-item>
           <el-form-item label="单号">
@@ -120,6 +122,25 @@
       </el-tab-pane>
     </el-tabs>
 
+    <el-dialog title="库存调整" v-model="adjustOpen" width="420px" append-to-body>
+      <el-alert type="info" :closable="false" show-icon style="margin-bottom: 12px"
+        title="实物盘点或线下补货后，在这里把库存改为实际数量，系统会自动生成一条「手工调整」流水。" />
+      <el-form label-width="90px">
+        <el-form-item label="物资">{{ adjustForm.materialName }} {{ adjustForm.spec }}</el-form-item>
+        <el-form-item label="当前库存">{{ adjustForm.beforeQty }} {{ adjustForm.unit }}</el-form-item>
+        <el-form-item label="调整后库存">
+          <el-input-number v-model="adjustForm.stockQty" :min="0" :precision="2" controls-position="right" style="width: 100%" />
+        </el-form-item>
+        <el-form-item label="调整原因">
+          <el-input v-model="adjustForm.remark" placeholder="如 线下补货入库、月度盘点盘盈" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button type="primary" @click="submitAdjust">确 定</el-button>
+        <el-button @click="adjustOpen = false">取 消</el-button>
+      </template>
+    </el-dialog>
+
     <el-dialog title="设置安全库存" v-model="minOpen" width="380px" append-to-body>
       <el-form label-width="90px">
         <el-form-item label="物资">{{ minForm.materialName }} {{ minForm.spec }}</el-form-item>
@@ -136,7 +157,7 @@
 </template>
 
 <script setup name="Material">
-import { listMaterial, listMaterialLogs, updateMaterialMinStock } from '@/api/garment'
+import { listMaterial, listMaterialLogs, updateMaterialMinStock, adjustMaterialStock } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -151,6 +172,8 @@ const logTotal = ref(0)
 const warningOnly = ref(false)
 const minOpen = ref(false)
 const minForm = ref({})
+const adjustOpen = ref(false)
+const adjustForm = ref({})
 const queryParams = ref({ pageNum: 1, pageSize: 10, materialName: undefined, materialType: undefined })
 const logQuery = ref({ pageNum: 1, pageSize: 10, materialName: undefined, bizType: undefined, bizNo: undefined })
 
@@ -183,6 +206,30 @@ function getLogs() {
 function handleMinStock(row) {
   minForm.value = { materialId: row.materialId, materialName: row.materialName, spec: row.spec, minStock: Number(row.minStock || 0) }
   minOpen.value = true
+}
+function handleAdjust(row) {
+  adjustForm.value = {
+    materialId: row.materialId,
+    materialName: row.materialName,
+    spec: row.spec,
+    unit: row.unit,
+    beforeQty: row.stockQty,
+    stockQty: Number(row.stockQty || 0),
+    remark: ''
+  }
+  adjustOpen.value = true
+}
+function submitAdjust() {
+  adjustMaterialStock({
+    materialId: adjustForm.value.materialId,
+    stockQty: adjustForm.value.stockQty,
+    remark: adjustForm.value.remark
+  }).then(() => {
+    proxy.$modal.msgSuccess('库存已更新')
+    adjustOpen.value = false
+    getList()
+    if (logs.value.length) getLogs()
+  })
 }
 function submitMinStock() {
   updateMaterialMinStock({ materialId: minForm.value.materialId, minStock: minForm.value.minStock }).then(() => {

@@ -40,9 +40,7 @@
         <el-table-column label="提醒内容" prop="content" min-width="320" show-overflow-tooltip />
         <el-table-column label="操作" class-name="op-cell" width="120" align="center" fixed="right">
           <template #default="s">
-            <el-button v-if="actionOf(s.row)" link type="primary" @click="$router.push(actionOf(s.row).path)">
-              {{ actionOf(s.row).text }}
-            </el-button>
+            <el-button v-if="s.row.page" link type="primary" @click="go(s.row)">{{ actionText(s.row) }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -55,6 +53,7 @@
 import { listMessages } from '@/api/garment'
 
 const { proxy } = getCurrentInstance()
+const router = useRouter()
 const showSearch = ref(true)
 const loading = ref(false)
 const messages = ref([])
@@ -72,12 +71,12 @@ const pagedList = computed(() => {
   return filtered.value.slice(start, start + queryParams.value.pageSize)
 })
 
-const ACTIONS = [
-  { key: '库存', text: '查看库存', path: '/warehouse/inventory' },
-  { key: '分扎', text: '去分扎', path: '/cut/bundle' },
-  { key: '领片', text: '去领片', path: '/workshop/pick' },
-  { key: '超期', text: '查看产线', path: '/workshop/linestock' },
-  { key: '入库', text: '去入库', path: '/finishing/packing' }
+const ACTION_TEXT = [
+  { key: '库存', text: '查看库存' },
+  { key: '分扎', text: '去分扎' },
+  { key: '领片', text: '去领片' },
+  { key: '超期', text: '查看产线' },
+  { key: '入库', text: '查看扎单' }
 ]
 
 function loadMessages() {
@@ -94,7 +93,13 @@ function resetQuery() {
 function indexMethod(i) { return (queryParams.value.pageNum - 1) * queryParams.value.pageSize + i + 1 }
 function typeText(t) { return t === 'warning' ? '预警' : t === 'task' ? '待办' : '提示' }
 function tagType(t) { return t === 'warning' ? 'danger' : t === 'task' ? 'warning' : 'info' }
-function actionOf(row) { return ACTIONS.find(a => (row.title || '').includes(a.key)) }
+function actionText(row) {
+  const a = ACTION_TEXT.find(i => (row.title || '').includes(i.key))
+  return a ? a.text : '查看详情'
+}
+function go(row) {
+  router.push({ path: row.page, query: row.query || {} })
+}
 
 loadMessages()
 </script>

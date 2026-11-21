@@ -38,9 +38,10 @@
             <el-table-column label="缺货差额" width="90" align="right">
               <template #default="s"><span class="money">{{ (s.row.min_stock || 0) - (s.row.finish_qty || 0) }}</span></template>
             </el-table-column>
-            <el-table-column label="操作" class-name="op-cell" width="125" align="center" fixed="right">
+            <el-table-column label="操作" class-name="op-cell" width="170" align="center" fixed="right">
               <template #default="s">
-                <el-button link type="primary" @click="openMinStock(s.row)">改最低库存</el-button>
+                <el-button link type="primary" @click="goReplenish(s.row)">去补货</el-button>
+                <el-button link @click="openMinStock(s.row)">改最低库存</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -88,6 +89,7 @@ import { listWarnings, cutSuggestion, updateMinStock } from '@/api/garment'
 const showSearch = ref(true)
 
 const { proxy } = getCurrentInstance()
+const router = useRouter()
 const activeTab = ref('warning')
 const warningList = ref([])
 const suggestList = ref([])
@@ -96,8 +98,19 @@ const total = ref(0)
 const pageNum = ref(1)
 const pageSize = ref(10)
 const styleNo = ref('')
+const barcode = ref('')
+const route = useRoute()
 const open = ref(false)
 const form = ref({})
+
+// 支持从消息提醒深链过来，直接定位到指定 SKU
+watch(() => route.query, q => {
+  styleNo.value = q.styleNo || ''
+  barcode.value = q.barcode || ''
+  activeTab.value = 'warning'
+  pageNum.value = 1
+  loadWarnings()
+}, { immediate: true })
 
 const suggestTotal = computed(() => suggestList.value.reduce((s, i) => s + Number(i.suggestQty || 0), 0))
 const gapTotal = computed(() => warningList.value.reduce((s, i) => s + Math.max(0, Number(i.min_stock || 0) - Number(i.finish_qty || 0)), 0))
@@ -105,8 +118,9 @@ const gapTotal = computed(() => warningList.value.reduce((s, i) => s + Math.max(
 function getList() {
   loading.value = true
   listWarnings({ pageNum: pageNum.value, pageSize: pageSize.value, styleNo: styleNo.value }).then(res => {
-    warningList.value = res.rows
-    total.value = res.total
+    const rows = res.rows || []
+    warningList.value = barcode.value ? rows.filter(r => r.barcode === barcode.value) : rows
+    total.value = barcode.value ? warningList.value.length : res.total
     loading.value = false
   }).catch(() => { loading.value = false })
 }
@@ -118,7 +132,21 @@ function loadWarnings() {
   getList()
   loadSuggest()
 }
-function resetQuery() { styleNo.value = ''; loadWarnings() }
+function resetQuery() { styleNo.value = ''; barcode.value = ''; loadWarnings() }
+// 去补货：按缺货差额打开裁货开单，预填款号/颜色/尺码/数量
+function goReplenish(row) {
+  const shortage = Number(row.min_stock || 0) - Number(row.finish_qty || 0)
+  router.push({
+    path: '/cut/cutorder',
+    query: {
+      action: 'add',
+      styleNo: row.style_no,
+      color: row.color,
+      size: row.size,
+      qty: shortage > 0 ? shortage : 1
+    }
+  })
+}
 function openMinStock(row) {
   form.value = { skuId: row.sku_id, styleNo: row.style_no, color: row.color, size: row.size, minStock: row.min_stock }
   open.value = true
@@ -137,7 +165,4 @@ function suggestSummary({ columns, data }) {
     return ''
   })
 }
-
-getList()
-loadSuggest()
 </script>

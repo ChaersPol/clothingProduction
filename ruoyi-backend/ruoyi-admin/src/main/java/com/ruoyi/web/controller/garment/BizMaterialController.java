@@ -39,11 +39,12 @@ public class BizMaterialController extends BaseController
     }
 
     @PreAuthorize("@ss.hasPermi('garment:material:list')")
-    @PutMapping("/minstock")
-    public AjaxResult minStock(@RequestBody Map<String, Object> body)
+    @PutMapping("/adjust")
+    public AjaxResult adjust(@RequestBody Map<String, Object> body)
     {
         Long materialId = body.get("materialId") == null ? null : Long.valueOf(String.valueOf(body.get("materialId")));
-        BigDecimal minStock = body.get("minStock") == null ? BigDecimal.ZERO : new BigDecimal(String.valueOf(body.get("minStock")));
-        return toAjax(materialService.updateMinStock(materialId, minStock));
+        BigDecimal stockQty = body.get("stockQty") == null ? null : new BigDecimal(String.valueOf(body.get("stockQty")));
+        String remark = body.get("remark") == null ? null : String.valueOf(body.get("remark"));
+        return toAjax(materialService.adjustStock(materialId, stockQty, remark));
     }
 }

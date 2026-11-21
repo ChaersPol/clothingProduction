@@ -90,6 +90,19 @@ const total = ref(0)
 const open = ref(false)
 const form = ref({})
 const queryParams = ref({ pageNum: 1, pageSize: 10, bundleNo: undefined, styleNo: undefined, color: undefined })
+const route = useRoute()
+
+// 支持从消息提醒深链过来：overdue=1 只看超期扎
+watch(() => route.query, q => {
+  queryParams.value.bundleNo = q.bundleNo || undefined
+  if (q.overdue) {
+    queryParams.value.params = { overdueDays: 3 }
+  } else {
+    delete queryParams.value.params
+  }
+  queryParams.value.pageNum = 1
+  getList()
+}, { immediate: true })
 
 const lineQty = computed(() => bundleList.value.reduce((s, b) => s + (Number(b.qty || 0) - Number(b.deliveredQty || 0)), 0))
 const overdueCount = computed(() => bundleList.value.filter(b => Number(b.onlineDays || 0) > 3).length)
@@ -125,6 +138,5 @@ function submitDeliver() {
   })
 }
 
-getList()
 commonEmployees().then(res => { employees.value = res.data || [] })
 </script>

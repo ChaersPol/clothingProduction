@@ -109,6 +109,7 @@ public class CuttingService
 
     /**
      * 按 BOM 用量自动增减物资库存：sign=-1 领料扣减，sign=1 领料退回
+     * 领料默认不允许超库存；确需先领后补时，必须填写超领原因
      */
     private void changeBomStock(BizCutOrder order, int sign)
     {
@@ -118,24 +119,64 @@ public class CuttingService
         }
         BizBom query = new BizBom();
         query.setStyleNo(order.getStyleNo());
-        for (BizBom bom : bomMapper.selectBomList(query))
+        List<BizBom> boms = bomMapper.selectBomList(query);
+        if (sign < 0 && !boms.isEmpty())
         {
-            if (bom.getQtyPerPiece() == null || StringUtils.isEmpty(bom.getMaterialName()))
+            java.util.List<String> shortages = new java.util.ArrayList<>();
+            for (BizBom bom : boms)
             {
-                continue;
+                BigDecimal need = bomNeed(bom, order.getTotalQty());
+                if (need.compareTo(BigDecimal.ZERO) <= 0)
+                {
+                    continue;
+                }
+                BizMaterial material = materialMapper.selectByKey(bom.getMaterialName().trim(),
+                        bom.getSpec() == null ? "" : bom.getSpec().trim());
+                BigDecimal stock = material == null || material.getStockQty() == null ? BigDecimal.ZERO : material.getStockQty();
+                if (stock.compareTo(need) < 0)
+                {
+                    shortages.add(bom.getMaterialName() + " 需 " + need.stripTrailingZeros().toPlainString()
+                            + (bom.getUnit() == null ? "" : bom.getUnit()) + "，库存 "
+                            + stock.stripTrailingZeros().toPlainString() + (bom.getUnit() == null ? "" : bom.getUnit()));
+                }
             }
-            BigDecimal loss = bom.getLossRate() == null ? BigDecimal.ZERO : bom.getLossRate();
-            BigDecimal need = bom.getQtyPerPiece().multiply(new BigDecimal(order.getTotalQty()))
-                    .multiply(BigDecimal.ONE.add(loss.divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP)))
-                    .setScale(2, RoundingMode.HALF_UP);
+            if (!shortages.isEmpty())
+            {
+                if (!Boolean.TRUE.equals(order.getAllowOverdraft()))
+                {
+                    throw new ServiceException("物资库存不足：" + String.join("；", shortages)
+                            + "。如确需先领后补，请填写超领原因后重新保存");
+                }
+                if (StringUtils.isEmpty(order.getOverdraftReason()))
+                {
+                    throw new ServiceException("超领必须填写原因");
+                }
+            }
+        }
+        String reason = StringUtils.isEmpty(order.getOverdraftReason()) ? "" : "；超领原因：" + order.getOverdraftReason();
+        for (BizBom bom : boms)
+        {
+            BigDecimal need = bomNeed(bom, order.getTotalQty());
             if (need.compareTo(BigDecimal.ZERO) <= 0)
             {
                 continue;
             }
             materialService.stockChange(bom.getMaterialName(), bom.getSpec(), bom.getUnit(), bom.getMaterialType(),
                     need.multiply(new BigDecimal(sign)), sign < 0 ? "生产领料" : "领料退回", order.getCutNo(),
-                    "裁货单 " + order.getCutNo() + "（" + order.getStyleNo() + " " + order.getTotalQty() + "件）");
+                    "裁货单 " + order.getCutNo() + "（" + order.getStyleNo() + " " + order.getTotalQty() + "件）" + reason);
         }
+    }
+
+    private BigDecimal bomNeed(BizBom bom, int totalQty)
+    {
+        if (bom.getQtyPerPiece() == null || StringUtils.isEmpty(bom.getMaterialName()))
+        {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal loss = bom.getLossRate() == null ? BigDecimal.ZERO : bom.getLossRate();
+        return bom.getQtyPerPiece().multiply(new BigDecimal(totalQty))
+                .multiply(BigDecimal.ONE.add(loss.divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP)))
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
     @Transactional

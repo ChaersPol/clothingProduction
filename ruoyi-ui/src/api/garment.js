@@ -397,3 +397,8 @@ export function listMaterialLogs(query) {
 export function updateMaterialMinStock(data) {
   return request({ url: '/garment/material/minstock', method: 'put', data })
 }
+
+// 物资手工库存调整（盘盈盘亏）
+export function adjustMaterialStock(data) {
+  return request({ url: '/garment/material/adjust', method: 'put', data })
+}

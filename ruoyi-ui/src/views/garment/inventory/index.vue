@@ -100,6 +100,17 @@ const loading = ref(false)
 const total = ref(0)
 const summary = ref({ CUT: 0, LINE: 0, FINISH: 0, value: '0.00' })
 const queryParams = ref({ pageNum: 1, pageSize: 10, stockType: '', styleNo: undefined, cnName: undefined, barcode: undefined })
+const route = useRoute()
+
+// 支持从消息提醒深链过来，直接定位到指定 SKU
+watch(() => route.query, q => {
+  queryParams.value.stockType = ''
+  queryParams.value.cnName = undefined
+  queryParams.value.styleNo = q.styleNo || undefined
+  queryParams.value.barcode = q.barcode || undefined
+  queryParams.value.pageNum = 1
+  getList()
+}, { immediate: true })
 
 function typeText(t) { return t === 'CUT' ? '裁片' : t === 'LINE' ? '产线' : '成品' }
 function typeTag(t) { return t === 'CUT' ? 'danger' : t === 'LINE' ? 'primary' : 'info' }
@@ -128,6 +139,8 @@ function handleQuery() { queryParams.value.pageNum = 1; getList() }
 function resetQuery() {
   proxy.resetForm('queryRef')
   queryParams.value.stockType = ''
+  queryParams.value.styleNo = undefined
+  queryParams.value.barcode = undefined
   handleQuery()
 }
 function getSummary({ columns, data }) {
@@ -142,6 +155,5 @@ function handleExport() {
   proxy.download('garment/inventory/export', { ...queryParams.value }, `inventory_${Date.now()}.xlsx`)
 }
 
-getList()
 loadSummary()
 </script>

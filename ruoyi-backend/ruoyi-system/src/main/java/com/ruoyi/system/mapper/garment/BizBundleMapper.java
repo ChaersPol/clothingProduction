@@ -21,6 +21,7 @@ public interface BizBundleMapper
         <if test="status != null and status != ''"> and b.status = #{status}</if>
         <if test="params.online != null"> and b.status in ('2','3')</if>
         <if test="params.overdueDays != null"> and b.status='2' and datediff(sysdate(), date(b.pickup_time)) &gt; #{params.overdueDays}</if>
+        <if test="params.pendingPack != null"> and b.status in ('2','3') and b.delivered_qty &gt;= b.qty and b.packed_qty &lt; b.qty</if>
         </where>
         order by b.bundle_id desc
         </script>

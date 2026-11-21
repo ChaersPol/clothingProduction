@@ -170,6 +170,19 @@ const autoForm = ref({ cutId: undefined, perBundle: 17 })
 const patchForm = ref({})
 const queryParams = ref({ pageNum: 1, pageSize: 10, cutNo: undefined, styleNo: undefined, bundleNo: undefined, status: undefined })
 
+// 支持从消息提醒深链过来，直接定位到指定状态的扎
+watch(() => route.query, q => {
+  queryParams.value.status = q.status || undefined
+  queryParams.value.bundleNo = q.bundleNo || undefined
+  if (q.pendingPack) {
+    queryParams.value.params = { pendingPack: 1 }
+  } else {
+    delete queryParams.value.params
+  }
+  queryParams.value.pageNum = 1
+  getList()
+}, { immediate: true })
+
 function statusType(s) {
   return s === '3' ? 'success' : s === '2' ? 'primary' : s === '1' ? 'warning' : 'info'
 }
@@ -237,7 +250,6 @@ function handleDelete(row) {
   }).catch(() => {})
 }
 
-getList()
 commonEmployees().then(res => { employees.value = res.data || [] })
 loadCuts().then(() => {
   if (route.query.cutId) {
