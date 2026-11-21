@@ -209,6 +209,30 @@
       <div class="load_title">正在加载系统资源，请耐心等待</div>
     </div>
   </div>
+  <!-- 加载失败兜底：发版后浏览器/微信缓存了旧 index.html，旧 hash 资源已不存在，
+       会导致白屏。这里捕获静态资源加载失败并在 20 秒内未渲染时自动强刷一次。 -->
+  <script>
+    (function () {
+      var KEY = 'app_hard_reload_ts'
+      function hardReload() {
+        try {
+          var last = Number(sessionStorage.getItem(KEY) || 0)
+          if (last && Date.now() - last < 60000) return
+          sessionStorage.setItem(KEY, String(Date.now()))
+        } catch (e) {}
+        var u = location.href.split('#')[0]
+        location.replace(u + (u.indexOf('?') > -1 ? '&' : '?') + '_t=' + Date.now())
+      }
+      window.addEventListener('vite:preloadError', hardReload)
+      window.addEventListener('error', function (e) {
+        var t = e.target
+        if (t && (t.tagName === 'SCRIPT' || t.tagName === 'LINK')) hardReload()
+      }, true)
+      setTimeout(function () {
+        if (document.getElementById('loader-wrapper')) hardReload()
+      }, 20000)
+    })()
+  </script>
   <script type="module" src="/src/main.js"></script>
 </body>
 
