@@ -75,8 +75,8 @@ public class SysMenuServiceImpl implements ISysMenuService
     public List<SysMenu> selectMenuList(SysMenu menu, Long userId)
     {
         List<SysMenu> menuList = null;
-        // 管理员显示所有菜单信息
-        if (SecurityUtils.isAdmin(userId))
+        // 系统运维账号或拥有超级管理员角色的账号显示所有菜单信息
+        if (SecurityUtils.isAdmin(userId) || menuMapper.countSuperAdminRole(userId) > 0)
         {
             menuList = menuMapper.selectMenuList(menu);
         }
