@@ -38,6 +38,7 @@
 
 <script setup>
 import { listMessages } from '@/api/garment'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const noticePopover = ref(null)
@@ -82,16 +83,29 @@ function onNoticeLeave() {
 function typeText(t) { return t === 'warning' ? '预警' : t === 'task' ? '待办' : '提示' }
 function tagType(t) { return t === 'warning' ? 'danger' : t === 'task' ? 'warning' : 'info' }
 
+// 当前账号是否已注册该路由（未授权菜单不在动态路由中，避免点击进入 404）
+function canAccess(path) {
+  const resolved = router.resolve({ path })
+  return !!resolved.name && !String(resolved.name).startsWith('404')
+}
+function navigate(path, query) {
+  if (!canAccess(path)) {
+    ElMessage.warning('当前账号没有该模块的访问权限，请联系管理员')
+    return
+  }
+  router.push({ path, query: query || {} })
+}
+
 // 点击消息直接跳到对应业务数据
 function go(item) {
   if (!item.page) return
   noticeVisible.value = false
-  router.push({ path: item.page, query: item.query || {} })
+  navigate(item.page, item.query)
 }
 
 function viewAll() {
   noticeVisible.value = false
-  router.push('/msg')
+  navigate('/msg')
 }
 </script>
 

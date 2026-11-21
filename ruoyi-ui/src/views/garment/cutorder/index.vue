@@ -340,7 +340,16 @@ function confirmOverdraft() {
 function viewDetail(row) {
   getCutOrder(row.cutId).then(res => { detail.value = res.data; detailOpen.value = true })
 }
+// 未授权菜单不在动态路由中，跳转前校验，避免进入 404
+function canAccess(path) {
+  const resolved = router.resolve({ path })
+  return !!resolved.name && !String(resolved.name).startsWith('404')
+}
 function goBundle(row) {
+  if (!canAccess('/cut/bundle')) {
+    proxy.$modal.msgWarning('当前账号没有「分扎」模块的访问权限')
+    return
+  }
   router.push({ path: '/cut/bundle', query: { cutId: row.cutId } })
 }
 function handleDelete(row) {

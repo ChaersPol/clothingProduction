@@ -134,7 +134,16 @@ function loadWarnings() {
 }
 function resetQuery() { styleNo.value = ''; barcode.value = ''; loadWarnings() }
 // 去补货：按缺货差额打开裁货开单，预填款号/颜色/尺码/数量
+// 未授权菜单不在动态路由中，跳转前校验，避免进入 404
+function canAccess(path) {
+  const resolved = router.resolve({ path })
+  return !!resolved.name && !String(resolved.name).startsWith('404')
+}
 function goReplenish(row) {
+  if (!canAccess('/cut/cutorder')) {
+    proxy.$modal.msgWarning('当前账号没有「裁货开单」的访问权限，请联系管理员补货')
+    return
+  }
   const shortage = Number(row.min_stock || 0) - Number(row.finish_qty || 0)
   router.push({
     path: '/cut/cutorder',

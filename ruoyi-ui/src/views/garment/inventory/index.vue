@@ -51,7 +51,7 @@
       <el-col :span="1.5">
         <el-button plain icon="Download" @click="handleExport">导出库存</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <el-col :span="1.5" v-if="canAccess('/warehouse/warning')">
         <el-button plain type="warning" @click="$router.push('/warehouse/warning')">库存预警</el-button>
       </el-col>
       <el-col :span="6" style="display: flex; align-items: center; gap: 6px">
@@ -95,6 +95,12 @@ import { listInventory } from '@/api/garment'
 const showSearch = ref(true)
 
 const { proxy } = getCurrentInstance()
+const router = useRouter()
+// 当前账号是否已注册该路由（未授权菜单不在动态路由中，避免点击进入 404）
+function canAccess(path) {
+  const resolved = router.resolve({ path })
+  return !!resolved.name && !String(resolved.name).startsWith('404')
+}
 const inventoryList = ref([])
 const loading = ref(false)
 const total = ref(0)

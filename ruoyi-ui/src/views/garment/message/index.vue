@@ -40,7 +40,8 @@
         <el-table-column label="提醒内容" prop="content" min-width="320" show-overflow-tooltip />
         <el-table-column label="操作" class-name="op-cell" width="120" align="center" fixed="right">
           <template #default="s">
-            <el-button v-if="s.row.page" link type="primary" @click="go(s.row)">{{ actionText(s.row) }}</el-button>
+            <el-button v-if="s.row.page && canAccess(s.row.page)" link type="primary" @click="go(s.row)">{{ actionText(s.row) }}</el-button>
+            <span v-else-if="s.row.page" class="muted">无权限</span>
           </template>
         </el-table-column>
       </el-table>
@@ -51,6 +52,7 @@
 
 <script setup name="Message">
 import { listMessages } from '@/api/garment'
+import { ElMessage } from 'element-plus'
 
 const { proxy } = getCurrentInstance()
 const router = useRouter()
@@ -97,7 +99,16 @@ function actionText(row) {
   const a = ACTION_TEXT.find(i => (row.title || '').includes(i.key))
   return a ? a.text : '查看详情'
 }
+// 当前账号是否已注册该路由（未授权菜单只会在动态路由中缺失，避免点击后进入 404）
+function canAccess(path) {
+  const resolved = router.resolve({ path })
+  return !!resolved.name && !String(resolved.name).startsWith('404')
+}
 function go(row) {
+  if (!canAccess(row.page)) {
+    ElMessage.warning('当前账号没有该模块的访问权限，请联系管理员')
+    return
+  }
   router.push({ path: row.page, query: row.query || {} })
 }
 
