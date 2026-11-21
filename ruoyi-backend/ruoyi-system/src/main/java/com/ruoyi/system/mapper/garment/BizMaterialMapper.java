@@ -15,7 +15,7 @@ public interface BizMaterialMapper
         del_flag = '0'
         <if test="materialName != null and materialName != ''"> and material_name like concat('%',#{materialName},'%')</if>
         <if test="materialType != null and materialType != ''"> and material_type = #{materialType}</if>
-        <if test="params.warning != null and params.warning == '1'"> and stock_qty &lt;= min_stock</if>
+        <if test='params.warning != null and params.warning == "1"'> and stock_qty &lt;= min_stock and min_stock &gt; 0</if>
         </where>
         order by material_type, material_name
         </script>

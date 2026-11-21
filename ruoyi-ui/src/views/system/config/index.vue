@@ -101,7 +101,20 @@
          <el-table-column label="参数主键" align="center" prop="configId" />
          <el-table-column label="参数名称" align="center" prop="configName" :show-overflow-tooltip="true" />
          <el-table-column label="参数键名" align="center" prop="configKey" :show-overflow-tooltip="true" />
-         <el-table-column label="参数键值" align="center" prop="configValue" :show-overflow-tooltip="true" />
+         <el-table-column label="参数键值" align="center" prop="configValue" :show-overflow-tooltip="true">
+            <template #default="scope">
+               <el-switch
+                  v-if="scope.row.configKey === 'sys.account.registerUser'"
+                  v-model="scope.row.configValue"
+                  active-value="true"
+                  inactive-value="false"
+                  active-text="开启"
+                  inactive-text="关闭"
+                  @change="handleRegisterSwitch(scope.row)"
+               />
+               <span v-else>{{ scope.row.configValue }}</span>
+            </template>
+         </el-table-column>
          <el-table-column label="系统内置" align="center" prop="configType">
             <template #default="scope">
                <dict-tag :options="sys_yes_no" :value="scope.row.configType" />
@@ -263,6 +276,16 @@ function handleUpdate(row) {
     form.value = response.data
     open.value = true
     title.value = "修改参数"
+  })
+}
+
+/** 登录页注册开关：直接保存并提示 */
+function handleRegisterSwitch(row) {
+  const value = row.configValue
+  updateConfig({ configId: row.configId, configKey: row.configKey, configName: row.configName, configValue: value, configType: row.configType, remark: row.remark }).then(() => {
+    proxy.$modal.msgSuccess(value === "true" ? "已开启用户注册，登录页将显示「立即注册」" : "已关闭用户注册，登录页将隐藏「立即注册」")
+  }).catch(() => {
+    row.configValue = value === "true" ? "false" : "true"
   })
 }
 

@@ -86,6 +86,12 @@ public class SysRegisterService
             }
             else
             {
+                // 新注册用户默认授予「普通员工」角色，可在用户管理中调整
+                String defaultRoleId = configService.selectConfigByKey("sys.account.defaultRoleId");
+                if (StringUtils.isNotEmpty(defaultRoleId))
+                {
+                    userService.insertUserAuth(sysUser.getUserId(), new Long[] { Long.valueOf(defaultRoleId) });
+                }
                 AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.REGISTER, MessageUtils.message("user.register.success")));
             }
         }

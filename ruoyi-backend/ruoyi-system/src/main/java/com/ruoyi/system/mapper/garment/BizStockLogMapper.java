@@ -16,6 +16,7 @@ public interface BizStockLogMapper
         <if test="size != null and size != ''"> and size = #{size}</if>
         <if test="stockType != null and stockType != ''"> and stock_type = #{stockType}</if>
         <if test="bizType != null and bizType != ''"> and biz_type = #{bizType}</if>
+        <if test="bundleNo != null and bundleNo != ''"> and bundle_no like concat('%',#{bundleNo},'%')</if>
         <if test="operator != null and operator != ''"> and operator like concat('%',#{operator},'%')</if>
         <if test="params.beginDate != null and params.beginDate != ''"> and operate_time &gt;= concat(#{params.beginDate},' 00:00:00')</if>
         <if test="params.endDate != null and params.endDate != ''"> and operate_time &lt;= concat(#{params.endDate},' 23:59:59')</if>

@@ -66,6 +66,7 @@
 
 <script setup>
 import { getCodeImg } from "@/api/login"
+import { getConfigKey } from "@/api/system/config"
 import Cookies from "js-cookie"
 import { encrypt, decrypt } from "@/utils/jsencrypt"
 import useUserStore from '@/store/modules/user'
@@ -163,6 +164,10 @@ function getCookie() {
 
 getCode()
 getCookie()
+// 读取后台配置，决定是否展示「立即注册」入口
+getConfigKey("sys.account.registerUser").then(res => {
+  register.value = res.msg === "true"
+})
 </script>
 
 <style lang='scss' scoped>
