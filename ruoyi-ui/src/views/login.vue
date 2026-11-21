@@ -241,4 +241,49 @@ html.dark .login {
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
   }
 }
+
+@media screen and (max-width: 768px) {
+  .login {
+    padding: 0 18px;
+    background-position: center;
+  }
+  .login-form {
+    width: 100%;
+    max-width: 330px;
+    padding: 34px 22px 20px;
+    .el-input {
+      height: 46px;
+      input {
+        height: 46px;
+        font-size: 15px;
+      }
+    }
+    .input-icon {
+      height: 45px;
+    }
+    .el-button {
+      height: 46px;
+      font-size: 16px;
+    }
+  }
+  .title {
+    font-size: 18px;
+    margin-bottom: 26px;
+  }
+  .login-code {
+    height: 46px;
+  }
+  .login-code-img {
+    height: 46px;
+    padding-left: 10px;
+  }
+  .el-login-footer {
+    font-size: 11px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    line-height: 20px;
+    height: auto;
+    bottom: 8px;
+  }
+}
 </style>

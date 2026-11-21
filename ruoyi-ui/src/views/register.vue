@@ -227,4 +227,49 @@ html.dark .register {
     color: var(--el-text-color-primary);
   }
 }
+
+@media screen and (max-width: 768px) {
+  .register {
+    padding: 0 18px;
+    background-position: center;
+  }
+  .register-form {
+    width: 100%;
+    max-width: 330px;
+    padding: 34px 22px 20px;
+    .el-input {
+      height: 46px;
+      input {
+        height: 46px;
+        font-size: 15px;
+      }
+    }
+    .input-icon {
+      height: 45px;
+    }
+    .el-button {
+      height: 46px;
+      font-size: 16px;
+    }
+  }
+  .title {
+    font-size: 18px;
+    margin-bottom: 26px;
+  }
+  .register-code {
+    height: 46px;
+  }
+  .register-code-img {
+    height: 46px;
+    padding-left: 10px;
+  }
+  .el-register-footer {
+    font-size: 11px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    line-height: 20px;
+    height: auto;
+    bottom: 8px;
+  }
+}
 </style>
