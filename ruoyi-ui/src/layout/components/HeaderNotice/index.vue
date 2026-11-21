@@ -9,12 +9,12 @@
       <div v-if="noticeLoading" class="notice-loading">
         <el-icon class="is-loading"><Loading /></el-icon> 加载中...
       </div>
-      <div v-else-if="noticeList.length === 0" class="notice-empty">
+      <div v-else-if="visibleNotices.length === 0" class="notice-empty">
         <el-icon style="font-size:24px;display:block;margin-bottom:6px;"><Postcard /></el-icon>
         暂无消息提醒
       </div>
       <div v-else>
-        <div v-for="(item, i) in noticeList.slice(0, 8)" :key="i" class="notice-item" :class="{ 'no-link': !item.page }" @click="go(item)">
+        <div v-for="(item, i) in visibleNotices.slice(0, 8)" :key="i" class="notice-item" :class="{ 'no-link': !item.page }" @click="go(item)">
           <div class="notice-item-head">
             <el-tag size="small" :type="tagType(item.type)" class="notice-tag">{{ typeText(item.type) }}</el-tag>
             <span class="notice-item-title">{{ item.title }}</span>
@@ -22,14 +22,14 @@
           </div>
           <div class="notice-item-content">{{ item.content }}</div>
         </div>
-        <div v-if="noticeList.length > 8" class="notice-more" @click="viewAll">还有 {{ noticeList.length - 8 }} 条，查看全部</div>
+        <div v-if="visibleNotices.length > 8" class="notice-more" @click="viewAll">还有 {{ visibleNotices.length - 8 }} 条，查看全部</div>
       </div>
 
       <!-- 触发器 -->
       <template #reference>
         <div class="right-menu-item hover-effect notice-trigger" @mouseenter="onNoticeEnter" @mouseleave="onNoticeLeave">
           <svg-icon icon-class="bell" />
-          <span v-if="noticeList.length > 0" class="notice-badge">{{ noticeList.length }}</span>
+          <span v-if="visibleNotices.length > 0" class="notice-badge">{{ visibleNotices.length }}</span>
         </div>
       </template>
     </el-popover>
@@ -79,6 +79,9 @@ function onNoticeEnter() {
 function onNoticeLeave() {
   noticeLeaveTimer.value = setTimeout(() => { noticeVisible.value = false }, 150)
 }
+
+// 当前账号没有对应模块权限的提醒不展示
+const visibleNotices = computed(() => noticeList.value.filter(i => !i.page || canAccess(i.page)))
 
 function typeText(t) { return t === 'warning' ? '预警' : t === 'task' ? '待办' : '提示' }
 function tagType(t) { return t === 'warning' ? 'danger' : t === 'task' ? 'warning' : 'info' }

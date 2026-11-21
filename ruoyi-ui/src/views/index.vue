@@ -1,32 +1,32 @@
 <template>
   <div class="app-container garment-page dashboard">
     <div class="stat-grid">
-      <div class="stat-card clickable" :class="{ 'no-perm': !canAccess('/goods/style') }" @click="go('/goods/style')">
+      <div v-if="canAccess('/goods/style')" class="stat-card clickable" @click="go('/goods/style')">
         <div class="stat-label">款号总数</div>
         <div class="stat-value">{{ data.styleCount || 0 }}</div>
         <div class="stat-sub">在售 SKU {{ data.skuCount || 0 }} 个</div>
       </div>
-      <div class="stat-card orange clickable" :class="{ 'no-perm': !canAccess('/cut/cutorder') }" @click="goToday('/cut/cutorder')">
+      <div v-if="canAccess('/cut/cutorder')" class="stat-card orange clickable" @click="goToday('/cut/cutorder')">
         <div class="stat-label">今日裁货</div>
         <div class="stat-value">{{ data.todayCutQty || 0 }}</div>
         <div class="stat-sub">件</div>
       </div>
-      <div class="stat-card green clickable" :class="{ 'no-perm': !canAccess('/warehouse/stocklog') }" @click="goFinishIn">
+      <div v-if="canAccess('/warehouse/stocklog')" class="stat-card green clickable" @click="goFinishIn">
         <div class="stat-label">今日成品入库</div>
         <div class="stat-value">{{ data.todayInQty || 0 }}</div>
         <div class="stat-sub">件</div>
       </div>
-      <div class="stat-card red clickable" :class="{ 'no-perm': !canAccess('/warehouse/outbound') }" @click="goToday('/warehouse/outbound')">
+      <div v-if="canAccess('/warehouse/outbound')" class="stat-card red clickable" @click="goToday('/warehouse/outbound')">
         <div class="stat-label">今日出库</div>
         <div class="stat-value">{{ data.todayOutQty || 0 }}</div>
         <div class="stat-sub">金额 ¥{{ data.todayOutAmount || 0 }}</div>
       </div>
-      <div class="stat-card blue clickable" :class="{ 'no-perm': !canAccess('/workshop/linestock') }" @click="go('/workshop/linestock')">
+      <div v-if="canAccess('/workshop/linestock')" class="stat-card blue clickable" @click="go('/workshop/linestock')">
         <div class="stat-label">产线在制扎数</div>
         <div class="stat-value">{{ data.onlineBundles || 0 }}</div>
         <div class="stat-sub">裁片在库 {{ data.cutStockBundles || 0 }} 扎</div>
       </div>
-      <div class="stat-card red clickable" :class="{ 'no-perm': !canAccess('/workshop/linestock') }" @click="go('/workshop/linestock', { overdue: 1 })">
+      <div v-if="canAccess('/workshop/linestock')" class="stat-card red clickable" @click="go('/workshop/linestock', { overdue: 1 })">
         <div class="stat-label">产线超期</div>
         <div class="stat-value">{{ data.overdueBundles || 0 }}</div>
         <div class="stat-sub">停留超过 3 天</div>
@@ -34,7 +34,7 @@
     </div>
 
     <el-row :gutter="14">
-      <el-col :xs="24" :md="10">
+      <el-col v-if="canAccess('/warehouse/inventory')" :xs="24" :md="10">
         <el-card class="section-card" shadow="never">
           <template #header>
             <div class="card-head">
@@ -49,7 +49,7 @@
           <div ref="pieRef" class="chart chart-pie"></div>
         </el-card>
       </el-col>
-      <el-col :xs="24" :md="14">
+      <el-col :xs="24" :md="canAccess('/warehouse/inventory') ? 14 : 24">
         <el-card class="section-card" shadow="never">
           <template #header><span>近 7 天出库趋势</span></template>
           <div ref="barRef" class="chart chart-bar"></div>
@@ -58,7 +58,7 @@
     </el-row>
 
     <el-row :gutter="14">
-      <el-col :xs="24" :md="14">
+      <el-col v-if="canAccess('/warehouse/warning')" :xs="24" :md="canAccess('/msg') ? 14 : 24">
         <el-card class="section-card" shadow="never">
           <template #header>
             <div class="card-head">
@@ -81,7 +81,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :xs="24" :md="10">
+      <el-col v-if="canAccess('/msg')" :xs="24" :md="canAccess('/warehouse/warning') ? 10 : 24">
         <el-card class="section-card" shadow="never">
           <template #header>
             <div class="card-head">
@@ -90,7 +90,7 @@
             </div>
           </template>
           <div class="msg-list">
-            <div v-for="(m, i) in messages" :key="i" class="msg-item" :class="{ clickable: !!m.page }" @click="goMessage(m)">
+            <div v-for="(m, i) in visibleMessages" :key="i" class="msg-item" :class="{ clickable: !!m.page }" @click="goMessage(m)">
               <el-tag :type="m.type === 'warning' ? 'danger' : m.type === 'task' ? 'warning' : 'info'" size="small">
                 {{ m.type === 'warning' ? '预警' : m.type === 'task' ? '待办' : '提示' }}
               </el-tag>
@@ -99,7 +99,7 @@
                 <div class="msg-content">{{ m.content }}</div>
               </div>
             </div>
-            <el-empty v-if="!messages.length" description="暂无消息" :image-size="60" />
+            <el-empty v-if="!visibleMessages.length" description="暂无消息" :image-size="60" />
           </div>
         </el-card>
       </el-col>
@@ -159,6 +159,9 @@ function goMessage(m) {
   if (!m.page) return
   go(m.page, m.query || {})
 }
+
+// 消息提醒：当前账号没有对应模块权限的条目直接不展示，避免误导
+const visibleMessages = computed(() => messages.value.filter(m => !m.page || canAccess(m.page)))
 
 function loadData() {
   getDashboard().then(res => {
@@ -242,14 +245,6 @@ onBeforeUnmount(() => {
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-    }
-  }
-  .stat-card.no-perm {
-    cursor: not-allowed;
-    opacity: 0.72;
-    &:hover {
-      transform: none;
-      box-shadow: none;
     }
   }
   .legend-item {

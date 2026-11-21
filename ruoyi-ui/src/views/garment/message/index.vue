@@ -40,8 +40,7 @@
         <el-table-column label="提醒内容" prop="content" min-width="320" show-overflow-tooltip />
         <el-table-column label="操作" class-name="op-cell" width="120" align="center" fixed="right">
           <template #default="s">
-            <el-button v-if="s.row.page && canAccess(s.row.page)" link type="primary" @click="go(s.row)">{{ actionText(s.row) }}</el-button>
-            <span v-else-if="s.row.page" class="muted">无权限</span>
+            <el-button v-if="s.row.page" link type="primary" @click="go(s.row)">{{ actionText(s.row) }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -61,9 +60,16 @@ const loading = ref(false)
 const messages = ref([])
 const queryParams = ref({ pageNum: 1, pageSize: 10, type: undefined, keyword: undefined })
 
+// 当前账号没有对应模块权限的提醒不展示，避免误导
+// 当前账号是否已注册该路由（未授权菜单不在动态路由中，避免点击进入 404）
+function canAccess(path) {
+  const resolved = router.resolve({ path })
+  return !!resolved.name && !String(resolved.name).startsWith('404')
+}
 const filtered = computed(() => {
   const kw = (queryParams.value.keyword || '').trim()
   return messages.value.filter(m =>
+    (!m.page || canAccess(m.page)) &&
     (!queryParams.value.type || m.type === queryParams.value.type) &&
     (!kw || (m.title || '').includes(kw) || (m.content || '').includes(kw))
   )
@@ -100,10 +106,6 @@ function actionText(row) {
   return a ? a.text : '查看详情'
 }
 // 当前账号是否已注册该路由（未授权菜单只会在动态路由中缺失，避免点击后进入 404）
-function canAccess(path) {
-  const resolved = router.resolve({ path })
-  return !!resolved.name && !String(resolved.name).startsWith('404')
-}
 function go(row) {
   if (!canAccess(row.page)) {
     ElMessage.warning('当前账号没有该模块的访问权限，请联系管理员')
