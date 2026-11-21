@@ -117,7 +117,9 @@
                </el-col>
                <el-col :span="12">
                   <el-form-item label="负责人" prop="leader">
-                     <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20" />
+                     <el-select v-model="form.leader" placeholder="选择负责人" clearable filterable style="width: 100%">
+                        <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+                     </el-select>
                   </el-form-item>
                </el-col>
                <el-col :span="12">
@@ -155,6 +157,7 @@
 
 <script setup name="Dept">
 import { listDept, getDept, delDept, addDept, updateDept, updateDeptSort, listDeptExcludeChild } from "@/api/system/dept"
+import { commonEmployees } from "@/api/garment"
 
 const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = useDict("sys_normal_disable")
@@ -168,6 +171,7 @@ const deptOptions = ref([])
 const isExpandAll = ref(true)
 const refreshTable = ref(true)
 const originalOrders = ref({})
+const employees = ref([])
 
 const data = reactive({
   form: {},
@@ -331,4 +335,5 @@ function handleDelete(row) {
 }
 
 getList()
+commonEmployees().then(res => { employees.value = res.data || [] })
 </script>

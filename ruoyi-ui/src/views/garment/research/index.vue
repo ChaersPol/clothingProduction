@@ -8,7 +8,9 @@
         <el-input v-model="queryParams.cnName" placeholder="品名" clearable style="width: 150px" @keyup.enter="handleQuery" />
       </el-form-item>
       <el-form-item label="设计人" prop="designer">
-        <el-input v-model="queryParams.designer" placeholder="设计人" clearable style="width: 120px" @keyup.enter="handleQuery" />
+        <el-select v-model="queryParams.designer" placeholder="全部" clearable style="width: 130px">
+          <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
@@ -61,7 +63,11 @@
             <el-form-item label="品名"><el-input v-model="form.cnName" disabled /></el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
-            <el-form-item label="设计人"><el-input v-model="form.designer" /></el-form-item>
+            <el-form-item label="设计人">
+              <el-select v-model="form.designer" placeholder="选择设计人" clearable style="width: 100%">
+                <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="预计卖价"><el-input-number v-model="form.expectPrice" :min="0" :precision="2" controls-position="right" style="width: 100%" /></el-form-item>
@@ -133,7 +139,9 @@
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="设计人">
-              <el-input v-model="form2.designer" placeholder="设计人" />
+              <el-select v-model="form2.designer" placeholder="选择设计人" clearable style="width: 100%">
+                <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
@@ -187,7 +195,9 @@
         </el-form-item>
         <el-form-item label="颜色" required>
           <el-select v-model="genForm.colors" multiple collapse-tags placeholder="选择颜色" style="width: 100%">
-            <el-option v-for="c in colors" :key="c.colorId" :label="c.cnName" :value="c.cnName" />
+            <el-option v-for="c in colors" :key="c.colorId" :label="c.cnName" :value="c.cnName">
+              <div class="color-opt"><span>{{ c.cnName }}</span><span class="color-opt-chip" :style="{ background: c.colorCode }"></span></div>
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="尺码" required>
@@ -205,7 +215,7 @@
 </template>
 
 <script setup name="Research">
-import { listStyle, updateStyle, addStyle, delStyle, generateSku, commonColors, commonSizes } from '@/api/garment'
+import { listStyle, updateStyle, addStyle, delStyle, generateSku, commonColors, commonSizes, commonEmployees } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -228,6 +238,7 @@ const form = ref({})
 const form2 = ref({})
 const colors = ref([])
 const sizes = ref([])
+const employees = ref([])
 const genForm = ref({ styleNo: undefined, colors: [], sizes: [] })
 const queryParams = ref({ pageNum: 1, pageSize: 10, styleNo: undefined, cnName: undefined, designer: undefined })
 const rules = {
@@ -308,4 +319,5 @@ function submitGenerate() {
 }
 
 getList()
+commonEmployees().then(res => { employees.value = res.data || [] })
 </script>

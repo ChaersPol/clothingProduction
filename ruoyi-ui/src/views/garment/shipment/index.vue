@@ -51,7 +51,7 @@
         <el-table-column label="单价" prop="price" width="80" align="right" />
         <el-table-column label="金额" prop="amount" width="100" align="right" />
         <el-table-column label="海运费" prop="seaFreight" width="95" align="right" />
-        <el-table-column label="自动出库单" prop="outboundNo" min-width="140">
+        <el-table-column label="自动出库单" prop="outboundNo" width="160">
           <template #default="s">
             <el-tag v-if="s.row.outboundNo" type="success" size="small">{{ s.row.outboundNo }}</el-tag>
             <el-tag v-else type="info" size="small">未出库</el-tag>
@@ -182,7 +182,7 @@ function handleDelete(row) {
 }
 function getSummary({ columns, data }) {
   return columns.map((col, i) => {
-    if (i === 0) return '合计'
+    if (i === 1) return '合计'
     if (['qty', 'amount', 'seaFreight'].includes(col.property)) {
       return data.reduce((s, r) => s + Number(r[col.property] || 0), 0).toFixed(2)
     }

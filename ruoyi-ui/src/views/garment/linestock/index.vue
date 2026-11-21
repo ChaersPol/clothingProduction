@@ -64,8 +64,8 @@
           <el-input-number v-model="form.defectQty" :min="0" :max="form.qtyInput" controls-position="right" style="width: 100%" />
         </el-form-item>
         <el-form-item label="交工人">
-          <el-select v-model="form.employee" placeholder="选择员工" filterable allow-create style="width: 100%">
-            <el-option v-for="e in employees" :key="e.userName" :label="e.nickName || e.userName" :value="e.nickName || e.userName" />
+          <el-select v-model="form.employee" placeholder="选择员工" filterable style="width: 100%">
+            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
           </el-select>
         </el-form-item>
       </el-form>

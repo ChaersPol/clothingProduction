@@ -81,9 +81,6 @@
               <el-input-number v-model="form.goodQty" :min="0" controls-position="right" style="width: 100%" disabled />
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="12">
-            <el-form-item label="操作人"><el-input v-model="form.operator" /></el-form-item>
-          </el-col>
         </el-row>
         <el-form-item label="退货原因"><el-input v-model="form.reason" type="textarea" :rows="2" /></el-form-item>
         <el-alert type="info" :closable="false" show-icon title="仅好货数量入库到成品库，次品不入库，请单独走次品处理流程。" />
@@ -136,7 +133,7 @@ function getList() {
 }
 function resetQuery() { proxy.resetForm('queryRef'); dateRange.value = []; getList() }
 function handleAdd() {
-  form.value = { barcode: '', skuId: null, customer: '', returnDate: today(), qty: 1, goodQty: 1, badQty: 0, reason: '', operator: '' }
+  form.value = { barcode: '', skuId: null, customer: '', returnDate: today(), qty: 1, goodQty: 1, badQty: 0, reason: '' }
   open.value = true
 }
 function fetchSku() {
@@ -175,7 +172,7 @@ function handleDelete(row) {
 }
 function getSummary({ columns, data }) {
   return columns.map((col, i) => {
-    if (i === 0) return '合计'
+    if (i === 1) return '合计'
     if (['qty', 'goodQty', 'badQty'].includes(col.property)) {
       return data.reduce((s, r) => s + Number(r[col.property] || 0), 0)
     }

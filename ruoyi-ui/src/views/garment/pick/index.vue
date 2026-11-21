@@ -5,7 +5,7 @@
       <el-form class="scan-bar" :inline="true" @submit.prevent>
         <el-form-item label="员工" required>
           <el-select v-model="employee" placeholder="选择领片员工" filterable style="width: 180px">
-            <el-option v-for="e in employees" :key="e.userName" :label="e.nickName || e.userName" :value="e.nickName || e.userName" />
+            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
           </el-select>
         </el-form-item>
         <el-form-item label="扎卡条码" class="scan-input">
@@ -19,7 +19,9 @@
 
     <el-form v-show="showSearch" class="search-form" :inline="true">
       <el-form-item label="员工" prop="employee">
-        <el-input v-model="queryParams.employee" placeholder="员工" clearable style="width: 130px" @keyup.enter="handleQuery" />
+        <el-select v-model="queryParams.employee" placeholder="员工" clearable filterable style="width: 130px">
+          <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+        </el-select>
       </el-form-item>
       <el-form-item label="扎号" prop="bundleNo">
         <el-input v-model="queryParams.bundleNo" placeholder="扎号" clearable style="width: 120px" @keyup.enter="handleQuery" />
@@ -41,11 +43,11 @@
       <el-table v-loading="loading" :data="pickList" border>
         <el-table-column label="领片时间" prop="pickTime" width="170" />
         <el-table-column label="扎号" prop="bundleNo" width="150" />
-        <el-table-column label="款号" prop="styleNo" width="100" />
+        <el-table-column label="款号" prop="styleNo" min-width="110" />
         <el-table-column label="颜色" prop="color" width="100" />
         <el-table-column label="尺码" prop="size" width="70" align="center" />
         <el-table-column label="数量" prop="qty" width="80" align="right" />
-        <el-table-column label="员工" prop="employee" min-width="110" />
+        <el-table-column label="员工" prop="employee" width="90" />
       </el-table>
     </div>
     <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
@@ -95,6 +97,6 @@ function doPick() {
 getList()
 commonEmployees().then(res => {
   employees.value = res.data || []
-  if (employees.value.length) employee.value = employees.value[0].nickName || employees.value[0].userName
+  if (employees.value.length) employee.value = employees.value[0].name
 })
 </script>

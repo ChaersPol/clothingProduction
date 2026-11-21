@@ -38,7 +38,7 @@
             <el-table-column label="缺货差额" width="90" align="right">
               <template #default="s"><span class="money">{{ (s.row.min_stock || 0) - (s.row.finish_qty || 0) }}</span></template>
             </el-table-column>
-            <el-table-column label="操作" class-name="op-cell" width="110" align="center" fixed="right">
+            <el-table-column label="操作" class-name="op-cell" width="125" align="center" fixed="right">
               <template #default="s">
                 <el-button link type="primary" @click="openMinStock(s.row)">改最低库存</el-button>
               </template>

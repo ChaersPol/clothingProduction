@@ -10,13 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.system.domain.garment.*;
 import com.ruoyi.system.mapper.garment.BizBundleMapper;
 import com.ruoyi.system.mapper.garment.BizSkuMapper;
 import com.ruoyi.system.mapper.garment.BizStyleMapper;
 import com.ruoyi.system.service.garment.GoodsService;
-import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.service.garment.BizEmployeeService;
 
 /**
  * 基础资料（颜色/尺码）及通用下拉数据
@@ -34,7 +33,7 @@ public class BizBasicsController extends BaseController
     @Autowired
     private BizBundleMapper bundleMapper;
     @Autowired
-    private ISysUserService userService;
+    private BizEmployeeService employeeService;
 
     @PreAuthorize("@ss.hasPermi('garment:basics:list')")
     @GetMapping("/color/list")
@@ -156,15 +155,13 @@ public class BizBasicsController extends BaseController
     @GetMapping("/common/employees")
     public AjaxResult employees()
     {
-        SysUser query = new SysUser();
-        query.setStatus("0");
-        List<SysUser> users = userService.selectUserList(query);
         List<Map<String, Object>> list = new ArrayList<>();
-        for (SysUser user : users)
+        for (BizEmployee e : employeeService.selectEmployeeAll())
         {
             Map<String, Object> item = new HashMap<>();
-            item.put("userName", user.getUserName());
-            item.put("nickName", user.getNickName());
+            item.put("employeeId", e.getEmployeeId());
+            item.put("name", e.getName());
+            item.put("position", e.getPosition());
             list.add(item);
         }
         return success(list);

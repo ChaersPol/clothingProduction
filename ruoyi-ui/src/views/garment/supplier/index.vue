@@ -40,7 +40,7 @@
             <el-table-column label="电话" prop="phone" width="130" />
             <el-table-column label="供货内容" prop="supplyContent" min-width="180" show-overflow-tooltip />
             <el-table-column label="地址" prop="address" min-width="150" show-overflow-tooltip />
-            <el-table-column label="状态" prop="status" width="80" align="center">
+            <el-table-column label="状态" prop="status" width="90" align="center">
               <template #default="s">
                 <el-tag :type="s.row.status === '0' ? 'success' : 'info'" size="small">{{ s.row.status === '0' ? '正常' : '停用' }}</el-tag>
               </template>

@@ -20,8 +20,8 @@
           <el-input-number v-model="scan.perBag" :min="1" controls-position="right" style="width: 110px" />
         </el-form-item>
         <el-form-item label="包装人">
-          <el-select v-model="scan.packer" placeholder="选择" filterable allow-create style="width: 130px">
-            <el-option v-for="e in employees" :key="e.userName" :label="e.nickName || e.userName" :value="e.nickName || e.userName" />
+          <el-select v-model="scan.packer" placeholder="选择" filterable style="width: 130px">
+            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -42,7 +42,9 @@
         <el-input v-model="queryParams.styleNo" placeholder="款号" clearable style="width: 120px" @keyup.enter="getList" />
       </el-form-item>
       <el-form-item label="包装人" prop="packer">
-        <el-input v-model="queryParams.packer" placeholder="包装人" clearable style="width: 120px" @keyup.enter="getList" />
+        <el-select v-model="queryParams.packer" placeholder="包装人" clearable filterable style="width: 130px">
+          <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+        </el-select>
       </el-form-item>
       <el-form-item label="包装日期">
         <el-date-picker v-model="dateRange" type="daterange" value-format="YYYY-MM-DD" start-placeholder="开始" end-placeholder="结束" style="width: 240px" />
@@ -136,6 +138,6 @@ function submitStockIn() {
 getList()
 commonEmployees().then(res => {
   employees.value = res.data || []
-  if (employees.value.length) scan.value.packer = employees.value[0].nickName || employees.value[0].userName
+  if (employees.value.length) scan.value.packer = employees.value[0].name
 })
 </script>

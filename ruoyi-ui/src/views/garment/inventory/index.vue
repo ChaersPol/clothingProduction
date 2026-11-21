@@ -77,7 +77,7 @@
         <el-table-column label="数量" prop="qty" width="80" align="right" />
         <el-table-column label="成本价" prop="costPrice" width="90" align="right" />
         <el-table-column label="货值" prop="stockValue" width="100" align="right" />
-        <el-table-column label="库龄(天)" prop="ageDays" width="90" align="center">
+        <el-table-column label="库龄(天)" prop="ageDays" width="100" align="center">
           <template #default="s">
             <span :class="{ 'money': (s.row.ageDays || 0) > 90 }">{{ s.row.ageDays || 0 }}</span>
           </template>

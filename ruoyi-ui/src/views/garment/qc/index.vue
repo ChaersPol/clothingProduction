@@ -63,7 +63,11 @@
           <el-input-number v-model="qcForm.qualifiedQty" :min="0" controls-position="right" style="width: 100%" disabled />
         </el-form-item>
         <el-form-item label="次品原因"><el-input v-model="qcForm.defectReason" placeholder="线头/污渍/尺寸等" /></el-form-item>
-        <el-form-item label="检验人"><el-input v-model="qcForm.inspector" /></el-form-item>
+        <el-form-item label="检验人">
+          <el-select v-model="qcForm.inspector" placeholder="选择检验人" filterable clearable style="width: 100%">
+            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+          </el-select>
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button type="primary" @click="submitQc">保存检验</el-button>
@@ -88,7 +92,11 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="数量"><el-input-number v-model="defectForm.qty" :min="1" controls-position="right" style="width: 100%" /></el-form-item>
-        <el-form-item label="处理人"><el-input v-model="defectForm.handler" /></el-form-item>
+        <el-form-item label="处理人">
+          <el-select v-model="defectForm.handler" placeholder="选择处理人" filterable clearable style="width: 100%">
+            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="备注"><el-input v-model="defectForm.remark" type="textarea" :rows="2" /></el-form-item>
       </el-form>
       <template #footer>
@@ -100,7 +108,7 @@
 </template>
 
 <script setup name="Qc">
-import { listQc, saveQc, saveDefect, commonBundle } from '@/api/garment'
+import { listQc, saveQc, saveDefect, commonBundle, commonEmployees } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -113,6 +121,7 @@ const qcOpen = ref(false)
 const defectOpen = ref(false)
 const qcForm = ref({})
 const defectForm = ref({})
+const employees = ref([])
 const queryParams = ref({ pageNum: 1, pageSize: 10, bundleNo: undefined, styleNo: undefined })
 
 function getList() {
@@ -177,4 +186,5 @@ function submitDefect() {
 }
 
 getList()
+commonEmployees().then(res => { employees.value = res.data || [] })
 </script>

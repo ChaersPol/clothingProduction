@@ -171,7 +171,7 @@ function handleDelete(row) {
 function getSummary({ columns, data }) {
   const sums = []
   columns.forEach((col, index) => {
-    if (index === 0) { sums[index] = '合计'; return }
+    if (index === 1) { sums[index] = '合计'; return }
     if (col.property === 'amount') {
       sums[index] = data.reduce((s, r) => s + Number(r.amount || 0), 0).toFixed(2)
     } else {

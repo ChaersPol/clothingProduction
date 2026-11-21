@@ -53,7 +53,7 @@
         <el-table-column label="裁工" prop="cutter" width="90" />
         <el-table-column label="裁货日期" prop="cutDate" width="110" />
         <el-table-column label="扎数" prop="bundleCount" width="70" align="center" />
-        <el-table-column label="状态" prop="status" width="95" align="center">
+        <el-table-column label="状态" prop="status" width="105" align="center">
           <template #default="s">
             <el-tag size="small" :type="s.row.status === '2' ? 'success' : s.row.status === '1' ? 'warning' : 'danger'">{{ statusText(s.row.status) }}</el-tag>
           </template>
@@ -109,7 +109,9 @@
         <el-divider content-position="left">裁片明细</el-divider>
         <div class="toolbar">
           <el-select v-model="gen.colors" multiple collapse-tags placeholder="选择颜色" size="small" style="width: 200px">
-            <el-option v-for="c in colors" :key="c.cnName" :label="c.cnName" :value="c.cnName" />
+            <el-option v-for="c in colors" :key="c.cnName" :label="c.cnName" :value="c.cnName">
+              <div class="color-opt"><span>{{ c.cnName }}</span><span class="color-opt-chip" :style="{ background: c.colorCode }"></span></div>
+            </el-option>
           </el-select>
           <el-select v-model="gen.sizes" multiple collapse-tags placeholder="选择尺码" size="small" style="width: 180px">
             <el-option v-for="s in sizes" :key="s.sizeName" :label="s.sizeName" :value="s.sizeName" />
@@ -131,7 +133,7 @@
           <el-table-column label="数量" width="130">
             <template #default="s"><el-input-number v-model="s.row.qty" :min="0" size="small" controls-position="right" style="width: 100%" /></template>
           </el-table-column>
-          <el-table-column label="操作" class-name="op-cell" width="70" align="center">
+          <el-table-column label="操作" class-name="op-cell" width="80" align="center">
             <template #default="s"><el-button link type="danger" @click="form.items.splice(s.$index, 1)">删除</el-button></template>
           </el-table-column>
         </el-table>

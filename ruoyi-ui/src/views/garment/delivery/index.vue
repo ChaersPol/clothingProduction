@@ -2,7 +2,9 @@
   <div class="app-container garment-page">
     <el-form v-show="showSearch" class="search-form" :inline="true">
       <el-form-item label="员工" prop="employee">
-        <el-input v-model="queryParams.employee" placeholder="员工" clearable style="width: 130px" @keyup.enter="handleQuery" />
+        <el-select v-model="queryParams.employee" placeholder="员工" clearable filterable style="width: 130px">
+          <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+        </el-select>
       </el-form-item>
       <el-form-item label="扎号" prop="bundleNo">
         <el-input v-model="queryParams.bundleNo" placeholder="扎号" clearable style="width: 120px" @keyup.enter="handleQuery" />
@@ -53,7 +55,7 @@
               <el-table-column label="员工" prop="employee" min-width="100" />
               <el-table-column label="完工件数" prop="qty" width="90" align="right" />
               <el-table-column label="次品数" prop="defectQty" width="80" align="right" />
-              <el-table-column label="交付次数" prop="times" width="80" align="center" />
+              <el-table-column label="交付次数" prop="times" width="90" align="center" />
             </el-table>
           </div>
         </el-card>
@@ -63,13 +65,14 @@
 </template>
 
 <script setup name="Delivery">
-import { listDeliveries, deliveryStat } from '@/api/garment'
+import { listDeliveries, deliveryStat, commonEmployees } from '@/api/garment'
 
 const showSearch = ref(true)
 
 const { proxy } = getCurrentInstance()
 const deliveryList = ref([])
 const statList = ref([])
+const employees = ref([])
 const loading = ref(false)
 const total = ref(0)
 const dateRange = ref([])
@@ -96,4 +99,5 @@ function resetQuery() { queryParams.value.employee = undefined; queryParams.valu
 
 getList()
 loadStat()
+commonEmployees().then(res => { employees.value = res.data || [] })
 </script>

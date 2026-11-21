@@ -56,7 +56,7 @@
         <el-table-column label="已交后道" prop="deliveredQty" width="85" align="right" />
         <el-table-column label="已包装" prop="packedQty" width="75" align="right" />
         <el-table-column label="次品" prop="defectQty" width="65" align="right" />
-        <el-table-column label="状态" prop="status" width="95" align="center">
+        <el-table-column label="状态" prop="status" width="115" align="center">
           <template #default="s">
             <el-tag size="small" :type="statusType(s.row.status)">{{ statusMap[s.row.status] || s.row.status }}</el-tag>
           </template>
@@ -112,7 +112,11 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="数量"><el-input-number v-model="patchForm.qty" :min="1" controls-position="right" style="width: 100%" /></el-form-item>
-        <el-form-item label="处理人"><el-input v-model="patchForm.handler" /></el-form-item>
+        <el-form-item label="处理人">
+          <el-select v-model="patchForm.handler" placeholder="选择处理人" filterable clearable style="width: 100%">
+            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="备注"><el-input v-model="patchForm.remark" type="textarea" :rows="2" /></el-form-item>
       </el-form>
       <template #footer>
@@ -126,7 +130,7 @@
 <script setup name="Bundle">
 import { useRoute } from 'vue-router'
 import JsBarcode from 'jsbarcode'
-import { listBundle, listCutOrder, autoBundle, bundleStockIn, patchBundle, delBundle } from '@/api/garment'
+import { listBundle, listCutOrder, autoBundle, bundleStockIn, patchBundle, delBundle, commonEmployees } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -156,6 +160,7 @@ const route = useRoute()
 const statusMap = { '0': '已开扎', '1': '裁片在库', '2': '产线中', '3': '已完工' }
 const bundleList = ref([])
 const cutOrders = ref([])
+const employees = ref([])
 const loading = ref(false)
 const total = ref(0)
 const scanCode = ref('')
@@ -233,6 +238,7 @@ function handleDelete(row) {
 }
 
 getList()
+commonEmployees().then(res => { employees.value = res.data || [] })
 loadCuts().then(() => {
   if (route.query.cutId) {
     autoForm.value.cutId = Number(route.query.cutId)

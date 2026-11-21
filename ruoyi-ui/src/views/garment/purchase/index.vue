@@ -46,7 +46,7 @@
             <el-table-column type="selection" width="50" align="center" />
             
         <el-table-column label="采购单号" prop="purchaseNo" width="150" fixed="left" />
-        <el-table-column label="类型" prop="purchaseType" width="100" align="center">
+        <el-table-column label="类型" prop="purchaseType" width="115" align="center">
           <template #default="s">
             <el-tag size="small" :type="s.row.purchaseType === 'MATERIAL' ? 'warning' : 'info'">
               {{ s.row.purchaseType === 'MATERIAL' ? '按款物料' : '公用耗材' }}
@@ -59,7 +59,7 @@
         <el-table-column label="采购日期" prop="purchaseDate" width="110" />
         <el-table-column label="金额" prop="totalAmount" width="100" align="right" />
         <el-table-column label="已付" prop="paidAmount" width="90" align="right" />
-        <el-table-column label="状态" prop="status" width="95" align="center">
+        <el-table-column label="状态" prop="status" width="115" align="center">
           <template #default="s">
             <el-tag size="small" :type="s.row.status === '2' ? 'success' : s.row.status === '1' ? 'warning' : 'danger'">
               {{ statusText(s.row.status) }}
@@ -153,7 +153,7 @@
           <el-table-column label="金额" width="90" align="right">
             <template #default="s">{{ itemAmount(s.row) }}</template>
           </el-table-column>
-          <el-table-column label="操作" class-name="op-cell" width="60" align="center">
+          <el-table-column label="操作" class-name="op-cell" width="80" align="center">
             <template #default="s"><el-button link type="danger" @click="form.items.splice(s.$index, 1)">删除</el-button></template>
           </el-table-column>
         </el-table>

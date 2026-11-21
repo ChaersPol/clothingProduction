@@ -40,7 +40,7 @@
         <el-table-column label="总数量" prop="totalQty" width="90" align="right" />
         <el-table-column label="总金额" prop="totalAmount" width="110" align="right" />
         <el-table-column label="操作人" prop="operator" width="100" />
-        <el-table-column label="状态" prop="status" width="90" align="center">
+        <el-table-column label="状态" prop="status" width="105" align="center">
           <template #default="s">
             <el-tag size="small" :type="s.row.status === '1' ? 'danger' : 'success'">{{ s.row.status === '1' ? '已作废' : '正常' }}</el-tag>
           </template>
@@ -86,7 +86,7 @@
           <el-table-column label="金额" width="90" align="right">
             <template #default="s">{{ ((s.row.price || 0) * (s.row.qty || 0)).toFixed(2) }}</template>
           </el-table-column>
-          <el-table-column label="操作" class-name="op-cell" width="60" align="center">
+          <el-table-column label="操作" class-name="op-cell" width="80" align="center">
             <template #default="s"><el-button link type="danger" @click="form.items.splice(s.$index, 1)">删除</el-button></template>
           </el-table-column>
         </el-table>

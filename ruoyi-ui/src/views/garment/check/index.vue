@@ -60,7 +60,11 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="盘点日期"><el-date-picker v-model="createForm.checkDate" type="date" value-format="YYYY-MM-DD" style="width: 100%" /></el-form-item>
-        <el-form-item label="盘点人"><el-input v-model="createForm.checker" /></el-form-item>
+        <el-form-item label="盘点人">
+          <el-select v-model="createForm.checker" placeholder="选择盘点人" clearable style="width: 100%">
+            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="备注"><el-input v-model="createForm.remark" type="textarea" :rows="2" /></el-form-item>
       </el-form>
       <template #footer>
@@ -104,7 +108,7 @@
 </template>
 
 <script setup name="Check">
-import { listCheck, getCheck, addCheck, saveCheckItems, completeCheck, delCheck } from '@/api/garment'
+import { listCheck, getCheck, addCheck, saveCheckItems, completeCheck, delCheck, commonEmployees } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -125,6 +129,7 @@ const total = ref(0)
 const createOpen = ref(false)
 const itemsOpen = ref(false)
 const createForm = ref({})
+const employees = ref([])
 const queryParams = ref({ pageNum: 1, pageSize: 10, checkNo: undefined, status: undefined })
 
 function today() {
@@ -190,4 +195,5 @@ function handleDelete(row) {
 }
 
 getList()
+commonEmployees().then(res => { employees.value = res.data || [] })
 </script>

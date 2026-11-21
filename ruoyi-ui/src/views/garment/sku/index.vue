@@ -8,8 +8,10 @@
         <el-input v-model="queryParams.cnName" placeholder="品名" clearable style="width: 140px" @keyup.enter="handleQuery" />
       </el-form-item>
       <el-form-item label="颜色" prop="color">
-        <el-select v-model="queryParams.color" placeholder="颜色" clearable style="width: 120px">
-          <el-option v-for="c in colors" :key="c.cnName" :label="c.cnName" :value="c.cnName" />
+        <el-select v-model="queryParams.color" placeholder="颜色" clearable style="width: 140px">
+          <el-option v-for="c in colors" :key="c.cnName" :label="c.cnName" :value="c.cnName">
+            <div class="color-opt"><span>{{ c.cnName }}</span><span class="color-opt-chip" :style="{ background: c.colorCode }"></span></div>
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="尺码" prop="size">
@@ -98,7 +100,9 @@
           <el-col :xs="24" :sm="12">
             <el-form-item label="颜色" prop="color">
               <el-select v-model="form.color" placeholder="颜色" filterable allow-create style="width: 100%">
-                <el-option v-for="c in colors" :key="c.cnName" :label="c.cnName" :value="c.cnName" />
+                <el-option v-for="c in colors" :key="c.cnName" :label="c.cnName" :value="c.cnName">
+                  <div class="color-opt"><span>{{ c.cnName }}</span><span class="color-opt-chip" :style="{ background: c.colorCode }"></span></div>
+                </el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -146,7 +150,9 @@
         </el-form-item>
         <el-form-item label="颜色" required>
           <el-select v-model="genForm.colors" multiple collapse-tags placeholder="选择颜色" style="width: 100%">
-            <el-option v-for="c in colors" :key="c.cnName" :label="c.cnName" :value="c.cnName" />
+            <el-option v-for="c in colors" :key="c.cnName" :label="c.cnName" :value="c.cnName">
+              <div class="color-opt"><span>{{ c.cnName }}</span><span class="color-opt-chip" :style="{ background: c.colorCode }"></span></div>
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="尺码" required>

@@ -148,6 +148,22 @@
   font-size: 12px;
 }
 
+/* 颜色下拉：名称 + 右侧色卡预览 */
+.color-opt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+.color-opt-chip {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
 /* 移动端适配 */
 @media (max-width: 768px) {
   .garment-page {

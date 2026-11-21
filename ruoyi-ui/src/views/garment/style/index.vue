@@ -42,8 +42,8 @@
         <el-table-column label="设计人" prop="designer" width="90" />
         <el-table-column label="尺码表" prop="sizeTable" min-width="130" show-overflow-tooltip />
         <el-table-column label="预计卖价" prop="expectPrice" width="100" align="right" />
-        <el-table-column label="SKU数" prop="skuCount" width="80" align="center" />
-        <el-table-column label="状态" prop="status" width="80" align="center">
+        <el-table-column label="SKU数" prop="skuCount" width="90" align="center" />
+        <el-table-column label="状态" prop="status" width="90" align="center">
           <template #default="s">
             <el-tag :type="s.row.status === '0' ? 'success' : 'info'" size="small">{{ s.row.status === '0' ? '正常' : '停用' }}</el-tag>
           </template>
@@ -94,7 +94,9 @@
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="设计人" prop="designer">
-              <el-input v-model="form.designer" />
+              <el-select v-model="form.designer" placeholder="选择设计人" clearable style="width: 100%">
+                <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
@@ -143,10 +145,11 @@
 </template>
 
 <script setup name="Style">
-import { listStyle, getStyle, addStyle, updateStyle, delStyle } from '@/api/garment'
+import { listStyle, getStyle, addStyle, updateStyle, delStyle, commonEmployees } from '@/api/garment'
 
 const { proxy } = getCurrentInstance()
 const styleList = ref([])
+const employees = ref([])
 const open = ref(false)
 const loading = ref(true)
 const showSearch = ref(true)
@@ -215,4 +218,5 @@ function handleExport() {
 }
 
 getList()
+commonEmployees().then(res => { employees.value = res.data || [] })
 </script>

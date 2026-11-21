@@ -356,6 +356,23 @@ export function commonEmployees() {
   return request({ url: '/garment/common/employees', method: 'get' })
 }
 
+/* ---------------- 员工档案 ---------------- */
+export function listEmployee(query) {
+  return request({ url: '/garment/employee/list', method: 'get', params: query })
+}
+export function allEmployees() {
+  return request({ url: '/garment/employee/all', method: 'get' })
+}
+export function addEmployee(data) {
+  return request({ url: '/garment/employee', method: 'post', data })
+}
+export function updateEmployee(data) {
+  return request({ url: '/garment/employee', method: 'put', data })
+}
+export function delEmployee(employeeId) {
+  return request({ url: '/garment/employee/' + employeeId, method: 'delete' })
+}
+
 /* ---------------- 看板 ---------------- */
 export function getDashboard() {
   return request({ url: '/garment/dashboard', method: 'get' })

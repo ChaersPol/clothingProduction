@@ -54,7 +54,7 @@
             <el-table-column label="库存货值" prop="stockValue" width="110" align="right">
               <template #default="s">{{ (Number(s.row.stockQty || 0) * Number(s.row.price || 0)).toFixed(2) }}</template>
             </el-table-column>
-            <el-table-column label="状态" width="90" align="center">
+            <el-table-column label="状态" width="100" align="center">
               <template #default="s">
                 <el-tag v-if="Number(s.row.stockQty) < 0" type="danger" size="small">负库存</el-tag>
                 <el-tag v-else-if="Number(s.row.stockQty) <= Number(s.row.minStock)" type="warning" size="small">需补货</el-tag>
@@ -95,7 +95,7 @@
             <el-table-column label="时间" prop="operateTime" min-width="170" />
             <el-table-column label="物资名称" prop="materialName" min-width="140" show-overflow-tooltip />
             <el-table-column label="规格" prop="spec" width="110" show-overflow-tooltip />
-            <el-table-column label="业务类型" prop="bizType" width="100" align="center">
+            <el-table-column label="业务类型" prop="bizType" width="115" align="center">
               <template #default="s">
                 <el-tag :type="s.row.bizType === '采购入库' ? 'success' : s.row.bizType === '生产领料' ? 'warning' : 'info'" size="small">
                   {{ s.row.bizType }}
