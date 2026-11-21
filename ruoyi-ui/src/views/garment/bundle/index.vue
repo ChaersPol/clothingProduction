@@ -4,7 +4,7 @@
       <template #header><span>扫码操作</span></template>
       <el-form class="scan-bar" :inline="true" @submit.prevent>
         <el-form-item label="扎卡条码" class="scan-input">
-          <el-input v-model="scanCode" placeholder="扫描或输入扎卡条码 / 扎号，回车完成裁片入库" clearable @keyup.enter="doStockIn" />
+          <el-input v-model="scanCode" placeholder="扫描扎卡条码或扎号后回车" clearable @keyup.enter="doStockIn" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Upload" @click="doStockIn">裁片入库</el-button>

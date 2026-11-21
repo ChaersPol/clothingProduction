@@ -4,7 +4,7 @@
       <template #header><span>成品扫码包装入库（产线 → 成品库）</span></template>
       <el-form class="scan-bar" :inline="true" @submit.prevent>
         <el-form-item label="扎卡条码" class="scan-input">
-          <el-input v-model="scan.code" placeholder="扫描扎号，回车自动带出可入库数量" clearable @keyup.enter="fetchBundle" />
+          <el-input v-model="scan.code" placeholder="扫描扎号后回车入库" clearable @keyup.enter="fetchBundle" />
         </el-form-item>
         <el-form-item label="入库数量">
           <el-input-number v-model="scan.qty" :min="1" controls-position="right" style="width: 120px" />
