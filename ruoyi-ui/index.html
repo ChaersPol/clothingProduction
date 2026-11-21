@@ -8,6 +8,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <title>%VITE_APP_TITLE%</title>
+  <script>
+    // 旧页面引用的静态资源已不存在（发版后 hash 变化）时，自动带新参数刷新一次，避免白屏/无样式
+    (function () {
+      window.addEventListener('error', function (e) {
+        var t = e.target;
+        if (!t || (t.tagName !== 'LINK' && t.tagName !== 'SCRIPT')) return;
+        try {
+          if (sessionStorage.getItem('asset_reload')) return;
+          sessionStorage.setItem('asset_reload', '1');
+          var u = new URL(location.href);
+          u.searchParams.set('_v', Date.now());
+          location.replace(u.toString());
+        } catch (err) { }
+      }, true);
+    })();
+  </script>
   <!--[if lt IE 11]><script>window.location.href='/html/ie.html';</script><![endif]-->
   <style>
     html,

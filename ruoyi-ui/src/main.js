@@ -82,3 +82,6 @@ app.use(ElementPlus, {
 })
 
 app.mount('#app')
+
+// 资源加载成功，清掉用于防重复刷新的标记
+try { sessionStorage.removeItem('asset_reload') } catch (e) { }
