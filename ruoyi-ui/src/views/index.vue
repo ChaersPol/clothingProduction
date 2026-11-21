@@ -1,32 +1,32 @@
 <template>
   <div class="app-container garment-page dashboard">
     <div class="stat-grid">
-      <div class="stat-card clickable" @click="go('/goods/style')">
+      <div class="stat-card clickable" :class="{ 'no-perm': !canAccess('/goods/style') }" @click="go('/goods/style')">
         <div class="stat-label">款号总数</div>
         <div class="stat-value">{{ data.styleCount || 0 }}</div>
         <div class="stat-sub">在售 SKU {{ data.skuCount || 0 }} 个</div>
       </div>
-      <div class="stat-card orange clickable" @click="goToday('/cut/cutorder')">
+      <div class="stat-card orange clickable" :class="{ 'no-perm': !canAccess('/cut/cutorder') }" @click="goToday('/cut/cutorder')">
         <div class="stat-label">今日裁货</div>
         <div class="stat-value">{{ data.todayCutQty || 0 }}</div>
         <div class="stat-sub">件</div>
       </div>
-      <div class="stat-card green clickable" @click="goFinishIn">
+      <div class="stat-card green clickable" :class="{ 'no-perm': !canAccess('/warehouse/stocklog') }" @click="goFinishIn">
         <div class="stat-label">今日成品入库</div>
         <div class="stat-value">{{ data.todayInQty || 0 }}</div>
         <div class="stat-sub">件</div>
       </div>
-      <div class="stat-card red clickable" @click="goToday('/warehouse/outbound')">
+      <div class="stat-card red clickable" :class="{ 'no-perm': !canAccess('/warehouse/outbound') }" @click="goToday('/warehouse/outbound')">
         <div class="stat-label">今日出库</div>
         <div class="stat-value">{{ data.todayOutQty || 0 }}</div>
         <div class="stat-sub">金额 ¥{{ data.todayOutAmount || 0 }}</div>
       </div>
-      <div class="stat-card blue clickable" @click="go('/workshop/linestock')">
+      <div class="stat-card blue clickable" :class="{ 'no-perm': !canAccess('/workshop/linestock') }" @click="go('/workshop/linestock')">
         <div class="stat-label">产线在制扎数</div>
         <div class="stat-value">{{ data.onlineBundles || 0 }}</div>
         <div class="stat-sub">裁片在库 {{ data.cutStockBundles || 0 }} 扎</div>
       </div>
-      <div class="stat-card red clickable" @click="go('/workshop/linestock', { overdue: 1 })">
+      <div class="stat-card red clickable" :class="{ 'no-perm': !canAccess('/workshop/linestock') }" @click="go('/workshop/linestock', { overdue: 1 })">
         <div class="stat-label">产线超期</div>
         <div class="stat-value">{{ data.overdueBundles || 0 }}</div>
         <div class="stat-sub">停留超过 3 天</div>
@@ -120,9 +120,13 @@ let pieChart = null
 let barChart = null
 const router = useRouter()
 
+// 当前账号是否已注册该路由（未授权菜单不在动态路由中，只会命中 404 兜底路由）
+function canAccess(path) {
+  const resolved = router.resolve({ path })
+  return !!resolved.name && !String(resolved.name).startsWith("404")
+}
 function go(path, query) {
-  // 目标页面未注册（当前账号无该菜单权限）时不跳转，避免进入 404
-  if (!router.resolve({ path, query: query || {} }).matched.length) {
+  if (!canAccess(path)) {
     ElMessage.warning("当前账号没有该模块的访问权限，请联系管理员")
     return
   }
@@ -238,6 +242,14 @@ onBeforeUnmount(() => {
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+  }
+  .stat-card.no-perm {
+    cursor: not-allowed;
+    opacity: 0.72;
+    &:hover {
+      transform: none;
+      box-shadow: none;
     }
   }
   .legend-item {
