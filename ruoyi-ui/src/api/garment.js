@@ -13,6 +13,9 @@ export function addStyle(data) {
 export function updateStyle(data) {
   return request({ url: '/garment/style', method: 'put', data })
 }
+export function updateStyleDesign(data) {
+  return request({ url: '/garment/style/design', method: 'put', data })
+}
 export function delStyle(styleId) {
   return request({ url: '/garment/style/' + styleId, method: 'delete' })
 }

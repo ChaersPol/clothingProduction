@@ -62,10 +62,10 @@
           </template>
         </el-table-column>
         <el-table-column label="领片人" prop="pickupUser" min-width="100" />
-        <el-table-column v-if="checkPermi(['garment:bundle:edit','garment:bundle:remove'])" label="操作" class-name="op-cell" width="220" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:bundle:edit','garment:bundle:patch','garment:bundle:remove'])" label="操作" class-name="op-cell" width="220" align="center" fixed="right">
           <template #default="s">
             <el-button link type="primary" v-hasPermi="['garment:bundle:edit']" :disabled="s.row.status !== '0'" @click="stockInRow(s.row)">入库</el-button>
-            <el-button link type="warning" v-hasPermi="['garment:bundle:edit']" @click="openPatch(s.row)">补片/报废</el-button>
+            <el-button link type="warning" v-hasPermi="['garment:bundle:patch']" @click="openPatch(s.row)">补片/报废</el-button>
             <el-button link type="danger" v-hasPermi="['garment:bundle:remove']" @click="handleDelete(s.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -123,7 +123,7 @@
         <el-form-item label="备注"><el-input v-model="patchForm.remark" type="textarea" :rows="2" /></el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" v-hasPermi="['garment:bundle:edit']" @click="submitPatch">确 定</el-button>
+        <el-button type="primary" v-hasPermi="['garment:bundle:patch']" @click="submitPatch">确 定</el-button>
         <el-button @click="patchOpen = false">取 消</el-button>
       </template>
     </el-dialog>

@@ -112,7 +112,7 @@ public class BizPurchaseController extends BaseController
         return toAjax(purchaseService.save(purchase));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:purchase:edit')")
+    @PreAuthorize("@ss.hasPermi('garment:purchase:receive')")
     @PostMapping("/receive")
     public AjaxResult receive(@RequestBody Map<String, Object> body)
     {

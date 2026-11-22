@@ -23,9 +23,6 @@ public class BizInventory extends BaseEntity
     /** CUT 裁片 / LINE 产线 / FINISH 成品 */
     private String stockType;
 
-    @Excel(name = "数量", isStatistics = true)
-    private Integer qty;
-
     @Excel(name = "款号")
     private String styleNo;
 
@@ -43,6 +40,9 @@ public class BizInventory extends BaseEntity
 
     @Excel(name = "条码")
     private String barcode;
+
+    @Excel(name = "数量", isStatistics = true)
+    private Integer qty;
 
     private BigDecimal costPrice;
     private BigDecimal salePrice;

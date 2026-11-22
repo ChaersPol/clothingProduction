@@ -145,7 +145,7 @@
         </el-table>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitForm">保存裁货单</el-button>
+        <el-button type="primary" v-hasPermi="['garment:cutorder:add','garment:cutorder:edit']" @click="submitForm">保存裁货单</el-button>
         <el-button @click="open = false">取 消</el-button>
       </template>
     </el-dialog>
@@ -161,7 +161,7 @@
         确认后将按 BOM 用量照常领料，库存可能变为负数，并在物资流水中记录本次超领原因。
       </div>
       <template #footer>
-        <el-button type="primary" :disabled="!overdraftReason" @click="confirmOverdraft">确认超领并保存</el-button>
+        <el-button type="primary" v-hasPermi="['garment:cutorder:add','garment:cutorder:edit']" :disabled="!overdraftReason" @click="confirmOverdraft">确认超领并保存</el-button>
         <el-button @click="overdraftOpen = false">取 消</el-button>
       </template>
     </el-dialog>

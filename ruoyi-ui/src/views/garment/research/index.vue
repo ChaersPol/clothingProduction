@@ -40,9 +40,9 @@
         <el-table-column label="尺码表" prop="sizeTable" width="110" show-overflow-tooltip />
         <el-table-column label="预计卖价" prop="expectPrice" width="100" align="right" />
         <el-table-column label="设计/修改记录" prop="designRemark" min-width="200" show-overflow-tooltip />
-        <el-table-column v-if="checkPermi(['garment:style:edit','garment:sku:add','garment:style:remove'])" label="操作" class-name="op-cell" width="270" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:style:design','garment:style:edit','garment:sku:add','garment:style:remove'])" label="操作" class-name="op-cell" width="270" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="openDesign(s.row)" v-hasPermi="['garment:style:edit']">设计资料</el-button>
+            <el-button link type="primary" @click="openDesign(s.row)" v-hasPermi="['garment:style:design']">设计资料</el-button>
             <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:style:edit']">编辑</el-button>
             <el-button link type="success" @click="openGenerate(s.row)" v-hasPermi="['garment:sku:add']">生成商品</el-button>
             <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:style:remove']">删除</el-button>
@@ -92,7 +92,7 @@
         </el-row>
       </el-form>
       <template #footer>
-        <el-button type="primary" v-hasPermi="['garment:style:edit']" @click="submit">保 存</el-button>
+        <el-button type="primary" v-hasPermi="['garment:style:design']" @click="submit">保 存</el-button>
         <el-button @click="open = false">取 消</el-button>
       </template>
     </el-dialog>
@@ -215,7 +215,7 @@
 </template>
 
 <script setup name="Research">
-import { listStyle, updateStyle, addStyle, delStyle, generateSku, commonColors, commonSizes, commonEmployees } from '@/api/garment'
+import { listStyle, updateStyle, updateStyleDesign, addStyle, delStyle, generateSku, commonColors, commonSizes, commonEmployees } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -261,7 +261,7 @@ function openDesign(row) {
   open.value = true
 }
 function submit() {
-  updateStyle(form.value).then(() => {
+  updateStyleDesign(form.value).then(() => {
     proxy.$modal.msgSuccess('保存成功')
     open.value = false
     getList()

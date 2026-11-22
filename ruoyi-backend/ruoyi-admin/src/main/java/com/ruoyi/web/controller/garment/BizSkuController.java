@@ -93,7 +93,7 @@ public class BizSkuController extends BaseController
     /**
      * 按颜色×尺码批量生成商品
      */
-    @PreAuthorize("@ss.hasPermi('garment:sku:add')")
+    @PreAuthorize("@ss.hasPermi('garment:sku:generate')")
     @Log(title = "批量生成SKU", businessType = BusinessType.INSERT)
     @PostMapping("/generate")
     @SuppressWarnings("unchecked")
@@ -109,7 +109,7 @@ public class BizSkuController extends BaseController
     /**
      * 初始库存 Excel 导入
      */
-    @PreAuthorize("@ss.hasPermi('garment:sku:edit')")
+    @PreAuthorize("@ss.hasPermi('garment:sku:import')")
     @Log(title = "初始库存导入", businessType = BusinessType.IMPORT)
     @PostMapping("/importStock")
     public AjaxResult importStock(@RequestParam("file") MultipartFile file) throws Exception
@@ -124,6 +124,7 @@ public class BizSkuController extends BaseController
         return success("成功导入 " + count + " 条初始库存");
     }
 
+    @PreAuthorize("@ss.hasPermi('garment:sku:template')")
     @GetMapping("/importTemplate")
     public void importTemplate(HttpServletResponse response)
     {

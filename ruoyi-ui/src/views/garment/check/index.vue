@@ -39,10 +39,10 @@
           </template>
         </el-table-column>
         <el-table-column label="备注" prop="remark" min-width="180" show-overflow-tooltip />
-        <el-table-column v-if="checkPermi(['garment:check:edit','garment:check:remove'])" label="操作" class-name="op-cell" width="220" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:check:edit','garment:check:finish','garment:check:remove'])" label="操作" class-name="op-cell" width="220" align="center" fixed="right">
           <template #default="s">
             <el-button link type="primary" v-hasPermi="['garment:check:edit']" @click="openItems(s.row)">{{ s.row.status === '1' ? '查看' : '录入实盘' }}</el-button>
-            <el-button link type="success" v-hasPermi="['garment:check:edit']" :disabled="s.row.status === '1'" @click="handleComplete(s.row)">完成盘点</el-button>
+            <el-button link type="success" v-hasPermi="['garment:check:finish']" :disabled="s.row.status === '1'" @click="handleComplete(s.row)">完成盘点</el-button>
             <el-button link type="danger" v-hasPermi="['garment:check:remove']" @click="handleDelete(s.row)">删除</el-button>
           </template>
         </el-table-column>

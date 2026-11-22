@@ -66,10 +66,10 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="checkPermi(['garment:purchase:edit','garment:purchase:remove'])" label="操作" class-name="op-cell" width="220" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:purchase:receive','garment:purchase:edit','garment:purchase:remove'])" label="操作" class-name="op-cell" width="220" align="center" fixed="right">
           <template #default="s">
             <el-button link type="primary" v-hasPermi="['garment:purchase:list']" @click="viewDetail(s.row)">明细</el-button>
-            <el-button link type="success" @click="openReceive(s.row)" v-hasPermi="['garment:purchase:edit']">入库</el-button>
+            <el-button link type="success" @click="openReceive(s.row)" v-hasPermi="['garment:purchase:receive']">入库</el-button>
             <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:purchase:edit']">修改</el-button>
             <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:purchase:remove']">删除</el-button>
           </template>
@@ -205,7 +205,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" v-hasPermi="['garment:purchase:edit']" @click="submitReceive">确认入库</el-button>
+        <el-button type="primary" v-hasPermi="['garment:purchase:receive']" @click="submitReceive">确认入库</el-button>
         <el-button @click="receiveOpen = false">取 消</el-button>
       </template>
     </el-dialog>

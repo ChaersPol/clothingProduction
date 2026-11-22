@@ -70,7 +70,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitQc">保存检验</el-button>
+        <el-button type="primary" v-hasPermi="['garment:qc:add']" @click="submitQc">保存检验</el-button>
         <el-button @click="qcOpen = false">取 消</el-button>
       </template>
     </el-dialog>

@@ -126,7 +126,7 @@ public class WarehouseController extends BaseController
         return toAjax(warehouseService.saveCheckItems(checkId, items));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:check:edit')")
+    @PreAuthorize("@ss.hasPermi('garment:check:finish')")
     @PostMapping("/check/{checkId}/complete")
     public AjaxResult completeCheck(@PathVariable Long checkId)
     {

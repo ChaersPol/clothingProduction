@@ -82,7 +82,7 @@
         <el-alert type="info" :closable="false" show-icon title="保存后会自动同步该款所有 SKU 的成本价与销售价；出厂价、建议售价留空时系统按成本自动计算。" />
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitForm">保存并同步SKU</el-button>
+        <el-button type="primary" v-hasPermi="['garment:cost:add','garment:cost:edit']" @click="submitForm">保存并同步SKU</el-button>
         <el-button @click="open = false">取 消</el-button>
       </template>
     </el-dialog>

@@ -83,7 +83,7 @@ public class BizBundleController extends BaseController
         return success(cuttingService.stockIn(String.valueOf(body.get("code"))));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:bundle:edit')")
+    @PreAuthorize("@ss.hasPermi('garment:bundle:patch')")
     @PostMapping("/patch")
     public AjaxResult patch(@RequestBody Map<String, Object> body)
     {

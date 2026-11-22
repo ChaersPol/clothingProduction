@@ -33,15 +33,15 @@
         <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:sku:add']">新增SKU</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" plain icon="MagicStick" @click="generateOpen = true" v-hasPermi="['garment:sku:add']">批量生成</el-button>
+        <el-button type="success" plain icon="MagicStick" @click="generateOpen = true" v-hasPermi="['garment:sku:generate']">批量生成</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-upload :show-file-list="false" :http-request="handleImport" accept=".xlsx,.xls">
-          <el-button plain icon="Upload" v-hasPermi="['garment:sku:edit']">导入初始库存</el-button>
+          <el-button plain icon="Upload" v-hasPermi="['garment:sku:import']">导入初始库存</el-button>
         </el-upload>
       </el-col>
       <el-col :span="1.5">
-        <el-button plain icon="Download" v-hasPermi="['garment:sku:list']" @click="downloadTemplate">下载模板</el-button>
+        <el-button plain icon="Download" v-hasPermi="['garment:sku:template']" @click="downloadTemplate">下载模板</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button plain icon="Download" v-hasPermi="['garment:sku:export']" @click="handleExport">导出</el-button>
@@ -165,7 +165,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" v-hasPermi="['garment:sku:add']" @click="submitGenerate">开始生成</el-button>
+        <el-button type="primary" v-hasPermi="['garment:sku:generate']" @click="submitGenerate">开始生成</el-button>
         <el-button @click="generateOpen = false">取 消</el-button>
       </template>
     </el-dialog>

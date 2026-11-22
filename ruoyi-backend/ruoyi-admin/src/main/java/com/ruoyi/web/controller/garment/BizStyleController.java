@@ -65,6 +65,14 @@ public class BizStyleController extends BaseController
         return toAjax(goodsService.saveStyle(style));
     }
 
+    @PreAuthorize("@ss.hasPermi('garment:style:design')")
+    @Log(title = "设计资料", businessType = BusinessType.UPDATE)
+    @PutMapping("/design")
+    public AjaxResult design(@RequestBody BizStyle style)
+    {
+        return toAjax(goodsService.saveStyle(style));
+    }
+
     @PreAuthorize("@ss.hasPermi('garment:style:remove')")
     @Log(title = "款号档案", businessType = BusinessType.DELETE)
     @DeleteMapping("/{styleIds}")
