@@ -150,7 +150,7 @@ function getList() {
 }
 function getRecon() {
   reconLoading.value = true
-  reconciliation().then(res => {
+  reconciliation({ pageNum: 1, pageSize: 100000 }).then(res => {
     reconList.value = res.rows || []
     reconLoading.value = false
   }).catch(() => { reconLoading.value = false })

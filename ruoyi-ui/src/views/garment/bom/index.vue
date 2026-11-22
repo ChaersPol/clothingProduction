@@ -120,6 +120,7 @@ function handleSelectionChange(selection) {
 const { proxy } = getCurrentInstance()
 const types = ['面料', '里布', '辅料', '配件']
 const bomList = ref([])
+const sumRows = ref([])
 const styles = ref([])
 const loading = ref(false)
 const total = ref(0)
@@ -137,6 +138,8 @@ function getList() {
     bomList.value = res.rows
     total.value = res.total
     loading.value = false
+    // 合计按全部筛选结果计算，不受分页影响
+    listBom({ ...queryParams.value, pageNum: 1, pageSize: 100000 }).then(r => { sumRows.value = r.rows || [] }).catch(() => {})
   }).catch(() => { loading.value = false })
 }
 function reset() {
@@ -169,11 +172,12 @@ function handleDelete(row) {
   }).catch(() => {})
 }
 function getSummary({ columns, data }) {
+  const rows = sumRows.value.length ? sumRows.value : data
   const sums = []
   columns.forEach((col, index) => {
-    if (index === 1) { sums[index] = '合计'; return }
+    if (col.property === 'styleNo') { sums[index] = '合计'; return }
     if (col.property === 'amount') {
-      sums[index] = data.reduce((s, r) => s + Number(r.amount || 0), 0).toFixed(2)
+      sums[index] = rows.reduce((s, r) => s + Number(r.amount || 0), 0).toFixed(2)
     } else {
       sums[index] = ''
     }

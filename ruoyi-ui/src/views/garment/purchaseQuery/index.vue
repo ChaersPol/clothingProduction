@@ -69,13 +69,14 @@ const showSearch = ref(true)
 
 const { proxy } = getCurrentInstance()
 const itemList = ref([])
+const sumRows = ref([])
 const loading = ref(false)
 const total = ref(0)
 const dateRange = ref([])
 const queryParams = ref({ pageNum: 1, pageSize: 20, purchaseNo: undefined, materialName: undefined, purchaseType: undefined })
 
-const pageAmount = computed(() => itemList.value.reduce((s, i) => s + Number(i.amount || 0), 0).toFixed(2))
-const pageReceived = computed(() => itemList.value.reduce((s, i) => s + Number(i.received_qty || 0), 0))
+const pageAmount = computed(() => sumRows.value.reduce((s, i) => s + Number(i.amount || 0), 0).toFixed(2))
+const pageReceived = computed(() => sumRows.value.reduce((s, i) => s + Number(i.received_qty || 0), 0))
 
 function getList() {
   loading.value = true
@@ -87,6 +88,8 @@ function getList() {
     itemList.value = res.rows
     total.value = res.total
     loading.value = false
+    // 合计按全部筛选结果计算，不受分页影响
+    listPurchaseItems({ ...params, pageNum: 1, pageSize: 100000 }).then(r => { sumRows.value = r.rows || [] }).catch(() => {})
   }).catch(() => { loading.value = false })
 }
 function handleQuery() { queryParams.value.pageNum = 1; getList() }

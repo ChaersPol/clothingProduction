@@ -102,6 +102,7 @@ function canAccess(path) {
   return !!resolved.name && !String(resolved.name).startsWith('404')
 }
 const inventoryList = ref([])
+const sumRows = ref([])
 const loading = ref(false)
 const total = ref(0)
 const summary = ref({ CUT: 0, LINE: 0, FINISH: 0, value: '0.00' })
@@ -126,6 +127,8 @@ function getList() {
     inventoryList.value = res.rows
     total.value = res.total
     loading.value = false
+    // 合计按全部筛选结果计算，不受分页影响
+    listInventory({ ...queryParams.value, pageNum: 1, pageSize: 100000 }).then(r => { sumRows.value = r.rows || [] }).catch(() => {})
   }).catch(() => { loading.value = false })
 }
 function loadSummary() {
@@ -150,10 +153,11 @@ function resetQuery() {
   handleQuery()
 }
 function getSummary({ columns, data }) {
+  const rows = sumRows.value.length ? sumRows.value : data
   return columns.map((col, i) => {
     if (i === 0) return '合计'
-    if (col.property === 'qty') return data.reduce((s, r) => s + Number(r.qty || 0), 0)
-    if (col.property === 'stockValue') return data.reduce((s, r) => s + Number(r.stockValue || 0), 0).toFixed(2)
+    if (col.property === 'qty') return rows.reduce((s, r) => s + Number(r.qty || 0), 0)
+    if (col.property === 'stockValue') return rows.reduce((s, r) => s + Number(r.stockValue || 0), 0).toFixed(2)
     return ''
   })
 }

@@ -124,8 +124,8 @@ export function updateSupplier(data) {
 export function delSupplier(supplierId) {
   return request({ url: '/garment/supplier/' + supplierId, method: 'delete' })
 }
-export function reconciliation() {
-  return request({ url: '/garment/supplier/reconciliation', method: 'get' })
+export function reconciliation(query) {
+  return request({ url: '/garment/supplier/reconciliation', method: 'get', params: query })
 }
 export function listPurchase(query) {
   return request({ url: '/garment/purchase/list', method: 'get', params: query })

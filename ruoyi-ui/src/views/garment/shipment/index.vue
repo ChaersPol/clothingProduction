@@ -121,6 +121,7 @@ function handleSelectionChange(selection) {
 
 const { proxy } = getCurrentInstance()
 const shipmentList = ref([])
+const sumRows = ref([])
 const summary = ref({})
 const loading = ref(false)
 const total = ref(0)
@@ -142,6 +143,8 @@ function getList() {
     shipmentList.value = res.rows
     total.value = res.total
     loading.value = false
+    // 合计按全部筛选结果计算，不受分页影响
+    listShipment({ ...params(), pageNum: 1, pageSize: 100000 }).then(r => { sumRows.value = r.rows || [] }).catch(() => {})
   }).catch(() => { loading.value = false })
   shipmentSummary(params()).then(res => { summary.value = res.data || {} })
 }
@@ -181,10 +184,12 @@ function handleDelete(row) {
   }).catch(() => {})
 }
 function getSummary({ columns, data }) {
-  return columns.map((col, i) => {
-    if (i === 1) return '合计'
+  const rows = sumRows.value.length ? sumRows.value : data
+  return columns.map(col => {
+    if (col.property === 'shipDate') return '合计'
     if (['qty', 'amount', 'seaFreight'].includes(col.property)) {
-      return data.reduce((s, r) => s + Number(r[col.property] || 0), 0).toFixed(2)
+      const v = rows.reduce((s, r) => s + Number(r[col.property] || 0), 0)
+      return col.property === 'qty' ? String(v) : v.toFixed(2)
     }
     return ''
   })

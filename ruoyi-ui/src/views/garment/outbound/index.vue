@@ -127,6 +127,7 @@ const showSearch = ref(true)
 
 const { proxy } = getCurrentInstance()
 const outboundList = ref([])
+const sumList = ref([])
 const loading = ref(false)
 const total = ref(0)
 const open = ref(false)
@@ -161,6 +162,8 @@ function getList() {
     outboundList.value = res.rows
     total.value = res.total
     loading.value = false
+    // 合计按全部筛选结果计算，不受分页影响
+    listOutbound({ ...params, pageNum: 1, pageSize: 100000 }).then(r => { sumList.value = r.rows || [] }).catch(() => {})
   }).catch(() => { loading.value = false })
 }
 function handleQuery() { queryParams.value.pageNum = 1; getList() }
@@ -210,10 +213,11 @@ function handleCancel(row) {
   }).catch(() => {})
 }
 function getSummary({ columns, data }) {
+  const rows = sumList.value.length ? sumList.value : data
   return columns.map((col, i) => {
-    if (i === 0) return '合计'
-    if (col.property === 'totalQty') return data.filter(r => r.status !== '1').reduce((s, r) => s + Number(r.totalQty || 0), 0)
-    if (col.property === 'totalAmount') return data.filter(r => r.status !== '1').reduce((s, r) => s + Number(r.totalAmount || 0), 0).toFixed(2)
+    if (i === 0) return '合计（不含作废）'
+    if (col.property === 'totalQty') return rows.filter(r => r.status !== '1').reduce((s, r) => s + Number(r.totalQty || 0), 0)
+    if (col.property === 'totalAmount') return rows.filter(r => r.status !== '1').reduce((s, r) => s + Number(r.totalAmount || 0), 0).toFixed(2)
     return ''
   })
 }

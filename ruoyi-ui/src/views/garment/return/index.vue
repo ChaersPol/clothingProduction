@@ -108,6 +108,7 @@ function handleSelectionChange(selection) {
 
 const { proxy } = getCurrentInstance()
 const returnList = ref([])
+const sumRows = ref([])
 const loading = ref(false)
 const total = ref(0)
 const open = ref(false)
@@ -129,6 +130,8 @@ function getList() {
     returnList.value = res.rows
     total.value = res.total
     loading.value = false
+    // 合计按全部筛选结果计算，不受分页影响
+    listReturn({ ...params, pageNum: 1, pageSize: 100000 }).then(r => { sumRows.value = r.rows || [] }).catch(() => {})
   }).catch(() => { loading.value = false })
 }
 function resetQuery() { proxy.resetForm('queryRef'); dateRange.value = []; getList() }
@@ -171,10 +174,11 @@ function handleDelete(row) {
   }).catch(() => {})
 }
 function getSummary({ columns, data }) {
-  return columns.map((col, i) => {
-    if (i === 1) return '合计'
+  const rows = sumRows.value.length ? sumRows.value : data
+  return columns.map(col => {
+    if (col.property === 'returnNo') return '合计'
     if (['qty', 'goodQty', 'badQty'].includes(col.property)) {
-      return data.reduce((s, r) => s + Number(r[col.property] || 0), 0)
+      return rows.reduce((s, r) => s + Number(r[col.property] || 0), 0)
     }
     return ''
   })
