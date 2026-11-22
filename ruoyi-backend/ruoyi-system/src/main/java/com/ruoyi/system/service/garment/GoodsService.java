@@ -319,6 +319,11 @@ public class GoodsService
         return costMapper.selectCostByStyleNo(styleNo);
     }
 
+    public int deleteCost(Long costId)
+    {
+        return costMapper.deleteCostById(costId);
+    }
+
     public int saveCost(BizCost cost)
     {
         BigDecimal total = BigDecimal.ZERO;

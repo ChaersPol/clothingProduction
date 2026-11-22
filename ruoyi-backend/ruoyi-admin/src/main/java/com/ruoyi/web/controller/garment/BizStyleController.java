@@ -33,7 +33,7 @@ public class BizStyleController extends BaseController
         return getDataTable(list);
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:style:list')")
+    @PreAuthorize("@ss.hasPermi('garment:style:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizStyle style)
     {

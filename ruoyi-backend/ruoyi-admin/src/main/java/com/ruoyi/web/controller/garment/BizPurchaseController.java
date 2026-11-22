@@ -44,7 +44,7 @@ public class BizPurchaseController extends BaseController
         return getDataTable(purchaseService.selectItemList(purchase));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:purchase:list')")
+    @PreAuthorize("@ss.hasPermi('garment:purchase:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizPurchase purchase)
     {
@@ -53,7 +53,7 @@ public class BizPurchaseController extends BaseController
         util.exportExcel(response, list, "采购单");
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:purchase:list')")
+    @PreAuthorize("@ss.hasPermi('garment:purchase:export')")
     @PostMapping("/items/export")
     public void exportItems(HttpServletResponse response, BizPurchase purchase)
     {

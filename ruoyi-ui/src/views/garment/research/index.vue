@@ -92,7 +92,7 @@
         </el-row>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submit">保 存</el-button>
+        <el-button type="primary" v-hasPermi="['garment:style:edit']" @click="submit">保 存</el-button>
         <el-button @click="open = false">取 消</el-button>
       </template>
     </el-dialog>
@@ -180,7 +180,7 @@
         </el-row>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitStyle">保 存</el-button>
+        <el-button type="primary" v-hasPermi="['garment:style:edit']" @click="submitStyle">保 存</el-button>
         <el-button @click="open2 = false">取 消</el-button>
       </template>
     </el-dialog>
@@ -207,7 +207,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitGenerate">开始生成</el-button>
+        <el-button type="primary" v-hasPermi="['garment:sku:add']" @click="submitGenerate">开始生成</el-button>
         <el-button @click="generateOpen = false">取 消</el-button>
       </template>
     </el-dialog>

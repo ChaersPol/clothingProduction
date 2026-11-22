@@ -21,7 +21,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" icon="Printer" :disabled="!selection.length" @click="handlePrint">打印标签</el-button>
+        <el-button type="primary" icon="Printer" v-hasPermi="['garment:label:print']" :disabled="!selection.length" @click="handlePrint">打印标签</el-button>
       </el-col>
       <el-col :span="6" style="display: flex; align-items: center">
         <el-radio-group v-model="labelType" size="small">
@@ -46,7 +46,7 @@
         <el-table-column label="销售价" prop="salePrice" width="90" align="right" />
         <el-table-column label="操作" class-name="op-cell" width="100" align="center">
           <template #default="s">
-            <el-button link type="primary" @click="printOne(s.row)">打印</el-button>
+            <el-button link type="primary" v-hasPermi="['garment:label:print']" @click="printOne(s.row)">打印</el-button>
           </template>
         </el-table-column>
       </el-table>

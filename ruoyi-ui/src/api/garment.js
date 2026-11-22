@@ -101,6 +101,9 @@ export function getCostByStyle(styleNo) {
 export function saveCost(data) {
   return request({ url: '/garment/cost', method: 'post', data })
 }
+export function delCost(costId) {
+  return request({ url: '/garment/cost/' + costId, method: 'delete' })
+}
 
 /* ---------------- 供应商 / 采购 ---------------- */
 export function listSupplier(query) {

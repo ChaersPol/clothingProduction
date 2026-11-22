@@ -30,7 +30,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button plain icon="Download" @click="handleExport">导出流水</el-button>
+        <el-button plain icon="Download" v-hasPermi="['garment:stocklog:export']" @click="handleExport">导出流水</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>

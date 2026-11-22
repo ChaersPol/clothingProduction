@@ -41,10 +41,10 @@
         </el-upload>
       </el-col>
       <el-col :span="1.5">
-        <el-button plain icon="Download" @click="downloadTemplate">下载模板</el-button>
+        <el-button plain icon="Download" v-hasPermi="['garment:sku:list']" @click="downloadTemplate">下载模板</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button plain icon="Download" @click="handleExport">导出</el-button>
+        <el-button plain icon="Download" v-hasPermi="['garment:sku:export']" @click="handleExport">导出</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['garment:sku:remove']">删除</el-button>
@@ -136,7 +136,7 @@
         </el-row>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" v-hasPermi="['garment:sku:add','garment:sku:edit']" @click="submitForm">确 定</el-button>
         <el-button @click="open = false">取 消</el-button>
       </template>
     </el-dialog>
@@ -165,7 +165,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitGenerate">开始生成</el-button>
+        <el-button type="primary" v-hasPermi="['garment:sku:add']" @click="submitGenerate">开始生成</el-button>
         <el-button @click="generateOpen = false">取 消</el-button>
       </template>
     </el-dialog>

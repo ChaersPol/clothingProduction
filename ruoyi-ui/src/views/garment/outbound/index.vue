@@ -27,7 +27,7 @@
         <el-button type="primary" plain icon="Plus" v-hasPermi="['garment:outbound:add']" @click="handleAdd">成品出库</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button plain icon="Download" @click="handleExport">导出</el-button>
+        <el-button plain icon="Download" v-hasPermi="['garment:outbound:export']" @click="handleExport">导出</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -47,7 +47,7 @@
         </el-table-column>
         <el-table-column label="操作" class-name="op-cell" width="140" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="viewDetail(s.row)">明细</el-button>
+            <el-button link type="primary" v-hasPermi="['garment:outbound:list']" @click="viewDetail(s.row)">明细</el-button>
             <el-button link type="danger" v-hasPermi="['garment:outbound:edit']" :disabled="s.row.status === '1'" @click="handleCancel(s.row)">作废</el-button>
           </template>
         </el-table-column>
@@ -67,7 +67,7 @@
         </el-row>
         <div class="toolbar">
           <el-input v-model="scanBarcode" placeholder="扫描/输入商品条码后回车添加" style="width: 260px" @keyup.enter="addByBarcode" />
-          <el-button size="small" icon="Plus" @click="addEmptyItem">手动添加</el-button>
+          <el-button size="small" icon="Plus" v-hasPermi="['garment:outbound:add']" @click="addEmptyItem">手动添加</el-button>
         </div>
         <el-table :data="form.items" border size="small" max-height="300">
           <el-table-column label="条码" prop="barcode" min-width="150" />
@@ -93,7 +93,7 @@
         <div class="muted" style="text-align: right; margin-top: 8px">合计：<span class="money">¥{{ formTotal }}</span></div>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitForm">确认出库</el-button>
+        <el-button type="primary" v-hasPermi="['garment:outbound:add']" @click="submitForm">确认出库</el-button>
         <el-button @click="open = false">取 消</el-button>
       </template>
     </el-dialog>

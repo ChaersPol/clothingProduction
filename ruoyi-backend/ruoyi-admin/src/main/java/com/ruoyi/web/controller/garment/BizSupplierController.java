@@ -39,7 +39,7 @@ public class BizSupplierController extends BaseController
         return success(supplierMapper.selectSupplierAll());
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:supplier:list')")
+    @PreAuthorize("@ss.hasPermi('garment:supplier:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizSupplier supplier)
     {

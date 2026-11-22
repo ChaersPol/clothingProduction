@@ -33,7 +33,7 @@
         <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:cutorder:add']">裁货开单</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button plain icon="Download" @click="handleExport">导出</el-button>
+        <el-button plain icon="Download" v-hasPermi="['garment:cutorder:export']" @click="handleExport">导出</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['garment:cutorder:remove']">删除</el-button>
@@ -62,8 +62,8 @@
         </el-table-column>
         <el-table-column v-if="checkPermi(['garment:cutorder:edit','garment:cutorder:remove'])" label="操作" class-name="op-cell" width="240" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="viewDetail(s.row)">明细</el-button>
-            <el-button link type="success" @click="goBundle(s.row)">去分扎</el-button>
+            <el-button link type="primary" v-hasPermi="['garment:cutorder:list']" @click="viewDetail(s.row)">明细</el-button>
+            <el-button link type="success" v-hasPermi="['garment:bundle:list']" @click="goBundle(s.row)">去分扎</el-button>
             <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:cutorder:edit']">修改</el-button>
             <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:cutorder:remove']">删除</el-button>
           </template>
@@ -123,8 +123,8 @@
             <el-option v-for="s in sizes" :key="s.sizeName" :label="s.sizeName" :value="s.sizeName" />
           </el-select>
           <el-input-number v-model="gen.qty" :min="1" controls-position="right" size="small" style="width: 110px" />
-          <el-button type="primary" plain size="small" @click="generateMatrix">生成明细</el-button>
-          <el-button size="small" icon="Plus" @click="addRow">手动添加</el-button>
+          <el-button type="primary" plain size="small" v-hasPermi="['garment:cutorder:edit']" @click="generateMatrix">生成明细</el-button>
+          <el-button size="small" icon="Plus" v-hasPermi="['garment:cutorder:edit']" @click="addRow">手动添加</el-button>
         </div>
         <el-table :data="form.items" border size="small" max-height="280">
           <el-table-column label="层次" width="80">

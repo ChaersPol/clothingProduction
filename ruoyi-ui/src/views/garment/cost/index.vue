@@ -12,13 +12,17 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:cost:edit']">新增成本核算</el-button>
+        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:cost:add']">新增成本核算</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['garment:cost:remove']">删除</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <div class="table-wrap">
-      <el-table v-loading="loading" :data="costList" border :default-sort="{ prop: 'totalCost', order: 'descending' }">
+      <el-table v-loading="loading" :data="costList" border :default-sort="{ prop: 'totalCost', order: 'descending' }" @selection-change="handleSelectionChange">
+        <el-table-column v-if="checkPermi(['garment:cost:remove'])" type="selection" width="50" align="center" />
         <el-table-column label="款号" prop="styleNo" width="110" />
         <el-table-column label="品名" prop="cnName" min-width="150" show-overflow-tooltip />
         <el-table-column label="面料" prop="fabricCost" width="80" align="right" />
@@ -31,9 +35,10 @@
         </el-table-column>
         <el-table-column label="出厂价" prop="exFactoryPrice" width="100" align="right" />
         <el-table-column label="建议售价" prop="suggestPrice" width="100" align="right" />
-        <el-table-column v-if="checkPermi(['garment:cost:edit'])" label="操作" class-name="op-cell" width="100" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:cost:edit','garment:cost:remove'])" label="操作" class-name="op-cell" width="130" align="center" fixed="right">
           <template #default="s">
             <el-button link type="primary" @click="openCost(s.row)" v-hasPermi="['garment:cost:edit']">核算</el-button>
+            <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:cost:remove']">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -85,9 +90,11 @@
 </template>
 
 <script setup name="Cost">
-import { listCost, saveCost, commonStyles } from '@/api/garment'
+import { listCost, saveCost, delCost, commonStyles } from '@/api/garment'
 
 const showSearch = ref(true)
+const ids = ref([])
+const multiple = ref(true)
 
 const { proxy } = getCurrentInstance()
 const costFields = [
@@ -127,6 +134,20 @@ function getList() {
 }
 function handleQuery() { queryParams.value.pageNum = 1; getList() }
 function resetQuery() { proxy.resetForm('queryRef'); handleQuery() }
+function handleSelectionChange(selection) {
+  ids.value = selection.map(i => i.costId)
+  multiple.value = !selection.length
+}
+function handleDelete(row) {
+  const delIds = row && row.costId ? [row.costId] : ids.value
+  if (!delIds.length) return
+  proxy.$modal.confirm('确认删除选中的成本核算记录吗？').then(() => {
+    Promise.all(delIds.map(id => delCost(id))).then(() => {
+      proxy.$modal.msgSuccess('删除成功')
+      getList()
+    })
+  }).catch(() => {})
+}
 function emptyForm() {
   const obj = { styleNo: undefined, exFactoryPrice: 0, suggestPrice: 0, remark: undefined }
   costFields.forEach(f => { obj[f.key] = 0 })

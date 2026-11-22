@@ -31,7 +31,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Download" @click="handleExport">导出</el-button>
+        <el-button type="primary" plain icon="Download" v-hasPermi="['garment:purchase:export']" @click="handleExport">导出</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>

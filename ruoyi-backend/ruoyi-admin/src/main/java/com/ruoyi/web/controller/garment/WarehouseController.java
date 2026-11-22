@@ -31,7 +31,7 @@ public class WarehouseController extends BaseController
         return getDataTable(warehouseService.selectInventory(query));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:inventory:list')")
+    @PreAuthorize("@ss.hasPermi('garment:inventory:export')")
     @PostMapping("/inventory/export")
     public void exportInventory(HttpServletResponse response, BizInventory query)
     {
@@ -48,7 +48,7 @@ public class WarehouseController extends BaseController
         return getDataTable(warehouseService.selectLogs(log));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:stocklog:list')")
+    @PreAuthorize("@ss.hasPermi('garment:stocklog:export')")
     @PostMapping("/stocklog/export")
     public void exportLog(HttpServletResponse response, BizStockLog log)
     {

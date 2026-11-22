@@ -49,10 +49,10 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button plain icon="Download" @click="handleExport">导出库存</el-button>
+        <el-button plain icon="Download" v-hasPermi="['garment:inventory:export']" @click="handleExport">导出库存</el-button>
       </el-col>
       <el-col :span="1.5" v-if="canAccess('/warehouse/warning')">
-        <el-button plain type="warning" @click="$router.push('/warehouse/warning')">库存预警</el-button>
+        <el-button plain type="warning" v-hasPermi="['garment:warning:list']" @click="$router.push('/warehouse/warning')">库存预警</el-button>
       </el-col>
       <el-col :span="6" style="display: flex; align-items: center; gap: 6px">
         <el-tag type="danger">裁片</el-tag>

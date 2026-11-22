@@ -40,7 +40,7 @@
         <el-table-column label="提醒内容" prop="content" min-width="320" show-overflow-tooltip />
         <el-table-column label="操作" class-name="op-cell" width="120" align="center" fixed="right">
           <template #default="s">
-            <el-button v-if="s.row.page" link type="primary" @click="go(s.row)">{{ actionText(s.row) }}</el-button>
+            <el-button v-if="s.row.page" link type="primary" v-hasPermi="['garment:message:list']" @click="go(s.row)">{{ actionText(s.row) }}</el-button>
           </template>
         </el-table-column>
       </el-table>

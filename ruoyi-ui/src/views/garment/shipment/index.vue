@@ -24,7 +24,7 @@
         <el-button type="danger" plain icon="Delete" v-hasPermi="['garment:shipment:remove']" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Download" @click="handleExport">导出</el-button>
+        <el-button type="primary" plain icon="Download" v-hasPermi="['garment:shipment:export']" @click="handleExport">导出</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -99,7 +99,7 @@
         </el-row>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" v-hasPermi="['garment:shipment:add','garment:shipment:edit']" @click="submitForm">确 定</el-button>
         <el-button @click="open = false">取 消</el-button>
       </template>
     </el-dialog>

@@ -25,7 +25,7 @@
         <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:bom:add']">新增物料</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button plain icon="Download" @click="handleExport">导出</el-button>
+        <el-button plain icon="Download" v-hasPermi="['garment:bom:export']" @click="handleExport">导出</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['garment:bom:remove']">删除</el-button>
@@ -97,7 +97,7 @@
         </el-row>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" v-hasPermi="['garment:bom:add','garment:bom:edit']" @click="submitForm">确 定</el-button>
         <el-button @click="open = false">取 消</el-button>
       </template>
     </el-dialog>

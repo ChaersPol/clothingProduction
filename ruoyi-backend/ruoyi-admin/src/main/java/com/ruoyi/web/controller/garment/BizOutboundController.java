@@ -33,7 +33,7 @@ public class BizOutboundController extends BaseController
         return getDataTable(warehouseService.selectOutboundList(query));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:outbound:list')")
+    @PreAuthorize("@ss.hasPermi('garment:outbound:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizOutbound query)
     {

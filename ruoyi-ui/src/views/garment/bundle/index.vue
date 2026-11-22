@@ -36,7 +36,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Printer" :disabled="multiple" @click="printCards">打印扎卡</el-button>
+        <el-button type="primary" plain icon="Printer" v-hasPermi="['garment:bundle:print']" :disabled="multiple" @click="printCards">打印扎卡</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" plain icon="Delete" v-hasPermi="['garment:bundle:remove']" :disabled="multiple" @click="handleDelete">删除</el-button>
@@ -97,7 +97,7 @@
         <el-alert type="info" :closable="false" show-icon title="系统按裁货单颜色尺码明细自动拆分扎包，余数自动单独成扎。" />
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitAuto">开始分扎</el-button>
+        <el-button type="primary" v-hasPermi="['garment:bundle:add']" @click="submitAuto">开始分扎</el-button>
         <el-button @click="autoOpen = false">取 消</el-button>
       </template>
     </el-dialog>
@@ -120,7 +120,7 @@
         <el-form-item label="备注"><el-input v-model="patchForm.remark" type="textarea" :rows="2" /></el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitPatch">确 定</el-button>
+        <el-button type="primary" v-hasPermi="['garment:bundle:edit']" @click="submitPatch">确 定</el-button>
         <el-button @click="patchOpen = false">取 消</el-button>
       </template>
     </el-dialog>

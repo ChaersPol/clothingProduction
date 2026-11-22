@@ -33,7 +33,7 @@
         <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:purchase:add']">新增采购单</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button plain icon="Download" @click="handleExport">导出</el-button>
+        <el-button plain icon="Download" v-hasPermi="['garment:purchase:export']" @click="handleExport">导出</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['garment:purchase:remove']">删除</el-button>
@@ -68,7 +68,7 @@
         </el-table-column>
         <el-table-column v-if="checkPermi(['garment:purchase:edit','garment:purchase:remove'])" label="操作" class-name="op-cell" width="220" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="viewDetail(s.row)">明细</el-button>
+            <el-button link type="primary" v-hasPermi="['garment:purchase:list']" @click="viewDetail(s.row)">明细</el-button>
             <el-button link type="success" @click="openReceive(s.row)" v-hasPermi="['garment:purchase:edit']">入库</el-button>
             <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:purchase:edit']">修改</el-button>
             <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:purchase:remove']">删除</el-button>
@@ -125,7 +125,7 @@
 
         <div class="toolbar">
           <span class="page-title" style="margin: 0">采购明细</span>
-          <el-button type="primary" plain size="small" icon="Plus" @click="addItem">添加明细</el-button>
+          <el-button type="primary" plain size="small" icon="Plus" v-hasPermi="['garment:purchase:add','garment:purchase:edit']" @click="addItem">添加明细</el-button>
         </div>
         <el-table :data="form.items" border size="small">
           <el-table-column label="物料类型" width="110">
@@ -160,7 +160,7 @@
         <div class="muted" style="text-align: right; margin-top: 8px">合计：<span class="money">¥{{ formTotal }}</span></div>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" v-hasPermi="['garment:purchase:add','garment:purchase:edit']" @click="submitForm">确 定</el-button>
         <el-button @click="open = false">取 消</el-button>
       </template>
     </el-dialog>
@@ -205,7 +205,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitReceive">确认入库</el-button>
+        <el-button type="primary" v-hasPermi="['garment:purchase:edit']" @click="submitReceive">确认入库</el-button>
         <el-button @click="receiveOpen = false">取 消</el-button>
       </template>
     </el-dialog>

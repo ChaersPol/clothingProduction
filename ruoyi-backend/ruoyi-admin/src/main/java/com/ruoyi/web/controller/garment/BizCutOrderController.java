@@ -32,7 +32,7 @@ public class BizCutOrderController extends BaseController
         return getDataTable(cuttingService.selectList(order));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:cutorder:list')")
+    @PreAuthorize("@ss.hasPermi('garment:cutorder:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizCutOrder order)
     {

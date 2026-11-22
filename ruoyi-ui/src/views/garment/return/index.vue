@@ -86,7 +86,7 @@
         <el-alert type="info" :closable="false" show-icon title="仅好货数量入库到成品库，次品不入库，请单独走次品处理流程。" />
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitForm">确认入库</el-button>
+        <el-button type="primary" v-hasPermi="['garment:return:add']" @click="submitForm">确认入库</el-button>
         <el-button @click="open = false">取 消</el-button>
       </template>
     </el-dialog>

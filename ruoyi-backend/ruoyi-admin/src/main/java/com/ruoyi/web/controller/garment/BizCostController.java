@@ -48,11 +48,19 @@ public class BizCostController extends BaseController
         return success(goodsService.selectCostByStyleNo(styleNo));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:cost:edit')")
+    @PreAuthorize("@ss.hasAnyPermi('garment:cost:add,garment:cost:edit')")
     @Log(title = "成本核算", businessType = BusinessType.UPDATE)
     @PostMapping
     public AjaxResult save(@RequestBody BizCost cost)
     {
         return toAjax(goodsService.saveCost(cost));
+    }
+
+    @PreAuthorize("@ss.hasPermi('garment:cost:remove')")
+    @Log(title = "成本核算", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{costId}")
+    public AjaxResult remove(@PathVariable Long costId)
+    {
+        return toAjax(goodsService.deleteCost(costId));
     }
 }

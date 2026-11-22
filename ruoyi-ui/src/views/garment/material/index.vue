@@ -136,7 +136,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitAdjust">确 定</el-button>
+        <el-button type="primary" v-hasPermi="['garment:material:edit']" @click="submitAdjust">确 定</el-button>
         <el-button @click="adjustOpen = false">取 消</el-button>
       </template>
     </el-dialog>
@@ -149,7 +149,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitMinStock">确 定</el-button>
+        <el-button type="primary" v-hasPermi="['garment:material:edit']" @click="submitMinStock">确 定</el-button>
         <el-button @click="minOpen = false">取 消</el-button>
       </template>
     </el-dialog>

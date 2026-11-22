@@ -32,7 +32,7 @@ public class BizShipmentController extends BaseController
         return getDataTable(warehouseService.selectShipmentList(query));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:shipment:list')")
+    @PreAuthorize("@ss.hasPermi('garment:shipment:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizShipment query)
     {

@@ -45,7 +45,7 @@ public class BizSkuController extends BaseController
         return getDataTable(goodsService.selectSkuList(sku));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:sku:list')")
+    @PreAuthorize("@ss.hasPermi('garment:sku:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizSku sku)
     {

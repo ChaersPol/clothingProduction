@@ -32,7 +32,7 @@ public class BizBomController extends BaseController
         return getDataTable(goodsService.selectBomList(bom));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:bom:list')")
+    @PreAuthorize("@ss.hasPermi('garment:bom:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizBom bom)
     {

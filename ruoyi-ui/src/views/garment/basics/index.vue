@@ -68,7 +68,7 @@
         <el-form-item label="排序"><el-input-number v-model="colorForm.sort" :min="0" controls-position="right" /></el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitColor">确 定</el-button>
+        <el-button type="primary" v-hasPermi="['garment:basics:add','garment:basics:edit']" @click="submitColor">确 定</el-button>
         <el-button @click="colorOpen = false">取 消</el-button>
       </template>
     </el-dialog>
@@ -79,7 +79,7 @@
         <el-form-item label="排序"><el-input-number v-model="sizeForm.sort" :min="0" controls-position="right" /></el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitSize">确 定</el-button>
+        <el-button type="primary" v-hasPermi="['garment:basics:add','garment:basics:edit']" @click="submitSize">确 定</el-button>
         <el-button @click="sizeOpen = false">取 消</el-button>
       </template>
     </el-dialog>
