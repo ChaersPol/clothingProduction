@@ -27,7 +27,21 @@
         <span class="muted">份数</span>
         <el-input-number v-model="copies" :min="1" size="small" controls-position="right" style="width: 100px" />
       </el-col>
-      <el-col :span="5" style="display: flex; align-items: center">
+      <el-col :span="3" style="display: flex; align-items: center; gap: 6px">
+        <span class="muted">纸张</span>
+        <el-select v-model="paperMode" size="small" style="width: 100px">
+          <el-option label="标签纸" value="LABEL" />
+          <el-option label="A4" value="A4" />
+        </el-select>
+      </el-col>
+      <el-col :span="6" style="display: flex; align-items: center; gap: 4px">
+        <span class="muted">尺寸</span>
+        <el-input-number v-model="labelW" :min="20" :max="104" size="small" controls-position="right" style="width: 80px" />
+        <span class="muted">×</span>
+        <el-input-number v-model="labelH" :min="20" :max="150" size="small" controls-position="right" style="width: 80px" />
+        <span class="muted">mm</span>
+      </el-col>
+      <el-col :span="4" style="display: flex; align-items: center">
         <el-radio-group v-model="labelType" size="small">
           <el-radio-button value="FACTORY">厂内标签</el-radio-button>
           <el-radio-button value="PRODUCT">成品标签</el-radio-button>
@@ -60,7 +74,7 @@
 
     <!-- 打印区域：挂到 body 下，打印时隐藏其余内容并自动分页 -->
     <teleport to="body">
-      <div id="label-print-area">
+      <div id="label-print-area" :class="paperMode === 'LABEL' ? 'label-mode' : 'a4-mode'" :style="{ '--lw': labelW + 'mm', '--lh': labelH + 'mm' }">
       <div v-for="item in printItems" :key="item._key" class="label-card" :class="{ 'factory-card': labelType === 'FACTORY' }">
         <template v-if="labelType === 'FACTORY'">
           <div class="label-name factory-name">{{ item.cnName }}</div>
@@ -85,9 +99,46 @@
 import JsBarcode from 'jsbarcode'
 import { labelList } from '@/api/garment'
 
+const PRINT_KEY = 'garment:label-print-settings'
+const savedPrint = (() => {
+  try { return JSON.parse(localStorage.getItem(PRINT_KEY)) || {} } catch (e) { return {} }
+})()
 const showSearch = ref(true)
-const labelType = ref('FACTORY')
-const copies = ref(1)
+const labelType = ref(savedPrint.labelType || 'FACTORY')
+const copies = ref(savedPrint.copies || 1)
+const paperMode = ref(savedPrint.paperMode || 'LABEL')
+const labelW = ref(savedPrint.labelW || 50)
+const labelH = ref(savedPrint.labelH || 30)
+
+// 打印前才注入 @page，避免离开页面后影响扎卡等其他打印
+function applyPageStyle() {
+  let el = document.getElementById('label-page-style')
+  if (!el) {
+    el = document.createElement('style')
+    el.id = 'label-page-style'
+    document.head.appendChild(el)
+  }
+  el.textContent = paperMode.value === 'LABEL'
+    ? `@page { size: ${labelW.value}mm ${labelH.value}mm; margin: 0; }`
+    : '@page { size: A4; margin: 8mm; }'
+}
+function clearPageStyle() {
+  document.getElementById('label-page-style')?.remove()
+}
+window.addEventListener('afterprint', clearPageStyle)
+watch([paperMode, labelW, labelH, copies, labelType], () => {
+  localStorage.setItem(PRINT_KEY, JSON.stringify({
+    paperMode: paperMode.value,
+    labelW: labelW.value,
+    labelH: labelH.value,
+    copies: copies.value,
+    labelType: labelType.value
+  }))
+})
+onUnmounted(() => {
+  window.removeEventListener('afterprint', clearPageStyle)
+  clearPageStyle()
+})
 
 const { proxy } = getCurrentInstance()
 const skuList = ref([])
@@ -115,7 +166,7 @@ function renderBarcodes(done) {
   nextTick(() => {
     barcodeRefs.forEach(({ el, code }) => {
       try {
-        JsBarcode(el, code, { format: 'CODE128', width: 1.2, height: 34, displayValue: false, margin: 0 })
+        JsBarcode(el, code, { format: 'CODE128', width: 1.2, height: Math.max(20, Math.min(42, Math.round(labelH.value * 1.1))), displayValue: false, margin: 0 })
       } catch (e) { /* 忽略非法条码 */ }
     })
     barcodeRefs.length = 0
@@ -127,10 +178,12 @@ function expandCopies(rows) {
   return rows.flatMap(row => Array.from({ length: n }, (_, i) => ({ ...row, _key: `${row.skuId}-${i}` })))
 }
 function handlePrint() {
+  applyPageStyle()
   printItems.value = expandCopies(selection.value)
   renderBarcodes(() => setTimeout(() => window.print(), 60))
 }
 function printOne(row) {
+  applyPageStyle()
   printItems.value = expandCopies([row])
   renderBarcodes(() => setTimeout(() => window.print(), 60))
 }
@@ -160,15 +213,31 @@ onActivated(() => {
   .label-card {
     display: inline-block;
     vertical-align: top;
-    width: 50mm;
-    height: 30mm;
-    border: 1px dashed #999;
-    padding: 2mm;
-    margin: 0 3mm 3mm 0;
+    width: var(--lw, 50mm);
+    height: var(--lh, 30mm);
+    padding: 1.5mm;
+    margin: 0;
     box-sizing: border-box;
     text-align: center;
     page-break-inside: avoid;
     break-inside: avoid;
+  }
+  /* 标签纸模式：一张标签一页，适配佳博 GP-1324D */
+  #label-print-area.label-mode .label-card {
+    display: block;
+    border: none;
+    height: calc(var(--lh, 30mm) - 0.3mm);
+    page-break-after: always;
+    break-after: page;
+  }
+  #label-print-area.label-mode .label-card:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+  /* A4 模式：多张自动换行、自动分页 */
+  #label-print-area.a4-mode .label-card {
+    margin: 0 2mm 2mm 0;
+    border: 1px dashed #999;
   }
   .label-card .label-style { font-size: 11px; font-weight: bold; }
   .label-card .label-name { font-size: 9px; white-space: nowrap; overflow: hidden; }
