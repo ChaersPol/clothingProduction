@@ -64,9 +64,7 @@
           <el-input-number v-model="form.defectQty" :min="0" :max="form.qtyInput || 0" controls-position="right" style="width: 100%" />
         </el-form-item>
         <el-form-item label="交工人">
-          <el-select v-model="form.employee" placeholder="选择员工" filterable style="width: 100%">
-            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
-          </el-select>
+          <el-input :model-value="operatorName" disabled style="width: 100%" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -78,13 +76,15 @@
 </template>
 
 <script setup name="LineStock">
-import { lineStock, deliverBundle, commonEmployees } from '@/api/garment'
+import { lineStock, deliverBundle } from '@/api/garment'
+import { currentOperatorName } from '@/utils/garment'
 
 const showSearch = ref(true)
 
 const { proxy } = getCurrentInstance()
 const bundleList = ref([])
-const employees = ref([])
+// 交工人固定为当前登录用户，避免按人统计产量时串人
+const operatorName = currentOperatorName()
 const loading = ref(false)
 const total = ref(0)
 const open = ref(false)
@@ -123,7 +123,7 @@ function openDeliver(row) {
   form.value = {
     bundleId: row.bundleId, bundleNo: row.bundleNo, styleNo: row.styleNo, color: row.color, size: row.size,
     qty: row.qty, deliveredQty: row.deliveredQty, qtyInput: Number(row.qty || 0) - Number(row.deliveredQty || 0),
-    defectQty: 0, employee: row.pickupUser || ''
+    defectQty: 0, employee: operatorName
   }
   open.value = true
 }
@@ -139,8 +139,6 @@ function submitDeliver() {
     getList()
   })
 }
-
-commonEmployees().then(res => { employees.value = res.data || [] })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
 let _pageActivated = false

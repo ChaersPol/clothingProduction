@@ -20,9 +20,7 @@
           <el-input-number v-model="scan.perBag" :min="1" controls-position="right" style="width: 110px" />
         </el-form-item>
         <el-form-item label="包装人">
-          <el-select v-model="scan.packer" placeholder="选择" filterable style="width: 130px">
-            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
-          </el-select>
+          <el-input :model-value="operatorName" disabled style="width: 130px" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Upload" v-hasPermi="['garment:packing:add']" @click="submitStockIn">包装入库</el-button>
@@ -78,6 +76,7 @@
 
 <script setup name="Packing">
 import { listPack, finishingStockIn, commonBundle, commonEmployees } from '@/api/garment'
+import { currentOperatorName } from '@/utils/garment'
 
 const showSearch = ref(true)
 
@@ -89,7 +88,9 @@ const loading = ref(false)
 const total = ref(0)
 const dateRange = ref([])
 const scanRef = ref()
-const scan = ref({ code: '', qty: 1, packMethod: '袋装', perBag: 1, packer: '' })
+// 包装人固定为当前登录用户，避免产量统计串人
+const operatorName = currentOperatorName()
+const scan = ref({ code: '', qty: 1, packMethod: '袋装', perBag: 1, packer: operatorName })
 const queryParams = ref({ pageNum: 1, pageSize: 10, bundleNo: undefined, styleNo: undefined, packer: undefined })
 const route = useRoute()
 
@@ -152,7 +153,6 @@ function focusScan() {
 
 commonEmployees().then(res => {
   employees.value = res.data || []
-  if (employees.value.length) scan.value.packer = employees.value[0].name
   focusScan()
 })
 

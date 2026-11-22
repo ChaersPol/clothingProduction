@@ -61,9 +61,7 @@
         </el-form-item>
         <el-form-item label="盘点日期"><el-date-picker v-model="createForm.checkDate" type="date" value-format="YYYY-MM-DD" style="width: 100%" /></el-form-item>
         <el-form-item label="盘点人">
-          <el-select v-model="createForm.checker" placeholder="选择盘点人" clearable style="width: 100%">
-            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
-          </el-select>
+          <el-input :model-value="operatorName" disabled />
         </el-form-item>
         <el-form-item label="备注"><el-input v-model="createForm.remark" type="textarea" :rows="2" /></el-form-item>
       </el-form>
@@ -108,7 +106,8 @@
 </template>
 
 <script setup name="Check">
-import { listCheck, getCheck, addCheck, saveCheckItems, completeCheck, delCheck, commonEmployees } from '@/api/garment'
+import { listCheck, getCheck, addCheck, saveCheckItems, completeCheck, delCheck } from '@/api/garment'
+import { currentOperatorName } from '@/utils/garment'
 
 const showSearch = ref(true)
 
@@ -129,7 +128,8 @@ const total = ref(0)
 const createOpen = ref(false)
 const itemsOpen = ref(false)
 const createForm = ref({})
-const employees = ref([])
+// 盘点人固定为当前登录用户
+const operatorName = currentOperatorName()
 const queryParams = ref({ pageNum: 1, pageSize: 10, checkNo: undefined, status: undefined })
 
 function today() {
@@ -147,7 +147,7 @@ function getList() {
 function handleQuery() { queryParams.value.pageNum = 1; getList() }
 function resetQuery() { proxy.resetForm('queryRef'); handleQuery() }
 function openCreate() {
-  createForm.value = { stockType: 'FINISH', checkDate: today(), checker: '', remark: '' }
+  createForm.value = { stockType: 'FINISH', checkDate: today(), checker: operatorName, remark: '' }
   createOpen.value = true
 }
 function submitCreate() {
@@ -195,7 +195,6 @@ function handleDelete(row) {
 }
 
 getList()
-commonEmployees().then(res => { employees.value = res.data || [] })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
 let _pageActivated = false

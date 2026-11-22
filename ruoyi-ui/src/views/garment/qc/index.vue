@@ -64,9 +64,7 @@
         </el-form-item>
         <el-form-item label="次品原因"><el-input v-model="qcForm.defectReason" placeholder="线头/污渍/尺寸等" /></el-form-item>
         <el-form-item label="检验人">
-          <el-select v-model="qcForm.inspector" placeholder="选择检验人" filterable clearable style="width: 100%">
-            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
-          </el-select>
+          <el-input :model-value="operatorName" disabled />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -93,9 +91,7 @@
         </el-form-item>
         <el-form-item label="数量"><el-input-number v-model="defectForm.qty" :min="1" controls-position="right" style="width: 100%" /></el-form-item>
         <el-form-item label="处理人">
-          <el-select v-model="defectForm.handler" placeholder="选择处理人" filterable clearable style="width: 100%">
-            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
-          </el-select>
+          <el-input :model-value="operatorName" disabled />
         </el-form-item>
         <el-form-item label="备注"><el-input v-model="defectForm.remark" type="textarea" :rows="2" /></el-form-item>
       </el-form>
@@ -108,7 +104,8 @@
 </template>
 
 <script setup name="Qc">
-import { listQc, saveQc, saveDefect, commonBundle, commonEmployees } from '@/api/garment'
+import { listQc, saveQc, saveDefect, commonBundle } from '@/api/garment'
+import { currentOperatorName } from '@/utils/garment'
 
 const showSearch = ref(true)
 
@@ -123,7 +120,8 @@ const qcForm = ref({})
 const defectForm = ref({})
 const qcScanRef = ref()
 const defectScanRef = ref()
-const employees = ref([])
+// 检验人 / 处理人固定为当前登录用户，避免按人统计时串人
+const operatorName = currentOperatorName()
 const queryParams = ref({ pageNum: 1, pageSize: 10, bundleNo: undefined, styleNo: undefined })
 
 function getList() {
@@ -163,7 +161,7 @@ function syncQualified() {
   qcForm.value.qualifiedQty = Math.max(0, Number(qcForm.value.checkQty || 0) - Number(qcForm.value.defectQty || 0))
 }
 function openQc() {
-  qcForm.value = { code: '', bundleId: null, checkQty: 1, defectQty: 0, qualifiedQty: 1, defectReason: '', inspector: '' }
+  qcForm.value = { code: '', bundleId: null, checkQty: 1, defectQty: 0, qualifiedQty: 1, defectReason: '', inspector: operatorName }
   qcOpen.value = true
   // 扫码枪：弹窗打开后自动聚焦扎卡条码输入框
   setTimeout(() => focusScan(qcScanRef), 200)
@@ -177,7 +175,7 @@ function submitQc() {
   })
 }
 function openDefect() {
-  defectForm.value = { code: '', bundleId: null, defectType: '补片', qty: 1, handler: '', remark: '' }
+  defectForm.value = { code: '', bundleId: null, defectType: '补片', qty: 1, handler: operatorName, remark: '' }
   defectOpen.value = true
   setTimeout(() => focusScan(defectScanRef), 200)
 }
@@ -195,7 +193,6 @@ function submitDefect() {
 }
 
 getList()
-commonEmployees().then(res => { employees.value = res.data || [] })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
 let _pageActivated = false

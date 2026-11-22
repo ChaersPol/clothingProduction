@@ -4,9 +4,7 @@
       <template #header><span>扫码领片</span></template>
       <el-form class="scan-bar" :inline="true" @submit.prevent>
         <el-form-item label="员工" required>
-          <el-select v-model="employee" placeholder="选择领片员工" filterable style="width: 180px">
-            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
-          </el-select>
+          <el-input :model-value="operatorName" disabled style="width: 180px" />
         </el-form-item>
         <el-form-item label="扎卡条码" class="scan-input">
           <el-input ref="scanRef" v-model="scanCode" placeholder="扫描扎卡条码后回车领片" clearable @keyup.enter="doPick" />
@@ -19,9 +17,7 @@
 
     <el-form v-show="showSearch" class="search-form" :inline="true">
       <el-form-item label="员工" prop="employee">
-        <el-select v-model="queryParams.employee" placeholder="员工" clearable filterable style="width: 130px">
-          <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
-        </el-select>
+        <el-input :model-value="operatorName" disabled style="width: 130px" />
       </el-form-item>
       <el-form-item label="扎号" prop="bundleNo">
         <el-input v-model="queryParams.bundleNo" placeholder="扎号" clearable style="width: 120px" @keyup.enter="handleQuery" />
@@ -55,24 +51,25 @@
 </template>
 
 <script setup name="Pick">
-import { pickBundle, listPicks, commonEmployees } from '@/api/garment'
+import { pickBundle, listPicks } from '@/api/garment'
+import { currentOperatorName } from '@/utils/garment'
 
 const showSearch = ref(true)
 
 const { proxy } = getCurrentInstance()
-const employees = ref([])
-const employee = ref('')
+// 领片人固定为当前登录用户，不允许代选，列表也只展示自己的领片记录，避免产量统计串人
+const operatorName = currentOperatorName()
 const scanCode = ref('')
 const scanRef = ref()
 const pickList = ref([])
 const loading = ref(false)
 const total = ref(0)
 const dateRange = ref([])
-const queryParams = ref({ pageNum: 1, pageSize: 10, employee: undefined, bundleNo: undefined })
+const queryParams = ref({ pageNum: 1, pageSize: 10, bundleNo: undefined })
 
 function getList() {
   loading.value = true
-  const params = { ...queryParams.value }
+  const params = { ...queryParams.value, employee: operatorName }
   if (dateRange.value && dateRange.value.length === 2) {
     params.params = { beginDate: dateRange.value[0], endDate: dateRange.value[1] }
   }
@@ -83,11 +80,11 @@ function getList() {
   }).catch(() => { loading.value = false })
 }
 function handleQuery() { queryParams.value.pageNum = 1; getList() }
-function resetQuery() { queryParams.value.employee = undefined; queryParams.value.bundleNo = undefined; dateRange.value = []; handleQuery() }
+function resetQuery() { queryParams.value.bundleNo = undefined; dateRange.value = []; handleQuery() }
 function doPick() {
-  if (!employee.value) { proxy.$modal.msgWarning('请先选择员工'); return }
+  if (!operatorName) { proxy.$modal.msgWarning('未获取到当前登录用户'); return }
   if (!scanCode.value) { proxy.$modal.msgWarning('请扫描扎卡条码'); return }
-  pickBundle({ code: scanCode.value.trim(), employee: employee.value }).then(res => {
+  pickBundle({ code: scanCode.value.trim(), employee: operatorName }).then(res => {
     const b = res.data || {}
     proxy.$modal.msgSuccess(`领片成功：${b.bundleNo || ''} ${b.styleNo || ''} ${b.color || ''}/${b.size || ''} ${b.qty || ''}件`)
     scanCode.value = ''
@@ -95,17 +92,13 @@ function doPick() {
     getList()
   })
 }
-// 扫码枪：选好员工后自动聚焦扫码框，领片成功继续保持焦点，支持连续扫描
+// 扫码枪：页面进入后自动聚焦扫码框，领片成功继续保持焦点，支持连续扫描
 function focusScan() {
   nextTick(() => { if (scanRef.value) scanRef.value.focus() })
 }
 
 getList()
-commonEmployees().then(res => {
-  employees.value = res.data || []
-  if (employees.value.length) employee.value = employees.value[0].name
-  focusScan()
-})
+focusScan()
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
 let _pageActivated = false

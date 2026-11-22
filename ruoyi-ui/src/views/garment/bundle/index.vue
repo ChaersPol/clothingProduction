@@ -116,9 +116,7 @@
         </el-form-item>
         <el-form-item label="数量"><el-input-number v-model="patchForm.qty" :min="1" controls-position="right" style="width: 100%" /></el-form-item>
         <el-form-item label="处理人">
-          <el-select v-model="patchForm.handler" placeholder="选择处理人" filterable clearable style="width: 100%">
-            <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
-          </el-select>
+          <el-input :model-value="operatorName" disabled style="width: 100%" />
         </el-form-item>
         <el-form-item label="备注"><el-input v-model="patchForm.remark" type="textarea" :rows="2" /></el-form-item>
       </el-form>
@@ -133,7 +131,8 @@
 <script setup name="Bundle">
 import { useRoute } from 'vue-router'
 import JsBarcode from 'jsbarcode'
-import { listBundle, listCutOrder, autoBundle, bundleStockIn, patchBundle, delBundle, commonEmployees } from '@/api/garment'
+import { listBundle, listCutOrder, autoBundle, bundleStockIn, patchBundle, delBundle } from '@/api/garment'
+import { currentOperatorName } from '@/utils/garment'
 
 const showSearch = ref(true)
 
@@ -163,7 +162,8 @@ const route = useRoute()
 const statusMap = { '0': '已开扎', '1': '裁片在库', '2': '产线中', '3': '已完工' }
 const bundleList = ref([])
 const cutOrders = ref([])
-const employees = ref([])
+// 补片 / 报废处理人固定为当前登录用户
+const operatorName = currentOperatorName()
 const loading = ref(false)
 const total = ref(0)
 const scanCode = ref('')
@@ -238,7 +238,7 @@ function submitAuto() {
   })
 }
 function openPatch(row) {
-  patchForm.value = { bundleId: row.bundleId, bundleNo: row.bundleNo, defectType: '补片', qty: 1, handler: '', remark: '' }
+  patchForm.value = { bundleId: row.bundleId, bundleNo: row.bundleNo, defectType: '补片', qty: 1, handler: operatorName, remark: '' }
   patchOpen.value = true
 }
 function submitPatch() {
@@ -259,7 +259,6 @@ function handleDelete(row) {
   }).catch(() => {})
 }
 
-commonEmployees().then(res => { employees.value = res.data || [] })
 loadCuts().then(() => {
   if (route.query.cutId) {
     autoForm.value.cutId = Number(route.query.cutId)
