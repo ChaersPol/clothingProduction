@@ -13,6 +13,9 @@
           <el-button type="primary" icon="Search" v-hasPermi="['garment:pick:add']" @click="doPick">确认领片</el-button>
         </el-form-item>
       </el-form>
+      <div v-if="route.query.code" class="muted" style="margin-top: 6px">
+        已从二维码带入扎号 {{ route.query.code }}，确认员工无误后点击「确认领片」
+      </div>
     </el-card>
 
     <el-form v-show="showSearch" class="search-form" :inline="true">
@@ -57,6 +60,7 @@ import { currentOperatorName } from '@/utils/garment'
 const showSearch = ref(true)
 
 const { proxy } = getCurrentInstance()
+const route = useRoute()
 // 领片人固定为当前登录用户，不允许代选，列表也只展示自己的领片记录，避免产量统计串人
 const operatorName = currentOperatorName()
 const scanCode = ref('')
@@ -88,10 +92,18 @@ function doPick() {
     const b = res.data || {}
     proxy.$modal.msgSuccess(`领片成功：${b.bundleNo || ''} ${b.styleNo || ''} ${b.color || ''}/${b.size || ''} ${b.qty || ''}件`)
     scanCode.value = ''
+    if (route.query.code) proxy.$router.replace({ path: route.path, query: {} })
     focusScan()
     getList()
   })
 }
+
+// 手机系统相机扫扎卡上的二维码后打开本页，自动带入扎号
+watch(() => route.query.code, code => {
+  if (!code) return
+  scanCode.value = String(code)
+  focusScan()
+}, { immediate: true })
 // 扫码枪：页面进入后自动聚焦扫码框，领片成功继续保持焦点，支持连续扫描
 function focusScan() {
   nextTick(() => { if (scanRef.value) scanRef.value.focus() })

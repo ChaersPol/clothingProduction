@@ -86,6 +86,7 @@
           <div class="label-attr">{{ item.color }} / {{ item.size }}</div>
           <div class="label-barcode">
             <svg :ref="el => setBarcodeRef(el, item.barcode)"></svg>
+            <canvas class="label-qr" :ref="el => setQrRef(el, outboundUrl(item.barcode))"></canvas>
           </div>
           <div class="label-code">{{ item.barcode }}</div>
         </template>
@@ -97,6 +98,7 @@
 
 <script setup name="Label">
 import JsBarcode from 'jsbarcode'
+import QRCode from 'qrcode'
 import { labelList } from '@/api/garment'
 
 const PRINT_KEY = 'garment:label-print-settings'
@@ -148,6 +150,12 @@ const loading = ref(false)
 const total = ref(0)
 const queryParams = ref({ pageNum: 1, pageSize: 20, styleNo: undefined, color: undefined, size: undefined, barcode: undefined })
 const barcodeRefs = []
+const qrRefs = []
+
+// 手机系统相机扫标签二维码后直接打开成品出库页并带入条码，无需 HTTPS 摄像头权限
+function outboundUrl(code) {
+  return `${window.location.origin}/warehouse/outbound?barcode=${encodeURIComponent(code)}`
+}
 
 function getList() {
   loading.value = true
@@ -162,6 +170,9 @@ function resetQuery() { proxy.resetForm('queryRef'); handleQuery() }
 function setBarcodeRef(el, code) {
   if (el) barcodeRefs.push({ el, code })
 }
+function setQrRef(el, url) {
+  if (el) qrRefs.push({ el, url })
+}
 function renderBarcodes(done) {
   nextTick(() => {
     barcodeRefs.forEach(({ el, code }) => {
@@ -170,6 +181,10 @@ function renderBarcodes(done) {
       } catch (e) { /* 忽略非法条码 */ }
     })
     barcodeRefs.length = 0
+    qrRefs.forEach(({ el, url }) => {
+      QRCode.toCanvas(el, url, { width: 96, margin: 0 }).catch(() => {})
+    })
+    qrRefs.length = 0
     if (done) done()
   })
 }
@@ -243,7 +258,13 @@ onActivated(() => {
   .label-card .label-name { font-size: 9px; white-space: nowrap; overflow: hidden; }
   .label-card .label-attr { font-size: 9px; }
   .label-card .label-code { font-size: 7px; letter-spacing: 0.5px; }
-  .label-card svg { width: 100%; height: 8mm; }
+  .label-card .label-barcode {
+    display: flex;
+    align-items: center;
+    gap: 1mm;
+  }
+  .label-card .label-barcode svg { flex: 1; width: auto; height: 8mm; }
+  .label-card .label-qr { flex: none; width: 9mm; height: 9mm; }
   /* 厂内标签：内容垂直居中并撑满标签 */
   .label-card.factory-card {
     height: var(--lh, 30mm);

@@ -80,6 +80,10 @@
         <div class="card-title">服装厂扎卡</div>
         <div class="card-no">{{ b.bundleNo }}</div>
         <svg class="card-barcode" :data-code="b.bundleNo"></svg>
+        <div class="card-qr-wrap">
+          <canvas class="card-qr" :data-url="b.qrUrl"></canvas>
+          <div class="card-qr-tip">手机扫码领片</div>
+        </div>
         <div class="card-row">{{ b.styleNo }} / {{ b.color }} / {{ b.size }}</div>
         <div class="card-row">数量：{{ b.qty }} 件</div>
         <div class="card-row">裁货单：{{ b.cutNo }}</div>
@@ -131,6 +135,7 @@
 <script setup name="Bundle">
 import { useRoute } from 'vue-router'
 import JsBarcode from 'jsbarcode'
+import QRCode from 'qrcode'
 import { listBundle, listCutOrder, autoBundle, bundleStockIn, patchBundle, delBundle } from '@/api/garment'
 import { currentOperatorName } from '@/utils/garment'
 
@@ -147,11 +152,19 @@ function handleSelectionChange(selection) {
   multiple.value = !selection.length
 }
 
+// 手机系统相机扫码后直接打开领片页并带入扎号，无需 HTTPS 摄像头权限
+function pickUrl(code) {
+  return `${window.location.origin}/workshop/pick?code=${encodeURIComponent(code)}`
+}
+
 function printCards() {
-  printRows.value = [...selectedRows.value]
+  printRows.value = selectedRows.value.map(r => ({ ...r, qrUrl: pickUrl(r.bundleNo) }))
   nextTick(() => {
     document.querySelectorAll('#bundle-print-area .card-barcode').forEach(svg => {
       JsBarcode(svg, svg.dataset.code, { format: 'CODE128', width: 1.6, height: 46, displayValue: false, margin: 0 })
+    })
+    document.querySelectorAll('#bundle-print-area .card-qr').forEach(canvas => {
+      QRCode.toCanvas(canvas, canvas.dataset.url, { width: 120, margin: 1 }).catch(() => {})
     })
     setTimeout(() => window.print(), 300)
   })
@@ -316,6 +329,17 @@ onMounted(focusScan)
   .bundle-card .card-barcode {
     width: 100%;
     height: 52px;
+  }
+  .bundle-card .card-qr-wrap {
+    margin-top: 6px;
+  }
+  .bundle-card .card-qr {
+    width: 30mm;
+    height: 30mm;
+  }
+  .bundle-card .card-qr-tip {
+    font-size: 10px;
+    line-height: 1.4;
   }
   .bundle-card .card-row {
     font-size: 13px;

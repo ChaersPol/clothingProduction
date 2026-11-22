@@ -122,6 +122,7 @@
 
 <script setup name="Outbound">
 import { listOutbound, getOutbound, addOutbound, cancelOutbound, skuByBarcode } from '@/api/garment'
+import { checkPermi } from '@/utils/permission'
 
 const showSearch = ref(true)
 
@@ -145,6 +146,36 @@ watch(() => route.query, q => {
   dateRange.value = q.beginDate ? [q.beginDate, q.endDate || q.beginDate] : []
   queryParams.value.pageNum = 1
   getList()
+}, { immediate: true })
+
+// 手机相机扫商品标签二维码后打开本页：自动开单并加入该条码，草稿 2 小时内有效，可连续扫码累加
+const DRAFT_KEY = 'garment:outbound-draft'
+function loadDraft() {
+  try {
+    const d = JSON.parse(localStorage.getItem(DRAFT_KEY))
+    if (d && d.time && Date.now() - d.time < 2 * 60 * 60 * 1000 && Array.isArray(d.form?.items)) return d.form
+  } catch (e) { /* 忽略损坏草稿 */ }
+  return null
+}
+function saveDraft() {
+  localStorage.setItem(DRAFT_KEY, JSON.stringify({ time: Date.now(), form: form.value }))
+}
+function clearDraft() {
+  localStorage.removeItem(DRAFT_KEY)
+}
+watch(() => route.query.barcode, code => {
+  if (!code) return
+  if (!checkPermi(['garment:outbound:add'])) { proxy.$modal.msgWarning('没有成品出库开单权限'); return }
+  form.value = loadDraft() || { customer: '', outboundDate: today(), items: [] }
+  scanBarcode.value = String(code)
+  open.value = true
+  setTimeout(async () => {
+    const ok = await addByBarcode()
+    if (ok) saveDraft()
+    const q = { ...route.query }
+    delete q.barcode
+    proxy.$router.replace({ path: route.path, query: q })
+  }, 250)
 }, { immediate: true })
 
 const formTotal = computed(() => (form.value.items || []).reduce((s, i) => s + Number(i.price || 0) * Number(i.qty || 0), 0).toFixed(2))
@@ -184,10 +215,10 @@ function focusScan() {
   nextTick(() => { if (scanRef.value) scanRef.value.focus() })
 }
 function addByBarcode() {
-  if (!scanBarcode.value) return
-  skuByBarcode(scanBarcode.value.trim()).then(res => {
+  if (!scanBarcode.value) return Promise.resolve(false)
+  return skuByBarcode(scanBarcode.value.trim()).then(res => {
     const sku = res.data
-    if (!sku) { proxy.$modal.msgWarning('条码不存在'); return }
+    if (!sku) { proxy.$modal.msgWarning('条码不存在'); return false }
     const exist = form.value.items.find(i => i.skuId === sku.skuId)
     if (exist) {
       exist.qty += 1
@@ -199,12 +230,14 @@ function addByBarcode() {
     }
     scanBarcode.value = ''
     focusScan()
+    return true
   })
 }
 function submitForm() {
   if (!form.value.items.length) { proxy.$modal.msgWarning('请录入出库明细'); return }
   addOutbound(form.value).then(() => {
     proxy.$modal.msgSuccess('出库成功')
+    clearDraft()
     open.value = false
     getList()
   })
