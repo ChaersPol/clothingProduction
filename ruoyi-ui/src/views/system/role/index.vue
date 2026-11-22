@@ -100,12 +100,17 @@
          <el-table-column label="显示顺序" prop="roleSort" width="100" />
          <el-table-column label="状态" align="center" width="100">
             <template #default="scope">
-               <el-switch
-                  v-model="scope.row.status"
-                  active-value="0"
-                  inactive-value="1"
-                  @change="handleStatusChange(scope.row)"
-               ></el-switch>
+               <el-tooltip :disabled="!isBuiltinRole(scope.row)" content="系统管理员为内置角色，不可停用" placement="top">
+                  <span>
+                     <el-switch
+                        v-model="scope.row.status"
+                        active-value="0"
+                        inactive-value="1"
+                        :disabled="isBuiltinRole(scope.row)"
+                        @change="handleStatusChange(scope.row)"
+                     ></el-switch>
+                  </span>
+               </el-tooltip>
             </template>
          </el-table-column>
          <el-table-column label="创建时间" align="center" prop="createTime">
@@ -118,7 +123,7 @@
               <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1">
                 <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:role:edit']"></el-button>
               </el-tooltip>
-              <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1">
+              <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1 && !isBuiltinRole(scope.row)">
                 <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:role:remove']"></el-button>
               </el-tooltip>
               <el-tooltip content="数据权限" placement="top" v-if="scope.row.roleId !== 1">
@@ -342,6 +347,11 @@ function handleSelectionChange(selection) {
   ids.value = selection.map(item => item.roleId)
   single.value = selection.length != 1
   multiple.value = !selection.length
+}
+
+/** 系统管理员为内置角色：不可停用、不可删除 */
+function isBuiltinRole(row) {
+  return row.roleKey === 'sysadmin'
 }
 
 /** 角色状态修改 */
