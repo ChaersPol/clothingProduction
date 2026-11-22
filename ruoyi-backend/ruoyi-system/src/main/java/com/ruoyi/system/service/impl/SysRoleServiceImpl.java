@@ -44,6 +44,22 @@ public class SysRoleServiceImpl implements ISysRoleService
     @Autowired
     private SysRoleDeptMapper roleDeptMapper;
 
+    /** 客户侧系统管理员角色标识（内置角色，锁定保护） */
+    private static final String SYS_ADMIN_ROLE_KEY = "sysadmin";
+
+    /**
+     * 判断是否为内置的系统管理员角色
+     */
+    private boolean isSysAdminRole(Long roleId)
+    {
+        if (StringUtils.isNull(roleId))
+        {
+            return false;
+        }
+        SysRole role = roleMapper.selectRoleById(roleId);
+        return StringUtils.isNotNull(role) && SYS_ADMIN_ROLE_KEY.equals(role.getRoleKey());
+    }
+
     /**
      * 根据条件分页查询角色数据
      * 
@@ -248,6 +264,11 @@ public class SysRoleServiceImpl implements ISysRoleService
     @Transactional
     public int updateRole(SysRole role)
     {
+        // 系统管理员为内置角色，不允许修改角色标识，避免绕过锁定保护
+        if (isSysAdminRole(role.getRoleId()))
+        {
+            role.setRoleKey(null);
+        }
         // 修改角色信息
         roleMapper.updateRole(role);
         // 删除角色与菜单关联
@@ -264,6 +285,11 @@ public class SysRoleServiceImpl implements ISysRoleService
     @Override
     public int updateRoleStatus(SysRole role)
     {
+        // 系统管理员为内置角色，不允许停用
+        if ("1".equals(role.getStatus()) && isSysAdminRole(role.getRoleId()))
+        {
+            throw new ServiceException("系统管理员为内置角色，不允许停用");
+        }
         return roleMapper.updateRole(role);
     }
 
@@ -363,6 +389,10 @@ public class SysRoleServiceImpl implements ISysRoleService
         for (Long roleId : roleIds)
         {
             checkRoleAllowed(new SysRole(roleId));
+            if (isSysAdminRole(roleId))
+            {
+                throw new ServiceException("系统管理员为内置角色，不允许删除");
+            }
             checkRoleDataScope(roleId);
             SysRole role = selectRoleById(roleId);
             if (countUserRoleByRoleId(roleId) > 0)
