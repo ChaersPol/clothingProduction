@@ -23,14 +23,18 @@
       <el-col :span="1.5">
         <el-button type="primary" icon="Printer" v-hasPermi="['garment:label:print']" :disabled="!selection.length" @click="handlePrint">打印标签</el-button>
       </el-col>
-      <el-col :span="6" style="display: flex; align-items: center">
+      <el-col :span="3" style="display: flex; align-items: center; gap: 6px">
+        <span class="muted">份数</span>
+        <el-input-number v-model="copies" :min="1" :max="500" size="small" controls-position="right" style="width: 100px" />
+      </el-col>
+      <el-col :span="5" style="display: flex; align-items: center">
         <el-radio-group v-model="labelType" size="small">
           <el-radio-button value="FACTORY">厂内标签</el-radio-button>
           <el-radio-button value="PRODUCT">成品标签</el-radio-button>
         </el-radio-group>
       </el-col>
       <el-col :span="4" style="display: flex; align-items: center">
-        <span class="muted">已选 {{ selection.length }} 个 SKU</span>
+        <span class="muted">已选 {{ selection.length }} 个 SKU，共 {{ selection.length * copies }} 张</span>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -56,7 +60,7 @@
 
     <!-- 打印区域 -->
     <div id="label-print-area">
-      <div v-for="item in printItems" :key="item.skuId" class="label-card" :class="{ 'factory-card': labelType === 'FACTORY' }">
+      <div v-for="item in printItems" :key="item._key" class="label-card" :class="{ 'factory-card': labelType === 'FACTORY' }">
         <template v-if="labelType === 'FACTORY'">
           <div class="label-name factory-name">{{ item.cnName }}</div>
           <div class="label-attr factory-attr">{{ item.styleNo }}-{{ item.color }}-{{ item.size }}</div>
@@ -81,6 +85,7 @@ import { labelList } from '@/api/garment'
 
 const showSearch = ref(true)
 const labelType = ref('FACTORY')
+const copies = ref(1)
 
 const { proxy } = getCurrentInstance()
 const skuList = ref([])
@@ -114,13 +119,17 @@ function renderBarcodes() {
     barcodeRefs.length = 0
   })
 }
+function expandCopies(rows) {
+  const n = Math.max(1, Number(copies.value) || 1)
+  return rows.flatMap(row => Array.from({ length: n }, (_, i) => ({ ...row, _key: `${row.skuId}-${i}` })))
+}
 function handlePrint() {
-  printItems.value = selection.value
+  printItems.value = expandCopies(selection.value)
   renderBarcodes()
   setTimeout(() => window.print(), 300)
 }
 function printOne(row) {
-  printItems.value = [row]
+  printItems.value = expandCopies([row])
   renderBarcodes()
   setTimeout(() => window.print(), 300)
 }
