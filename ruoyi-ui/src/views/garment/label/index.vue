@@ -25,7 +25,7 @@
       </el-col>
       <el-col :span="3" style="display: flex; align-items: center; gap: 6px">
         <span class="muted">份数</span>
-        <el-input-number v-model="copies" :min="1" :max="500" size="small" controls-position="right" style="width: 100px" />
+        <el-input-number v-model="copies" :min="1" size="small" controls-position="right" style="width: 100px" />
       </el-col>
       <el-col :span="5" style="display: flex; align-items: center">
         <el-radio-group v-model="labelType" size="small">
@@ -58,8 +58,9 @@
 
     <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
 
-    <!-- 打印区域 -->
-    <div id="label-print-area">
+    <!-- 打印区域：挂到 body 下，打印时隐藏其余内容并自动分页 -->
+    <teleport to="body">
+      <div id="label-print-area">
       <div v-for="item in printItems" :key="item._key" class="label-card" :class="{ 'factory-card': labelType === 'FACTORY' }">
         <template v-if="labelType === 'FACTORY'">
           <div class="label-name factory-name">{{ item.cnName }}</div>
@@ -75,7 +76,8 @@
           <div class="label-code">{{ item.barcode }}</div>
         </template>
       </div>
-    </div>
+      </div>
+    </teleport>
   </div>
 </template>
 
@@ -109,7 +111,7 @@ function resetQuery() { proxy.resetForm('queryRef'); handleQuery() }
 function setBarcodeRef(el, code) {
   if (el) barcodeRefs.push({ el, code })
 }
-function renderBarcodes() {
+function renderBarcodes(done) {
   nextTick(() => {
     barcodeRefs.forEach(({ el, code }) => {
       try {
@@ -117,6 +119,7 @@ function renderBarcodes() {
       } catch (e) { /* 忽略非法条码 */ }
     })
     barcodeRefs.length = 0
+    if (done) done()
   })
 }
 function expandCopies(rows) {
@@ -125,13 +128,11 @@ function expandCopies(rows) {
 }
 function handlePrint() {
   printItems.value = expandCopies(selection.value)
-  renderBarcodes()
-  setTimeout(() => window.print(), 300)
+  renderBarcodes(() => setTimeout(() => window.print(), 60))
 }
 function printOne(row) {
   printItems.value = expandCopies([row])
-  renderBarcodes()
-  setTimeout(() => window.print(), 300)
+  renderBarcodes(() => setTimeout(() => window.print(), 60))
 }
 
 getList()
@@ -154,18 +155,20 @@ onActivated(() => {
 }
 @media print {
   #label-print-area {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4mm;
+    display: block;
   }
   .label-card {
+    display: inline-block;
+    vertical-align: top;
     width: 50mm;
     height: 30mm;
     border: 1px dashed #999;
     padding: 2mm;
+    margin: 0 3mm 3mm 0;
     box-sizing: border-box;
     text-align: center;
     page-break-inside: avoid;
+    break-inside: avoid;
   }
   .label-card .label-style { font-size: 11px; font-weight: bold; }
   .label-card .label-name { font-size: 9px; white-space: nowrap; overflow: hidden; }

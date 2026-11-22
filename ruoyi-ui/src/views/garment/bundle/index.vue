@@ -73,7 +73,9 @@
     </div>
     <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
 
-    <div id="bundle-print-area">
+    <!-- 打印区域：挂到 body 下，打印时隐藏其余内容并自动分页 -->
+    <teleport to="body">
+      <div id="bundle-print-area">
       <div v-for="b in printRows" :key="b.bundleId" class="bundle-card">
         <div class="card-title">服装厂扎卡</div>
         <div class="card-no">{{ b.bundleNo }}</div>
@@ -82,7 +84,8 @@
         <div class="card-row">数量：{{ b.qty }} 件</div>
         <div class="card-row">裁货单：{{ b.cutNo }}</div>
       </div>
-    </div>
+      </div>
+    </teleport>
 
     <el-dialog title="自动分扎" v-model="autoOpen" width="520px" append-to-body>
       <el-form label-width="100px">
@@ -278,17 +281,20 @@ onActivated(() => {
 
 @media print {
   #bundle-print-area {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    display: block;
   }
   .bundle-card {
+    display: inline-block;
+    vertical-align: top;
     width: 46%;
+    margin: 0 2% 10px 0;
+    box-sizing: border-box;
     border: 1px solid #000;
     border-radius: 6px;
     padding: 10px 12px;
     text-align: center;
     page-break-inside: avoid;
+    break-inside: avoid;
   }
   .bundle-card .card-title {
     font-size: 14px;

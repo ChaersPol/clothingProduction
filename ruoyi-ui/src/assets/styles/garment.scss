@@ -323,14 +323,12 @@
 
 /* 打印标签 */
 @media print {
-  body * { visibility: hidden; }
-  #label-print-area, #label-print-area *,
-  #bundle-print-area, #bundle-print-area * { visibility: visible; }
+  body { margin: 0 !important; }
+  /* 打印区域已 teleport 到 body 下，隐藏其余内容，避免空白页并保证正常分页 */
+  body > *:not(#label-print-area):not(#bundle-print-area) { display: none !important; }
   #label-print-area,
   #bundle-print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
+    display: block !important;
     width: 100%;
   }
 }
