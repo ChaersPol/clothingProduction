@@ -18,17 +18,17 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd">退货入库</el-button>
+        <el-button type="primary" plain icon="Plus" v-hasPermi="['garment:return:add']" @click="handleAdd">退货入库</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" plain icon="Delete" v-hasPermi="['garment:return:remove']" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <div class="table-wrap">
       <el-table v-loading="loading" :data="returnList" border show-summary :summary-method="getSummary" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="50" align="center" />
+            <el-table-column v-if="checkPermi(['garment:return:remove'])" type="selection" width="50" align="center" />
             
         <el-table-column label="退货单号" prop="returnNo" width="150" />
         <el-table-column label="客户" prop="customer" min-width="120" />
@@ -41,9 +41,9 @@
         <el-table-column label="退货原因" prop="reason" min-width="140" show-overflow-tooltip />
         <el-table-column label="退货日期" prop="returnDate" width="110" />
         <el-table-column label="操作人" prop="operator" width="100" />
-        <el-table-column label="操作" class-name="op-cell" width="90" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:return:remove'])" label="操作" class-name="op-cell" width="90" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="danger" @click="handleDelete(s.row)">删除</el-button>
+            <el-button link type="danger" v-hasPermi="['garment:return:remove']" @click="handleDelete(s.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -41,7 +41,7 @@ public class BizReturnController extends BaseController
         util.exportExcel(response, list, "退货入库");
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:return:list')")
+    @PreAuthorize("@ss.hasPermi('garment:return:add')")
     @Log(title = "退货入库", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody BizReturn ret)
@@ -49,7 +49,7 @@ public class BizReturnController extends BaseController
         return toAjax(warehouseService.saveReturn(ret));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:return:list')")
+    @PreAuthorize("@ss.hasPermi('garment:return:remove')")
     @Log(title = "退货入库", businessType = BusinessType.DELETE)
     @DeleteMapping("/{returnIds}")
     public AjaxResult remove(@PathVariable Long[] returnIds)

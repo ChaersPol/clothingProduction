@@ -25,7 +25,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="Upload" @click="submitStockIn">包装入库</el-button>
+          <el-button type="primary" icon="Upload" v-hasPermi="['garment:packing:add']" @click="submitStockIn">包装入库</el-button>
         </el-form-item>
       </el-form>
       <div v-if="bundleInfo" class="muted" style="margin-top: 6px">

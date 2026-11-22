@@ -43,21 +43,21 @@ public class BizBasicsController extends BaseController
         return getDataTable(goodsService.selectColorList(color));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:basics:list')")
+    @PreAuthorize("@ss.hasPermi('garment:basics:add')")
     @PostMapping("/color")
     public AjaxResult addColor(@RequestBody BizColor color)
     {
         return toAjax(goodsService.saveColor(color));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:basics:list')")
+    @PreAuthorize("@ss.hasPermi('garment:basics:edit')")
     @PutMapping("/color")
     public AjaxResult editColor(@RequestBody BizColor color)
     {
         return toAjax(goodsService.saveColor(color));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:basics:list')")
+    @PreAuthorize("@ss.hasPermi('garment:basics:remove')")
     @DeleteMapping("/color/{colorIds}")
     public AjaxResult delColor(@PathVariable Long[] colorIds)
     {
@@ -76,21 +76,21 @@ public class BizBasicsController extends BaseController
         return getDataTable(goodsService.selectSizeList(size));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:basics:list')")
+    @PreAuthorize("@ss.hasPermi('garment:basics:add')")
     @PostMapping("/size")
     public AjaxResult addSize(@RequestBody BizSize size)
     {
         return toAjax(goodsService.saveSize(size));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:basics:list')")
+    @PreAuthorize("@ss.hasPermi('garment:basics:edit')")
     @PutMapping("/size")
     public AjaxResult editSize(@RequestBody BizSize size)
     {
         return toAjax(goodsService.saveSize(size));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:basics:list')")
+    @PreAuthorize("@ss.hasPermi('garment:basics:remove')")
     @DeleteMapping("/size/{sizeIds}")
     public AjaxResult delSize(@PathVariable Long[] sizeIds)
     {

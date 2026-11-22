@@ -38,7 +38,7 @@ public class BizMaterialController extends BaseController
         return getDataTable(materialService.selectLogs(query));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:material:list')")
+    @PreAuthorize("@ss.hasPermi('garment:material:edit')")
     @PutMapping("/adjust")
     public AjaxResult adjust(@RequestBody Map<String, Object> body)
     {

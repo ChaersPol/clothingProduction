@@ -7,8 +7,8 @@
           <el-input v-model="scanCode" placeholder="扫描扎卡条码或扎号后回车" clearable @keyup.enter="doStockIn" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="Upload" @click="doStockIn">裁片入库</el-button>
-          <el-button icon="MagicStick" @click="autoOpen = true">自动分扎</el-button>
+          <el-button type="primary" icon="Upload" v-hasPermi="['garment:bundle:edit']" @click="doStockIn">裁片入库</el-button>
+          <el-button icon="MagicStick" v-hasPermi="['garment:bundle:add']" @click="autoOpen = true">自动分扎</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -39,14 +39,14 @@
         <el-button type="primary" plain icon="Printer" :disabled="multiple" @click="printCards">打印扎卡</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" plain icon="Delete" v-hasPermi="['garment:bundle:remove']" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <div class="table-wrap">
       <el-table v-loading="loading" :data="bundleList" border @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="50" align="center" />
+        <el-table-column v-if="checkPermi(['garment:bundle:remove'])" type="selection" width="50" align="center" />
         <el-table-column label="扎号" prop="bundleNo" width="150" fixed="left" />
         <el-table-column label="裁货单号" prop="cutNo" width="150" />
         <el-table-column label="款号" prop="styleNo" min-width="100" />
@@ -62,11 +62,11 @@
           </template>
         </el-table-column>
         <el-table-column label="领片人" prop="pickupUser" min-width="100" />
-        <el-table-column label="操作" class-name="op-cell" width="220" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:bundle:edit','garment:bundle:remove'])" label="操作" class-name="op-cell" width="220" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" :disabled="s.row.status !== '0'" @click="stockInRow(s.row)">入库</el-button>
-            <el-button link type="warning" @click="openPatch(s.row)">补片/报废</el-button>
-            <el-button link type="danger" @click="handleDelete(s.row)">删除</el-button>
+            <el-button link type="primary" v-hasPermi="['garment:bundle:edit']" :disabled="s.row.status !== '0'" @click="stockInRow(s.row)">入库</el-button>
+            <el-button link type="warning" v-hasPermi="['garment:bundle:edit']" @click="openPatch(s.row)">补片/报废</el-button>
+            <el-button link type="danger" v-hasPermi="['garment:bundle:remove']" @click="handleDelete(s.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

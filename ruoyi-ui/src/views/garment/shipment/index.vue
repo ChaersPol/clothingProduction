@@ -18,10 +18,10 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd">新增出货</el-button>
+        <el-button type="primary" plain icon="Plus" v-hasPermi="['garment:shipment:add']" @click="handleAdd">新增出货</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" plain icon="Delete" v-hasPermi="['garment:shipment:remove']" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="primary" plain icon="Download" @click="handleExport">导出</el-button>
@@ -40,7 +40,7 @@
 
     <div class="table-wrap">
       <el-table v-loading="loading" :data="shipmentList" border show-summary :summary-method="getSummary" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="50" align="center" />
+            <el-table-column v-if="checkPermi(['garment:shipment:remove'])" type="selection" width="50" align="center" />
             
         <el-table-column label="出货日期" prop="shipDate" width="110" />
         <el-table-column label="客户" prop="customer" min-width="130" show-overflow-tooltip />
@@ -57,10 +57,10 @@
             <el-tag v-else type="info" size="small">未出库</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" class-name="op-cell" width="130" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:shipment:edit','garment:shipment:remove'])" label="操作" class-name="op-cell" width="130" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="handleUpdate(s.row)">修改</el-button>
-            <el-button link type="danger" @click="handleDelete(s.row)">删除</el-button>
+            <el-button link type="primary" v-hasPermi="['garment:shipment:edit']" @click="handleUpdate(s.row)">修改</el-button>
+            <el-button link type="danger" v-hasPermi="['garment:shipment:remove']" @click="handleDelete(s.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

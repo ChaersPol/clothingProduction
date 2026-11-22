@@ -65,7 +65,7 @@ public class FinanceController extends BaseController
         return getDataTable(reportService.selectExpenseList(expense));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:expense:list')")
+    @PreAuthorize("@ss.hasPermi('garment:expense:add')")
     @Log(title = "费用登记", businessType = BusinessType.INSERT)
     @PostMapping("/expense")
     public AjaxResult addExpense(@RequestBody BizExpense expense)
@@ -73,7 +73,7 @@ public class FinanceController extends BaseController
         return toAjax(reportService.saveExpense(expense));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:expense:list')")
+    @PreAuthorize("@ss.hasPermi('garment:expense:edit')")
     @Log(title = "费用登记", businessType = BusinessType.UPDATE)
     @PutMapping("/expense")
     public AjaxResult editExpense(@RequestBody BizExpense expense)
@@ -81,7 +81,7 @@ public class FinanceController extends BaseController
         return toAjax(reportService.saveExpense(expense));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:expense:list')")
+    @PreAuthorize("@ss.hasPermi('garment:expense:remove')")
     @Log(title = "费用登记", businessType = BusinessType.DELETE)
     @DeleteMapping("/expense/{expenseIds}")
     public AjaxResult removeExpense(@PathVariable Long[] expenseIds)

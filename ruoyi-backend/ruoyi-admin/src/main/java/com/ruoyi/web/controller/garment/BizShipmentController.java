@@ -48,7 +48,7 @@ public class BizShipmentController extends BaseController
         return success(warehouseService.shipmentSummary(beginDate, endDate));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:shipment:list')")
+    @PreAuthorize("@ss.hasPermi('garment:shipment:add')")
     @Log(title = "出货表", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody BizShipment shipment)
@@ -56,7 +56,7 @@ public class BizShipmentController extends BaseController
         return toAjax(warehouseService.saveShipment(shipment));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:shipment:list')")
+    @PreAuthorize("@ss.hasPermi('garment:shipment:edit')")
     @Log(title = "出货表", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody BizShipment shipment)
@@ -64,7 +64,7 @@ public class BizShipmentController extends BaseController
         return toAjax(warehouseService.saveShipment(shipment));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:shipment:list')")
+    @PreAuthorize("@ss.hasPermi('garment:shipment:remove')")
     @Log(title = "出货表", businessType = BusinessType.DELETE)
     @DeleteMapping("/{shipIds}")
     public AjaxResult remove(@PathVariable Long[] shipIds)

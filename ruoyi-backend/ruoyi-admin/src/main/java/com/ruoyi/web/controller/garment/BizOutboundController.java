@@ -63,7 +63,7 @@ public class BizOutboundController extends BaseController
         return success(warehouseService.selectOutboundById(outboundId));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:outbound:list')")
+    @PreAuthorize("@ss.hasPermi('garment:outbound:add')")
     @Log(title = "成品出库", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody BizOutbound outbound)
@@ -71,7 +71,7 @@ public class BizOutboundController extends BaseController
         return success(warehouseService.saveOutbound(outbound));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:outbound:list')")
+    @PreAuthorize("@ss.hasPermi('garment:outbound:edit')")
     @Log(title = "成品出库作废", businessType = BusinessType.UPDATE)
     @PostMapping("/{outboundId}/cancel")
     public AjaxResult cancel(@PathVariable Long outboundId, @RequestBody Map<String, Object> body)

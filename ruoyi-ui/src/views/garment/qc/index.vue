@@ -18,10 +18,10 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="openQc">新增检验</el-button>
+        <el-button type="primary" plain icon="Plus" v-hasPermi="['garment:qc:add']" @click="openQc">新增检验</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="warning" plain icon="Warning" @click="openDefect">次品登记</el-button>
+        <el-button type="warning" plain icon="Warning" v-hasPermi="['garment:defect:add']" @click="openDefect">次品登记</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>

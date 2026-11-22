@@ -25,7 +25,7 @@ public class FinishingController extends BaseController
     @Autowired
     private ReportService reportService;
 
-    @PreAuthorize("@ss.hasPermi('garment:qc:list')")
+    @PreAuthorize("@ss.hasPermi('garment:qc:add')")
     @PostMapping("/qc")
     public AjaxResult qc(@RequestBody BizQc qc)
     {
@@ -40,7 +40,7 @@ public class FinishingController extends BaseController
         return getDataTable(finishingService.selectQcList(qc));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:qc:list')")
+    @PreAuthorize("@ss.hasPermi('garment:defect:add')")
     @PostMapping("/defect")
     public AjaxResult defect(@RequestBody BizDefect defect)
     {
@@ -55,7 +55,7 @@ public class FinishingController extends BaseController
         return getDataTable(finishingService.selectDefectList(defect));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:packing:list')")
+    @PreAuthorize("@ss.hasPermi('garment:packing:add')")
     @PostMapping("/pack")
     public AjaxResult pack(@RequestBody BizPack pack)
     {
@@ -73,7 +73,7 @@ public class FinishingController extends BaseController
     /**
      * 成品扫码入库（产线蓝 -> 成品黑）
      */
-    @PreAuthorize("@ss.hasPermi('garment:packing:list')")
+    @PreAuthorize("@ss.hasPermi('garment:packing:add')")
     @PostMapping("/stockin")
     public AjaxResult stockIn(@RequestBody Map<String, Object> body)
     {

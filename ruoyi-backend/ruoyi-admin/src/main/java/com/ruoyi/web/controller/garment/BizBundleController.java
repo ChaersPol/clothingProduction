@@ -56,7 +56,7 @@ public class BizBundleController extends BaseController
         return success(cuttingService.selectBundleByCode(code));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:bundle:list')")
+    @PreAuthorize("@ss.hasPermi('garment:bundle:add')")
     @PostMapping("/auto")
     public AjaxResult auto(@RequestBody Map<String, Object> body)
     {
@@ -65,7 +65,7 @@ public class BizBundleController extends BaseController
         return success("自动生成 " + cuttingService.autoBundle(cutId, perBundle) + " 扎");
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:bundle:list')")
+    @PreAuthorize("@ss.hasPermi('garment:bundle:add')")
     @PostMapping
     public AjaxResult add(@RequestBody Map<String, Object> body)
     {
@@ -76,14 +76,14 @@ public class BizBundleController extends BaseController
         return success(cuttingService.addBundle(cutId, color, size, qty));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:bundle:list')")
+    @PreAuthorize("@ss.hasPermi('garment:bundle:edit')")
     @PostMapping("/stockin")
     public AjaxResult stockIn(@RequestBody Map<String, Object> body)
     {
         return success(cuttingService.stockIn(String.valueOf(body.get("code"))));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:bundle:list')")
+    @PreAuthorize("@ss.hasPermi('garment:bundle:edit')")
     @PostMapping("/patch")
     public AjaxResult patch(@RequestBody Map<String, Object> body)
     {
@@ -95,7 +95,7 @@ public class BizBundleController extends BaseController
         return toAjax(cuttingService.patch(bundleId, qty, defectType, handler, remark));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:bundle:list')")
+    @PreAuthorize("@ss.hasPermi('garment:bundle:remove')")
     @DeleteMapping("/{bundleIds}")
     public AjaxResult remove(@PathVariable Long[] bundleIds)
     {

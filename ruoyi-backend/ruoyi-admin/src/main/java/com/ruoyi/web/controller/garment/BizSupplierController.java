@@ -63,7 +63,7 @@ public class BizSupplierController extends BaseController
         return success(supplierMapper.selectSupplierById(supplierId));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:supplier:list')")
+    @PreAuthorize("@ss.hasPermi('garment:supplier:add')")
     @PostMapping
     public AjaxResult add(@RequestBody BizSupplier supplier)
     {
@@ -74,14 +74,14 @@ public class BizSupplierController extends BaseController
         return toAjax(supplierMapper.insertSupplier(supplier));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:supplier:list')")
+    @PreAuthorize("@ss.hasPermi('garment:supplier:edit')")
     @PutMapping
     public AjaxResult edit(@RequestBody BizSupplier supplier)
     {
         return toAjax(supplierMapper.updateSupplier(supplier));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:supplier:list')")
+    @PreAuthorize("@ss.hasPermi('garment:supplier:remove')")
     @DeleteMapping("/{supplierIds}")
     public AjaxResult remove(@PathVariable Long[] supplierIds)
     {

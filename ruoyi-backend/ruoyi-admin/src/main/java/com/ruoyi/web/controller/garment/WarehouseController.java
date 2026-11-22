@@ -72,7 +72,7 @@ public class WarehouseController extends BaseController
         return success(warehouseService.cutSuggestion(styleNo));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:warning:list')")
+    @PreAuthorize("@ss.hasPermi('garment:warning:edit')")
     @PutMapping("/warning/minstock")
     public AjaxResult minStock(@RequestBody Map<String, Object> body)
     {
@@ -97,14 +97,14 @@ public class WarehouseController extends BaseController
         return success(warehouseService.selectCheckById(checkId));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:check:list')")
+    @PreAuthorize("@ss.hasPermi('garment:check:add')")
     @PostMapping("/check")
     public AjaxResult addCheck(@RequestBody BizCheck check, @RequestParam(required = false) String stockType)
     {
         return success(warehouseService.createCheck(check, stockType));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:check:list')")
+    @PreAuthorize("@ss.hasPermi('garment:check:edit')")
     @PutMapping("/check/items")
     public AjaxResult saveCheckItems(@RequestBody Map<String, Object> body)
     {
@@ -126,14 +126,14 @@ public class WarehouseController extends BaseController
         return toAjax(warehouseService.saveCheckItems(checkId, items));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:check:list')")
+    @PreAuthorize("@ss.hasPermi('garment:check:edit')")
     @PostMapping("/check/{checkId}/complete")
     public AjaxResult completeCheck(@PathVariable Long checkId)
     {
         return toAjax(warehouseService.completeCheck(checkId));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:check:list')")
+    @PreAuthorize("@ss.hasPermi('garment:check:remove')")
     @DeleteMapping("/check/{checkIds}")
     public AjaxResult deleteCheck(@PathVariable Long[] checkIds)
     {

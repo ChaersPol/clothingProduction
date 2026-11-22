@@ -61,10 +61,10 @@
                 <el-tag v-else type="success" size="small">正常</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="操作" class-name="op-cell" width="180" align="center" fixed="right">
+            <el-table-column v-if="checkPermi(['garment:material:edit'])" label="操作" class-name="op-cell" width="180" align="center" fixed="right">
               <template #default="s">
-                <el-button link type="primary" @click="handleAdjust(s.row)">库存调整</el-button>
-                <el-button link type="primary" @click="handleMinStock(s.row)">安全库存</el-button>
+                <el-button link type="primary" v-hasPermi="['garment:material:edit']" @click="handleAdjust(s.row)">库存调整</el-button>
+                <el-button link type="primary" v-hasPermi="['garment:material:edit']" @click="handleMinStock(s.row)">安全库存</el-button>
               </template>
             </el-table-column>
           </el-table>

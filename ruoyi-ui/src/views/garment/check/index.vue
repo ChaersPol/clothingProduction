@@ -18,17 +18,17 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="openCreate">新建盘点</el-button>
+        <el-button type="primary" plain icon="Plus" v-hasPermi="['garment:check:add']" @click="openCreate">新建盘点</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" plain icon="Delete" v-hasPermi="['garment:check:remove']" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <div class="table-wrap">
       <el-table v-loading="loading" :data="checkList" border @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="50" align="center" />
+            <el-table-column v-if="checkPermi(['garment:check:remove'])" type="selection" width="50" align="center" />
             
         <el-table-column label="盘点单号" prop="checkNo" width="160" />
         <el-table-column label="盘点日期" prop="checkDate" width="120" />
@@ -39,11 +39,11 @@
           </template>
         </el-table-column>
         <el-table-column label="备注" prop="remark" min-width="180" show-overflow-tooltip />
-        <el-table-column label="操作" class-name="op-cell" width="220" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:check:edit','garment:check:remove'])" label="操作" class-name="op-cell" width="220" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="openItems(s.row)">{{ s.row.status === '1' ? '查看' : '录入实盘' }}</el-button>
-            <el-button link type="success" :disabled="s.row.status === '1'" @click="handleComplete(s.row)">完成盘点</el-button>
-            <el-button link type="danger" @click="handleDelete(s.row)">删除</el-button>
+            <el-button link type="primary" v-hasPermi="['garment:check:edit']" @click="openItems(s.row)">{{ s.row.status === '1' ? '查看' : '录入实盘' }}</el-button>
+            <el-button link type="success" v-hasPermi="['garment:check:edit']" :disabled="s.row.status === '1'" @click="handleComplete(s.row)">完成盘点</el-button>
+            <el-button link type="danger" v-hasPermi="['garment:check:remove']" @click="handleDelete(s.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -68,7 +68,7 @@
         <el-form-item label="备注"><el-input v-model="createForm.remark" type="textarea" :rows="2" /></el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitCreate">生成盘点单</el-button>
+        <el-button type="primary" v-hasPermi="['garment:check:add']" @click="submitCreate">生成盘点单</el-button>
         <el-button @click="createOpen = false">取 消</el-button>
       </template>
     </el-dialog>
@@ -100,7 +100,7 @@
         </el-table>
       </div>
       <template #footer>
-        <el-button v-if="current.status !== '1'" type="primary" @click="saveItems">保存实盘</el-button>
+        <el-button v-if="current.status !== '1'" v-hasPermi="['garment:check:edit']" type="primary" @click="saveItems">保存实盘</el-button>
         <el-button @click="itemsOpen = false">关 闭</el-button>
       </template>
     </el-dialog>

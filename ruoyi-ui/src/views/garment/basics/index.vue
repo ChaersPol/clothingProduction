@@ -4,15 +4,15 @@
       <el-tab-pane label="颜色管理" name="color">
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
-            <el-button type="primary" plain icon="Plus" @click="openColor()">新增颜色</el-button>
+            <el-button type="primary" plain icon="Plus" v-hasPermi="['garment:basics:add']" @click="openColor()">新增颜色</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="danger" plain icon="Delete" :disabled="multipleColor" @click="delColorRow()">删除</el-button>
+            <el-button type="danger" plain icon="Delete" v-hasPermi="['garment:basics:remove']" :disabled="multipleColor" @click="delColorRow()">删除</el-button>
           </el-col>
         </el-row>
         <div class="table-wrap">
           <el-table v-loading="colorLoading" :data="colorList" border @selection-change="handleColorSelectionChange">
-            <el-table-column type="selection" width="50" align="center" />
+            <el-table-column v-if="checkPermi(['garment:basics:remove'])" type="selection" width="50" align="center" />
             <el-table-column label="中文名" prop="cnName" min-width="120" />
             <el-table-column label="英文名" prop="enName" min-width="120" />
             <el-table-column label="色卡" width="120" align="center">
@@ -22,10 +22,10 @@
               </template>
             </el-table-column>
             <el-table-column label="排序" prop="sort" width="80" align="center" />
-            <el-table-column label="操作" class-name="op-cell" width="140" align="center">
+            <el-table-column v-if="checkPermi(['garment:basics:edit','garment:basics:remove'])" label="操作" class-name="op-cell" width="140" align="center">
               <template #default="s">
-                <el-button link type="primary" @click="openColor(s.row)">修改</el-button>
-                <el-button link type="danger" @click="delColorRow(s.row)">删除</el-button>
+                <el-button link type="primary" v-hasPermi="['garment:basics:edit']" @click="openColor(s.row)">修改</el-button>
+                <el-button link type="danger" v-hasPermi="['garment:basics:remove']" @click="delColorRow(s.row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -35,21 +35,21 @@
       <el-tab-pane label="尺码管理" name="size">
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
-            <el-button type="primary" plain icon="Plus" @click="openSize()">新增尺码</el-button>
+            <el-button type="primary" plain icon="Plus" v-hasPermi="['garment:basics:add']" @click="openSize()">新增尺码</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="danger" plain icon="Delete" :disabled="multipleSize" @click="delSizeRow()">删除</el-button>
+            <el-button type="danger" plain icon="Delete" v-hasPermi="['garment:basics:remove']" :disabled="multipleSize" @click="delSizeRow()">删除</el-button>
           </el-col>
         </el-row>
         <div class="table-wrap">
           <el-table v-loading="sizeLoading" :data="sizeList" border @selection-change="handleSizeSelectionChange">
-            <el-table-column type="selection" width="50" align="center" />
+            <el-table-column v-if="checkPermi(['garment:basics:remove'])" type="selection" width="50" align="center" />
             <el-table-column label="尺码" prop="sizeName" min-width="120" />
             <el-table-column label="排序" prop="sort" width="100" align="center" />
-            <el-table-column label="操作" class-name="op-cell" width="140" align="center">
+            <el-table-column v-if="checkPermi(['garment:basics:edit','garment:basics:remove'])" label="操作" class-name="op-cell" width="140" align="center">
               <template #default="s">
-                <el-button link type="primary" @click="openSize(s.row)">修改</el-button>
-                <el-button link type="danger" @click="delSizeRow(s.row)">删除</el-button>
+                <el-button link type="primary" v-hasPermi="['garment:basics:edit']" @click="openSize(s.row)">修改</el-button>
+                <el-button link type="danger" v-hasPermi="['garment:basics:remove']" @click="delSizeRow(s.row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>

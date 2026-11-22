@@ -17,10 +17,10 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd">新增费用</el-button>
+        <el-button type="primary" plain icon="Plus" v-hasPermi="['garment:expense:add']" @click="handleAdd">新增费用</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" plain icon="Delete" v-hasPermi="['garment:expense:remove']" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -34,7 +34,7 @@
 
     <div class="table-wrap">
       <el-table v-loading="loading" :data="expenseList" border @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="50" align="center" />
+            <el-table-column v-if="checkPermi(['garment:expense:remove'])" type="selection" width="50" align="center" />
             
         <el-table-column label="费用日期" prop="expenseDate" width="120" />
         <el-table-column label="费用类型" prop="expenseType" width="130" />
@@ -43,10 +43,10 @@
           <template #default="s"><span class="money">¥{{ s.row.amount }}</span></template>
         </el-table-column>
         <el-table-column label="备注" prop="remark" min-width="180" show-overflow-tooltip />
-        <el-table-column label="操作" class-name="op-cell" width="140" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:expense:edit','garment:expense:remove'])" label="操作" class-name="op-cell" width="140" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="handleUpdate(s.row)">修改</el-button>
-            <el-button link type="danger" @click="handleDelete(s.row)">删除</el-button>
+            <el-button link type="primary" v-hasPermi="['garment:expense:edit']" @click="handleUpdate(s.row)">修改</el-button>
+            <el-button link type="danger" v-hasPermi="['garment:expense:remove']" @click="handleDelete(s.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

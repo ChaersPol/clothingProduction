@@ -26,7 +26,7 @@ public class WorkshopController extends BaseController
     @Autowired
     private ReportService reportService;
 
-    @PreAuthorize("@ss.hasPermi('garment:pick:list')")
+    @PreAuthorize("@ss.hasPermi('garment:pick:add')")
     @PostMapping("/pick")
     public AjaxResult pick(@RequestBody Map<String, Object> body)
     {
@@ -56,7 +56,7 @@ public class WorkshopController extends BaseController
         return getDataTable(workshopService.selectBundles(bundle));
     }
 
-    @PreAuthorize("@ss.hasPermi('garment:delivery:list')")
+    @PreAuthorize("@ss.hasPermi('garment:delivery:add')")
     @PostMapping("/deliver")
     public AjaxResult deliver(@RequestBody Map<String, Object> body)
     {

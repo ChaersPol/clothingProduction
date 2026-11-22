@@ -12,7 +12,7 @@
           <el-input v-model="scanCode" placeholder="扫描扎卡条码后回车领片" clearable @keyup.enter="doPick" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="Search" @click="doPick">确认领片</el-button>
+          <el-button type="primary" icon="Search" v-hasPermi="['garment:pick:add']" @click="doPick">确认领片</el-button>
         </el-form-item>
       </el-form>
     </el-card>

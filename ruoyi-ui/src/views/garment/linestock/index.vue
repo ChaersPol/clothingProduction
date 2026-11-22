@@ -44,9 +44,9 @@
             <el-tag size="small" :type="(s.row.onlineDays || 0) > 3 ? 'danger' : 'info'">{{ s.row.onlineDays || 0 }} 天</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" class-name="op-cell" width="120" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:delivery:add'])" label="操作" class-name="op-cell" width="120" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="openDeliver(s.row)">交后道</el-button>
+            <el-button link type="primary" v-hasPermi="['garment:delivery:add']" @click="openDeliver(s.row)">交后道</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -70,7 +70,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitDeliver">确认交付</el-button>
+        <el-button type="primary" v-hasPermi="['garment:delivery:add']" @click="submitDeliver">确认交付</el-button>
         <el-button @click="open = false">取 消</el-button>
       </template>
     </el-dialog>

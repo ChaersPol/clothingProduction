@@ -24,7 +24,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd">成品出库</el-button>
+        <el-button type="primary" plain icon="Plus" v-hasPermi="['garment:outbound:add']" @click="handleAdd">成品出库</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button plain icon="Download" @click="handleExport">导出</el-button>
@@ -48,7 +48,7 @@
         <el-table-column label="操作" class-name="op-cell" width="140" align="center" fixed="right">
           <template #default="s">
             <el-button link type="primary" @click="viewDetail(s.row)">明细</el-button>
-            <el-button link type="danger" :disabled="s.row.status === '1'" @click="handleCancel(s.row)">作废</el-button>
+            <el-button link type="danger" v-hasPermi="['garment:outbound:edit']" :disabled="s.row.status === '1'" @click="handleCancel(s.row)">作废</el-button>
           </template>
         </el-table-column>
       </el-table>
