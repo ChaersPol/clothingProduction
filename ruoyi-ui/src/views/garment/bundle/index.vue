@@ -275,7 +275,12 @@ function focusScan() {
   nextTick(() => { if (scanRef.value) scanRef.value.focus() })
 }
 // 手机拍照扫码：识别后直接执行裁片入库
-function onScanStockIn(code) {
+// 若扫到的是领片/出库等系统二维码（带页面地址），按二维码意图跳转，避免误触发入库
+function onScanStockIn(code, meta) {
+  if (meta && meta.fullPath && meta.path !== route.path) {
+    proxy.$router.push(meta.fullPath)
+    return
+  }
   scanCode.value = code
   doStockIn()
 }

@@ -28,7 +28,8 @@ function onFile(e) {
   if (!file) return
   const url = URL.createObjectURL(file)
   reader.decodeFromImageUrl(url).then(result => {
-    emit('scan', extractCode(result.getText()))
+    const info = parseText(result.getText())
+    emit('scan', info.code, { path: info.path, fullPath: info.fullPath })
   }).catch(() => {
     emit('error', '未识别到条码，请靠近并对准条码后重试')
   }).finally(() => {
@@ -36,14 +37,18 @@ function onFile(e) {
   })
 }
 
-// 二维码内容可能是系统链接，取其中的 code / barcode 参数
-function extractCode(text) {
+// 二维码内容可能是系统链接，取出条码并保留页面地址，供页面决定是否跳转
+function parseText(text) {
   try {
     const u = new URL(text)
-    return u.searchParams.get('code') || u.searchParams.get('barcode') || text
+    const code = u.searchParams.get('code') || u.searchParams.get('barcode')
+    if (code) {
+      return { code, path: u.pathname, fullPath: `${u.pathname}${u.search}` }
+    }
   } catch (e) {
-    return text
+    // 普通条码/扎号，按原值使用
   }
+  return { code: text, path: '', fullPath: '' }
 }
 </script>
 
