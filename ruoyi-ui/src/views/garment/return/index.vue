@@ -53,7 +53,7 @@
     <el-dialog title="退货入库" v-model="open" width="600px" append-to-body>
       <el-form label-width="90px">
         <el-form-item label="商品条码" required>
-          <el-input v-model="form.barcode" placeholder="扫描或输入条码后回车" @keyup.enter="fetchSku" />
+          <el-input ref="scanRef" v-model="form.barcode" placeholder="扫描或输入条码后回车" @keyup.enter="fetchSku" />
         </el-form-item>
         <el-form-item label="商品信息">
           <span v-if="form.skuId">{{ form.styleNo }} · {{ form.color }}/{{ form.size }}</span>
@@ -114,6 +114,7 @@ const total = ref(0)
 const open = ref(false)
 const dateRange = ref([])
 const form = ref({})
+const scanRef = ref()
 const queryParams = ref({ pageNum: 1, pageSize: 10, customer: undefined, styleNo: undefined })
 
 function today() {
@@ -138,6 +139,12 @@ function resetQuery() { proxy.resetForm('queryRef'); dateRange.value = []; getLi
 function handleAdd() {
   form.value = { barcode: '', skuId: null, customer: '', returnDate: today(), qty: 1, goodQty: 1, badQty: 0, reason: '' }
   open.value = true
+  // 扫码枪：弹窗打开后自动聚焦条码输入框
+  setTimeout(focusScan, 200)
+}
+// 扫码枪：条码输入框自动聚焦
+function focusScan() {
+  nextTick(() => { if (scanRef.value) scanRef.value.focus() })
 }
 function fetchSku() {
   if (!form.value.barcode) return

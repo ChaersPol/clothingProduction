@@ -47,7 +47,7 @@
     <el-dialog title="新增检验" v-model="qcOpen" width="600px" append-to-body>
       <el-form label-width="90px">
         <el-form-item label="扎卡条码" required>
-          <el-input v-model="qcForm.code" placeholder="扫描或输入扎号后点查询" @keyup.enter="fetchBundle(qcForm)" />
+          <el-input ref="qcScanRef" v-model="qcForm.code" placeholder="扫描或输入扎号后点查询" @keyup.enter="fetchBundle(qcForm)" />
         </el-form-item>
         <el-form-item label="扎号信息">
           <span v-if="qcForm.bundleId">{{ qcForm.bundleNo }} · {{ qcForm.styleNo }} · {{ qcForm.color }}/{{ qcForm.size }} · 领片 {{ qcForm.bundleQty }} 件</span>
@@ -78,7 +78,7 @@
     <el-dialog title="次品登记" v-model="defectOpen" width="560px" append-to-body>
       <el-form label-width="90px">
         <el-form-item label="扎卡条码" required>
-          <el-input v-model="defectForm.code" placeholder="扫描扎号后查询" @keyup.enter="fetchBundle(defectForm)" />
+          <el-input ref="defectScanRef" v-model="defectForm.code" placeholder="扫描扎号后查询" @keyup.enter="fetchBundle(defectForm)" />
         </el-form-item>
         <el-form-item label="扎号信息">
           <span v-if="defectForm.bundleId">{{ defectForm.bundleNo }} · {{ defectForm.styleNo }} · {{ defectForm.color }}/{{ defectForm.size }}</span>
@@ -121,6 +121,8 @@ const qcOpen = ref(false)
 const defectOpen = ref(false)
 const qcForm = ref({})
 const defectForm = ref({})
+const qcScanRef = ref()
+const defectScanRef = ref()
 const employees = ref([])
 const queryParams = ref({ pageNum: 1, pageSize: 10, bundleNo: undefined, styleNo: undefined })
 
@@ -163,6 +165,8 @@ function syncQualified() {
 function openQc() {
   qcForm.value = { code: '', bundleId: null, checkQty: 1, defectQty: 0, qualifiedQty: 1, defectReason: '', inspector: '' }
   qcOpen.value = true
+  // 扫码枪：弹窗打开后自动聚焦扎卡条码输入框
+  setTimeout(() => focusScan(qcScanRef), 200)
 }
 function submitQc() {
   if (!qcForm.value.bundleId) { proxy.$modal.msgWarning('请先查询扎卡'); return }
@@ -175,6 +179,11 @@ function submitQc() {
 function openDefect() {
   defectForm.value = { code: '', bundleId: null, defectType: '补片', qty: 1, handler: '', remark: '' }
   defectOpen.value = true
+  setTimeout(() => focusScan(defectScanRef), 200)
+}
+// 扫码枪：弹窗打开后自动聚焦扫码框
+function focusScan(r) {
+  nextTick(() => { if (r.value) r.value.focus() })
 }
 function submitDefect() {
   if (!defectForm.value.bundleId) { proxy.$modal.msgWarning('请先查询扎卡'); return }

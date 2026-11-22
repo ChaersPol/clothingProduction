@@ -4,7 +4,7 @@
       <template #header><span>成品扫码包装入库（产线 → 成品库）</span></template>
       <el-form class="scan-bar" :inline="true" @submit.prevent>
         <el-form-item label="扎卡条码" class="scan-input">
-          <el-input v-model="scan.code" placeholder="扫描扎号后回车入库" clearable @keyup.enter="fetchBundle" />
+          <el-input ref="scanRef" v-model="scan.code" placeholder="扫描扎号后回车入库" clearable @keyup.enter="fetchBundle" />
         </el-form-item>
         <el-form-item label="入库数量">
           <el-input-number v-model="scan.qty" :min="1" controls-position="right" style="width: 120px" />
@@ -88,6 +88,7 @@ const bundleInfo = ref(null)
 const loading = ref(false)
 const total = ref(0)
 const dateRange = ref([])
+const scanRef = ref()
 const scan = ref({ code: '', qty: 1, packMethod: '袋装', perBag: 1, packer: '' })
 const queryParams = ref({ pageNum: 1, pageSize: 10, bundleNo: undefined, styleNo: undefined, packer: undefined })
 const route = useRoute()
@@ -139,13 +140,20 @@ function submitStockIn() {
     scan.value.code = ''
     scan.value.qty = 1
     bundleInfo.value = null
+    focusScan()
     getList()
   })
+}
+
+// 扫码枪：页面进入/入库完成后自动聚焦扫码框，支持连续扫描
+function focusScan() {
+  nextTick(() => { if (scanRef.value) scanRef.value.focus() })
 }
 
 commonEmployees().then(res => {
   employees.value = res.data || []
   if (employees.value.length) scan.value.packer = employees.value[0].name
+  focusScan()
 })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
@@ -156,6 +164,7 @@ onActivated(() => {
   } else {
     _pageActivated = true
   }
+  focusScan()
 })
 
 </script>

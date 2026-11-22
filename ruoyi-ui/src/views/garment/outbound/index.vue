@@ -66,7 +66,7 @@
           </el-col>
         </el-row>
         <div class="toolbar">
-          <el-input v-model="scanBarcode" placeholder="扫描/输入商品条码后回车添加" style="width: 260px" @keyup.enter="addByBarcode" />
+          <el-input ref="scanRef" v-model="scanBarcode" placeholder="扫描/输入商品条码后回车添加" style="width: 260px" @keyup.enter="addByBarcode" />
           <el-button size="small" icon="Plus" v-hasPermi="['garment:outbound:add']" @click="addEmptyItem">手动添加</el-button>
         </div>
         <el-table :data="form.items" border size="small" max-height="300">
@@ -136,6 +136,7 @@ const detail = ref({})
 const dateRange = ref([])
 const form = ref({})
 const scanBarcode = ref('')
+const scanRef = ref()
 const queryParams = ref({ pageNum: 1, pageSize: 10, outboundNo: undefined, customer: undefined, status: undefined })
 const route = useRoute()
 
@@ -172,9 +173,15 @@ function handleAdd() {
   form.value = { customer: '', outboundDate: today(), items: [] }
   scanBarcode.value = ''
   open.value = true
+  // 扫码枪：弹窗打开后自动聚焦条码输入框
+  setTimeout(focusScan, 200)
 }
 function addEmptyItem() {
   form.value.items.push({ barcode: '', styleNo: '', color: '', size: '', qty: 1, price: 0 })
+}
+// 扫码枪：添加成功后保持焦点，支持连续扫描
+function focusScan() {
+  nextTick(() => { if (scanRef.value) scanRef.value.focus() })
 }
 function addByBarcode() {
   if (!scanBarcode.value) return
@@ -191,6 +198,7 @@ function addByBarcode() {
       })
     }
     scanBarcode.value = ''
+    focusScan()
   })
 }
 function submitForm() {

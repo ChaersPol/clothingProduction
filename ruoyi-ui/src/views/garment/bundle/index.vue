@@ -4,7 +4,7 @@
       <template #header><span>扫码操作</span></template>
       <el-form class="scan-bar" :inline="true" @submit.prevent>
         <el-form-item label="扎卡条码" class="scan-input">
-          <el-input v-model="scanCode" placeholder="扫描扎卡条码或扎号后回车" clearable @keyup.enter="doStockIn" />
+          <el-input ref="scanRef" v-model="scanCode" placeholder="扫描扎卡条码或扎号后回车" clearable @keyup.enter="doStockIn" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Upload" v-hasPermi="['garment:bundle:edit']" @click="doStockIn">裁片入库</el-button>
@@ -167,6 +167,7 @@ const employees = ref([])
 const loading = ref(false)
 const total = ref(0)
 const scanCode = ref('')
+const scanRef = ref()
 const autoOpen = ref(false)
 const patchOpen = ref(false)
 const autoForm = ref({ cutId: undefined, perBundle: 17 })
@@ -202,6 +203,10 @@ function loadCuts() {
 }
 function handleQuery() { queryParams.value.pageNum = 1; getList() }
 function resetQuery() { proxy.resetForm('queryRef'); handleQuery() }
+// 扫码枪：页面进入/操作完成后自动聚焦扫码框，支持连续扫描
+function focusScan() {
+  nextTick(() => { if (scanRef.value) scanRef.value.focus() })
+}
 function doStockIn() {
   if (!scanCode.value) {
     proxy.$modal.msgWarning('请输入或扫描扎卡条码')
@@ -210,6 +215,7 @@ function doStockIn() {
   bundleStockIn(scanCode.value.trim()).then(() => {
     proxy.$modal.msgSuccess('裁片入库成功')
     scanCode.value = ''
+    focusScan()
     getList()
   })
 }
@@ -270,7 +276,9 @@ onActivated(() => {
   } else {
     _pageActivated = true
   }
+  focusScan()
 })
+onMounted(focusScan)
 
 </script>
 

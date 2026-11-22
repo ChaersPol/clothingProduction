@@ -9,7 +9,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="扎卡条码" class="scan-input">
-          <el-input v-model="scanCode" placeholder="扫描扎卡条码后回车领片" clearable @keyup.enter="doPick" />
+          <el-input ref="scanRef" v-model="scanCode" placeholder="扫描扎卡条码后回车领片" clearable @keyup.enter="doPick" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Search" v-hasPermi="['garment:pick:add']" @click="doPick">确认领片</el-button>
@@ -63,6 +63,7 @@ const { proxy } = getCurrentInstance()
 const employees = ref([])
 const employee = ref('')
 const scanCode = ref('')
+const scanRef = ref()
 const pickList = ref([])
 const loading = ref(false)
 const total = ref(0)
@@ -90,14 +91,20 @@ function doPick() {
     const b = res.data || {}
     proxy.$modal.msgSuccess(`领片成功：${b.bundleNo || ''} ${b.styleNo || ''} ${b.color || ''}/${b.size || ''} ${b.qty || ''}件`)
     scanCode.value = ''
+    focusScan()
     getList()
   })
+}
+// 扫码枪：选好员工后自动聚焦扫码框，领片成功继续保持焦点，支持连续扫描
+function focusScan() {
+  nextTick(() => { if (scanRef.value) scanRef.value.focus() })
 }
 
 getList()
 commonEmployees().then(res => {
   employees.value = res.data || []
   if (employees.value.length) employee.value = employees.value[0].name
+  focusScan()
 })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
@@ -108,6 +115,7 @@ onActivated(() => {
   } else {
     _pageActivated = true
   }
+  focusScan()
 })
 
 </script>
