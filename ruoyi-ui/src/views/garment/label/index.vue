@@ -86,7 +86,7 @@
           <div class="label-attr">{{ item.color }} / {{ item.size }}</div>
           <div class="label-barcode">
             <svg :ref="el => setBarcodeRef(el, item.barcode)"></svg>
-            <canvas class="label-qr" :ref="el => setQrRef(el, outboundUrl(item.barcode))"></canvas>
+            <canvas class="label-qr" :style="{ width: qrSize + 'mm', height: qrSize + 'mm' }" :ref="el => setQrRef(el, outboundUrl(item.barcode))"></canvas>
           </div>
           <div class="label-code">{{ item.barcode }}</div>
         </template>
@@ -111,6 +111,8 @@ const copies = ref(savedPrint.copies || 1)
 const paperMode = ref(savedPrint.paperMode || 'LABEL')
 const labelW = ref(savedPrint.labelW || 50)
 const labelH = ref(savedPrint.labelH || 30)
+// 二维码尺寸跟随标签宽度，避免小标签放不下
+const qrSize = computed(() => Math.max(5, Math.min(12, Number(labelW.value) * 0.22)))
 
 // 打印前才注入 @page，避免离开页面后影响扎卡等其他打印
 function applyPageStyle() {
@@ -264,7 +266,7 @@ onActivated(() => {
     gap: 1mm;
   }
   .label-card .label-barcode svg { flex: 1; width: auto; height: 8mm; }
-  .label-card .label-qr { flex: none; width: 9mm; height: 9mm; }
+  .label-card .label-qr { flex: none; }
   /* 厂内标签：内容垂直居中并撑满标签 */
   .label-card.factory-card {
     height: var(--lh, 30mm);
