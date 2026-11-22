@@ -244,23 +244,28 @@ onActivated(() => {
   .label-card .label-attr { font-size: 9px; }
   .label-card .label-code { font-size: 7px; letter-spacing: 0.5px; }
   .label-card svg { width: 100%; height: 8mm; }
+  /* 厂内标签：内容垂直居中并撑满标签 */
   .label-card.factory-card {
-    height: auto;
-    min-height: 18mm;
+    height: var(--lh, 30mm);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border-style: solid;
   }
   .label-card.factory-card .factory-name {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
-    margin-bottom: 2mm;
+    margin-bottom: 1.5mm;
     white-space: nowrap;
   }
   .label-card.factory-card .factory-attr {
-    font-size: 12px;
+    font-size: 10px;
     letter-spacing: 0.3px;
+  }
+  /* 标签纸模式：撑满整页且不加边框，避免热敏打印浪费 */
+  #label-print-area.label-mode .label-card,
+  #label-print-area.label-mode .label-card.factory-card {
+    height: calc(var(--lh, 30mm) - 0.3mm);
+    border: none;
   }
 }
 </style>
