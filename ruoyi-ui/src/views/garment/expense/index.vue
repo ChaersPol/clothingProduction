@@ -91,7 +91,7 @@ function handleSelectionChange(selection) {
 }
 
 const { proxy } = getCurrentInstance()
-const types = ['辅料', '加工费', '运费', '办公', '差旅', '推广', '其他']
+const types = ['辅料', '加工费', '运费', '海运费', '头程运费', '尾程运费', '运营费', '拍摄费', '办公', '差旅', '推广', '其他']
 const expenseList = ref([])
 const loading = ref(false)
 const total = ref(0)
