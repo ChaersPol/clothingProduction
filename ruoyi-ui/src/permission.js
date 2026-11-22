@@ -67,7 +67,7 @@ router.beforeEach(async (to, from) => {
       return true
     }
     NProgress.done()
-    return `/login?redirect=${to.fullPath}` // 否则全部重定向到登录页
+    return `/login?redirect=${encodeURIComponent(to.fullPath)}` // 否则全部重定向到登录页（编码保证 ?code= 等参数不丢失）
   }
 })
 

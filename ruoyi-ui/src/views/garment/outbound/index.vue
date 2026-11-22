@@ -67,6 +67,7 @@
         </el-row>
         <div class="toolbar">
           <el-input ref="scanRef" v-model="scanBarcode" placeholder="扫描/输入商品条码后回车添加" style="width: 260px" @keyup.enter="addByBarcode" />
+          <GarmentScan size="small" v-hasPermi="['garment:outbound:add']" @scan="onScanBarcode" @error="m => proxy.$modal.msgWarning(m)" />
           <el-button size="small" icon="Plus" v-hasPermi="['garment:outbound:add']" @click="addEmptyItem">手动添加</el-button>
         </div>
         <el-table :data="form.items" border size="small" max-height="300">
@@ -123,6 +124,7 @@
 <script setup name="Outbound">
 import { listOutbound, getOutbound, addOutbound, cancelOutbound, skuByBarcode } from '@/api/garment'
 import { checkPermi } from '@/utils/permission'
+import GarmentScan from '@/components/GarmentScan/index.vue'
 
 const showSearch = ref(true)
 
@@ -213,6 +215,11 @@ function addEmptyItem() {
 // 扫码枪：添加成功后保持焦点，支持连续扫描
 function focusScan() {
   nextTick(() => { if (scanRef.value) scanRef.value.focus() })
+}
+// 手机拍照扫码：识别条码后直接加入出库明细
+function onScanBarcode(code) {
+  scanBarcode.value = code
+  addByBarcode().then(ok => { if (ok) saveDraft() })
 }
 function addByBarcode() {
   if (!scanBarcode.value) return Promise.resolve(false)

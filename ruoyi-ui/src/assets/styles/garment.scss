@@ -241,15 +241,29 @@
   .scan-bar {
     flex-direction: column;
     align-items: stretch;
-    .scan-input { min-width: 100%; }
-    .el-button { width: 100%; margin-left: 0 !important; }
-    /* 扫码区所有字段在手机上全宽堆叠，控件撑满，方便手机/扫描枪操作 */
+    gap: 0;
+    /* 竖向排列时 flex-basis 会变成高度，必须重置，否则表单控件之间出现大片空白 */
+    .scan-input {
+      flex: none;
+      width: 100%;
+      min-width: 0;
+    }
     .el-form-item {
       width: 100%;
       margin-right: 0 !important;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+    }
+    /* 标签在上、控件在下，窄屏不挤压 */
+    .el-form-item__label {
+      float: none;
+      display: block;
+      width: auto !important;
+      height: auto;
+      line-height: 1.5;
+      padding: 0 0 4px;
     }
     .el-form-item__content {
+      margin-left: 0 !important;
       width: 100%;
     }
     .el-input,
@@ -258,6 +272,34 @@
     .el-date-editor {
       width: 100% !important;
     }
+    /* 操作按钮同一行排布，减少纵向占用 */
+    .el-form-item:last-child .el-form-item__content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .el-form-item:last-child .el-form-item__content > .el-button,
+    .el-form-item:last-child .el-form-item__content > .garment-scan {
+      flex: 1 1 30%;
+      margin-left: 0 !important;
+    }
+    .el-form-item:last-child .el-form-item__content > .garment-scan {
+      display: flex;
+      .el-button { width: 100%; }
+    }
+    .el-button { margin-left: 0 !important; }
+  }
+  /* 弹窗内的拍照扫码按钮：跟在输入框下方全宽展示 */
+  .el-dialog .garment-scan {
+    display: block;
+    margin: 8px 0 0 !important;
+    .el-button {
+      width: 100%;
+      height: 40px;
+    }
+  }
+  .garment-page .el-card__body {
+    padding: 12px;
   }
   /* 工具栏按钮在手机上按内容宽度自动换行 */
   .garment-page .el-row.mb8 {

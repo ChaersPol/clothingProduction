@@ -24,6 +24,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Upload" v-hasPermi="['garment:packing:add']" @click="submitStockIn">包装入库</el-button>
+          <GarmentScan v-hasPermi="['garment:packing:add']" @scan="onScanBundle" @error="m => proxy.$modal.msgWarning(m)" />
         </el-form-item>
       </el-form>
       <div v-if="bundleInfo" class="muted" style="margin-top: 6px">
@@ -77,6 +78,7 @@
 <script setup name="Packing">
 import { listPack, finishingStockIn, commonBundle, commonEmployees } from '@/api/garment'
 import { currentOperatorName } from '@/utils/garment'
+import GarmentScan from '@/components/GarmentScan/index.vue'
 
 const showSearch = ref(true)
 
@@ -114,6 +116,11 @@ function getList() {
   }).catch(() => { loading.value = false })
 }
 function resetQuery() { proxy.resetForm('queryRef'); dateRange.value = []; getList() }
+// 手机拍照扫码：识别扎号后带出该扎可包装数量
+function onScanBundle(code) {
+  scan.value.code = code
+  fetchBundle()
+}
 function fetchBundle() {
   if (!scan.value.code) { proxy.$modal.msgWarning('请输入扎卡条码'); return }
   commonBundle(scan.value.code.trim()).then(res => {

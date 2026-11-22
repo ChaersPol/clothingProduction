@@ -8,6 +8,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Upload" v-hasPermi="['garment:bundle:edit']" @click="doStockIn">裁片入库</el-button>
+          <GarmentScan v-hasPermi="['garment:bundle:edit']" @scan="onScanStockIn" @error="m => proxy.$modal.msgWarning(m)" />
           <el-button icon="MagicStick" v-hasPermi="['garment:bundle:add']" @click="autoOpen = true">自动分扎</el-button>
         </el-form-item>
       </el-form>
@@ -152,6 +153,7 @@ import JsBarcode from 'jsbarcode'
 import QRCode from 'qrcode'
 import { listBundle, listCutOrder, autoBundle, bundleStockIn, patchBundle, delBundle } from '@/api/garment'
 import { currentOperatorName } from '@/utils/garment'
+import GarmentScan from '@/components/GarmentScan/index.vue'
 
 const showSearch = ref(true)
 
@@ -271,6 +273,11 @@ function resetQuery() { proxy.resetForm('queryRef'); handleQuery() }
 // 扫码枪：页面进入/操作完成后自动聚焦扫码框，支持连续扫描
 function focusScan() {
   nextTick(() => { if (scanRef.value) scanRef.value.focus() })
+}
+// 手机拍照扫码：识别后直接执行裁片入库
+function onScanStockIn(code) {
+  scanCode.value = code
+  doStockIn()
 }
 function doStockIn() {
   if (!scanCode.value) {

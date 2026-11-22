@@ -132,7 +132,13 @@ function handleLogin() {
           }
           return acc
         }, {})
-        router.push({ path: redirect.value || "/", query: otherQueryParams })
+        // 扫码进入的页面带查询参数（如 ?code=扎号），必须按字符串跳转，用 path 对象会丢失参数
+        const target = Array.isArray(redirect.value) ? redirect.value[0] : redirect.value
+        if (target) {
+          router.push(target)
+        } else {
+          router.push({ path: "/", query: otherQueryParams })
+        }
       }).catch(() => {
         loading.value = false
         // 重新获取验证码

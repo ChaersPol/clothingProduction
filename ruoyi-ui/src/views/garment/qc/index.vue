@@ -48,6 +48,7 @@
       <el-form label-width="90px">
         <el-form-item label="扎卡条码" required>
           <el-input ref="qcScanRef" v-model="qcForm.code" placeholder="扫描或输入扎号后点查询" @keyup.enter="fetchBundle(qcForm)" />
+          <GarmentScan size="small" v-hasPermi="['garment:qc:add']" style="margin-left: 8px" @scan="onScanQc" @error="m => proxy.$modal.msgWarning(m)" />
         </el-form-item>
         <el-form-item label="扎号信息">
           <span v-if="qcForm.bundleId">{{ qcForm.bundleNo }} · {{ qcForm.styleNo }} · {{ qcForm.color }}/{{ qcForm.size }} · 领片 {{ qcForm.bundleQty }} 件</span>
@@ -77,6 +78,7 @@
       <el-form label-width="90px">
         <el-form-item label="扎卡条码" required>
           <el-input ref="defectScanRef" v-model="defectForm.code" placeholder="扫描扎号后查询" @keyup.enter="fetchBundle(defectForm)" />
+          <GarmentScan size="small" v-hasPermi="['garment:defect:add']" style="margin-left: 8px" @scan="onScanDefect" @error="m => proxy.$modal.msgWarning(m)" />
         </el-form-item>
         <el-form-item label="扎号信息">
           <span v-if="defectForm.bundleId">{{ defectForm.bundleNo }} · {{ defectForm.styleNo }} · {{ defectForm.color }}/{{ defectForm.size }}</span>
@@ -105,6 +107,7 @@
 
 <script setup name="Qc">
 import { listQc, saveQc, saveDefect, commonBundle } from '@/api/garment'
+import GarmentScan from '@/components/GarmentScan/index.vue'
 import { currentOperatorName } from '@/utils/garment'
 
 const showSearch = ref(true)
@@ -137,6 +140,15 @@ function getList() {
   }).catch(() => { loading.value = false })
 }
 function resetQuery() { proxy.resetForm('queryRef'); dateRange.value = []; queryParams.value.pageNum = 1; getList() }
+// 手机拍照扫码：识别扎号后自动读取扎卡信息
+function onScanQc(code) {
+  qcForm.value.code = code
+  fetchBundle(qcForm.value)
+}
+function onScanDefect(code) {
+  defectForm.value.code = code
+  fetchBundle(defectForm.value)
+}
 function fetchBundle(target) {
   if (!target.code) { proxy.$modal.msgWarning('请输入扎卡条码'); return }
   commonBundle(target.code.trim()).then(res => {

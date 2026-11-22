@@ -11,6 +11,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Search" v-hasPermi="['garment:pick:add']" @click="doPick">确认领片</el-button>
+          <GarmentScan v-hasPermi="['garment:pick:add']" @scan="onScanPick" @error="m => proxy.$modal.msgWarning(m)" />
         </el-form-item>
       </el-form>
       <div v-if="route.query.code" class="muted" style="margin-top: 6px">
@@ -56,6 +57,7 @@
 <script setup name="Pick">
 import { pickBundle, listPicks } from '@/api/garment'
 import { currentOperatorName } from '@/utils/garment'
+import GarmentScan from '@/components/GarmentScan/index.vue'
 
 const showSearch = ref(true)
 
@@ -85,6 +87,11 @@ function getList() {
 }
 function handleQuery() { queryParams.value.pageNum = 1; getList() }
 function resetQuery() { queryParams.value.bundleNo = undefined; dateRange.value = []; handleQuery() }
+// 手机拍照扫码：识别后直接执行领片
+function onScanPick(code) {
+  scanCode.value = code
+  doPick()
+}
 function doPick() {
   if (!operatorName) { proxy.$modal.msgWarning('未获取到当前登录用户'); return }
   if (!scanCode.value) { proxy.$modal.msgWarning('请扫描扎卡条码'); return }

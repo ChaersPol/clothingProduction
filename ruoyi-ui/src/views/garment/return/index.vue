@@ -54,6 +54,7 @@
       <el-form label-width="90px">
         <el-form-item label="商品条码" required>
           <el-input ref="scanRef" v-model="form.barcode" placeholder="扫描或输入条码后回车" @keyup.enter="fetchSku" />
+          <GarmentScan size="small" v-hasPermi="['garment:return:add']" style="margin-left: 8px" @scan="onScanReturn" @error="m => proxy.$modal.msgWarning(m)" />
         </el-form-item>
         <el-form-item label="商品信息">
           <span v-if="form.skuId">{{ form.styleNo }} · {{ form.color }}/{{ form.size }}</span>
@@ -95,6 +96,7 @@
 
 <script setup name="ReturnGoods">
 import { listReturn, addReturn, delReturn, skuByBarcode } from '@/api/garment'
+import GarmentScan from '@/components/GarmentScan/index.vue'
 
 const showSearch = ref(true)
 
@@ -145,6 +147,11 @@ function handleAdd() {
 // 扫码枪：条码输入框自动聚焦
 function focusScan() {
   nextTick(() => { if (scanRef.value) scanRef.value.focus() })
+}
+// 手机拍照扫码：识别条码后自动带出商品信息
+function onScanReturn(code) {
+  form.value.barcode = code
+  fetchSku()
 }
 function fetchSku() {
   if (!form.value.barcode) return
