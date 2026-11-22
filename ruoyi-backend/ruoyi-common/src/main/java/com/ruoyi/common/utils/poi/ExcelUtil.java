@@ -192,6 +192,11 @@ public class ExcelUtil<T>
     private Map<Integer, Double> statistics = new HashMap<Integer, Double>();
 
     /**
+     * 指定字段的合计值（字段名 -> 合计值），用于按业务规则自定义统计结果
+     */
+    private Map<String, Double> statisticsByField = new HashMap<String, Double>();
+
+    /**
      * 实体对象
      */
     public Class<T> clazz;
@@ -229,6 +234,17 @@ public class ExcelUtil<T>
     public void hideColumn(String... fields)
     {
         this.excludeFields = fields;
+    }
+
+    /**
+     * 自定义指定字段的合计值，导出时合计行将使用该值而非自动累加结果
+     *
+     * @param field 字段名（实体属性名）
+     * @param total 合计值
+     */
+    public void setStatistics(String field, Double total)
+    {
+        this.statisticsByField.put(field, total);
     }
 
     public void init(List<T> list, String sheetName, String title, Type type)
@@ -1588,6 +1604,29 @@ public class ExcelUtil<T>
      */
     public void addStatisticsRow()
     {
+        // 按字段名覆盖自动累加结果（如排除已作废单据）
+        if (!statisticsByField.isEmpty())
+        {
+            int column = 0;
+            for (Object[] os : fields)
+            {
+                Field field = (Field) os[0];
+                if (Collection.class.isAssignableFrom(field.getType()))
+                {
+                    List<Field> subFields = subFieldsMap.get(field.getName());
+                    column += subFields == null ? 0 : subFields.size();
+                }
+                else
+                {
+                    if (statisticsByField.containsKey(field.getName()))
+                    {
+                        statistics.put(column, statisticsByField.get(field.getName()));
+                    }
+                    column++;
+                }
+            }
+            statisticsByField.clear();
+        }
         if (statistics.size() > 0)
         {
             Row row = sheet.createRow(sheet.getLastRowNum() + 1);

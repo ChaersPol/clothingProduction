@@ -34,12 +34,12 @@ public class BizPurchaseItemExport
     @Excel(name = "单价", cellType = Excel.ColumnType.NUMERIC)
     private BigDecimal price;
 
-    @Excel(name = "数量", cellType = Excel.ColumnType.NUMERIC)
+    @Excel(name = "数量", cellType = Excel.ColumnType.NUMERIC, isStatistics = true)
     private BigDecimal qty;
 
-    @Excel(name = "已入库", cellType = Excel.ColumnType.NUMERIC)
+    @Excel(name = "已入库", cellType = Excel.ColumnType.NUMERIC, isStatistics = true)
     private BigDecimal receivedQty;
 
-    @Excel(name = "金额", cellType = Excel.ColumnType.NUMERIC)
+    @Excel(name = "金额", cellType = Excel.ColumnType.NUMERIC, isStatistics = true)
     private BigDecimal amount;
 }

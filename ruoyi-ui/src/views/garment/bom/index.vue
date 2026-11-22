@@ -22,20 +22,20 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd">新增物料</el-button>
+        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:bom:add']">新增物料</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button plain icon="Download" @click="handleExport">导出</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['garment:bom:remove']">删除</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <div class="table-wrap">
       <el-table v-loading="loading" :data="bomList" border show-summary :summary-method="getSummary" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="50" align="center" />
+            <el-table-column v-if="checkPermi(['garment:bom:remove'])" type="selection" width="50" align="center" />
             
         <el-table-column label="款号" prop="styleNo" width="110" />
         <el-table-column label="类型" prop="materialType" width="90" />
@@ -46,10 +46,10 @@
         <el-table-column label="损耗率%" prop="lossRate" width="90" align="right" />
         <el-table-column label="单价" prop="unitPrice" width="90" align="right" />
         <el-table-column label="小计" prop="amount" width="100" align="right" />
-        <el-table-column label="操作" class-name="op-cell" width="130" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:bom:edit','garment:bom:remove'])" label="操作" class-name="op-cell" width="130" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="handleUpdate(s.row)">修改</el-button>
-            <el-button link type="danger" @click="handleDelete(s.row)">删除</el-button>
+            <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:bom:edit']">修改</el-button>
+            <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:bom:remove']">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -41,6 +41,6 @@ public class BizBom extends BaseEntity
     @Excel(name = "单价", cellType = Excel.ColumnType.NUMERIC)
     private BigDecimal unitPrice;
 
-    @Excel(name = "小计", cellType = Excel.ColumnType.NUMERIC)
+    @Excel(name = "小计", cellType = Excel.ColumnType.NUMERIC, isStatistics = true)
     private BigDecimal amount;
 }

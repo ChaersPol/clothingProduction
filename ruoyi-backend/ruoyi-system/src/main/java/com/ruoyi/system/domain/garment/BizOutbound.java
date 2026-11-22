@@ -30,10 +30,10 @@ public class BizOutbound extends BaseEntity
     @Excel(name = "出库日期", width = 30, dateFormat = "yyyy-MM-dd")
     private Date outboundDate;
 
-    @Excel(name = "总数量")
+    @Excel(name = "总数量", isStatistics = true)
     private Integer totalQty;
 
-    @Excel(name = "总金额", cellType = Excel.ColumnType.NUMERIC)
+    @Excel(name = "总金额", cellType = Excel.ColumnType.NUMERIC, isStatistics = true)
     private BigDecimal totalAmount;
 
     @Excel(name = "操作人")

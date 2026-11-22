@@ -23,7 +23,7 @@ public class BizInventory extends BaseEntity
     /** CUT 裁片 / LINE 产线 / FINISH 成品 */
     private String stockType;
 
-    @Excel(name = "数量")
+    @Excel(name = "数量", isStatistics = true)
     private Integer qty;
 
     @Excel(name = "款号")
@@ -48,7 +48,7 @@ public class BizInventory extends BaseEntity
     private BigDecimal salePrice;
     private Integer minStock;
 
-    @Excel(name = "库存货值", cellType = Excel.ColumnType.NUMERIC)
+    @Excel(name = "库存货值", cellType = Excel.ColumnType.NUMERIC, isStatistics = true)
     private BigDecimal stockValue;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

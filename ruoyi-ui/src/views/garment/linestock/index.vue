@@ -56,12 +56,12 @@
     <el-dialog title="完工交后道" v-model="open" width="520px" append-to-body>
       <el-form label-width="100px">
         <el-form-item label="扎号">{{ form.bundleNo }}（{{ form.styleNo }} {{ form.color }}/{{ form.size }}）</el-form-item>
-        <el-form-item label="剩余在制">{{ (form.qty || 0) - (form.deliveredQty || 0) }} 件</el-form-item>
+        <el-form-item label="剩余在制">{{ remainQty }} 件</el-form-item>
         <el-form-item label="本次完工数">
-          <el-input-number v-model="form.qtyInput" :min="1" :max="(form.qty || 0) - (form.deliveredQty || 0)" controls-position="right" style="width: 100%" />
+          <el-input-number v-model="form.qtyInput" :min="remainQty > 0 ? 1 : 0" :max="remainQty" controls-position="right" style="width: 100%" />
         </el-form-item>
         <el-form-item label="其中次品">
-          <el-input-number v-model="form.defectQty" :min="0" :max="form.qtyInput" controls-position="right" style="width: 100%" />
+          <el-input-number v-model="form.defectQty" :min="0" :max="form.qtyInput || 0" controls-position="right" style="width: 100%" />
         </el-form-item>
         <el-form-item label="交工人">
           <el-select v-model="form.employee" placeholder="选择员工" filterable style="width: 100%">
@@ -106,6 +106,8 @@ watch(() => route.query, q => {
 
 const lineQty = computed(() => bundleList.value.reduce((s, b) => s + (Number(b.qty || 0) - Number(b.deliveredQty || 0)), 0))
 const overdueCount = computed(() => bundleList.value.filter(b => Number(b.onlineDays || 0) > 3).length)
+// 剩余在制数量，避免 qty - deliveredQty 为负或未初始化时 min 大于 max
+const remainQty = computed(() => Math.max(0, Number(form.value.qty || 0) - Number(form.value.deliveredQty || 0)))
 
 function getList() {
   loading.value = true

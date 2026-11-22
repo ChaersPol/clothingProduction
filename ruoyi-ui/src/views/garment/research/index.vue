@@ -20,17 +20,17 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:style:list']">新增选品</el-button>
+        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:style:add']">新增选品</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['garment:style:remove']">删除</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <div class="table-wrap">
       <el-table v-loading="loading" :data="styleList" border @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="50" align="center" />
+            <el-table-column v-if="checkPermi(['garment:style:remove'])" type="selection" width="50" align="center" />
             
         <el-table-column label="款号" prop="styleNo" min-width="100" />
         <el-table-column label="品名" prop="cnName" min-width="140" show-overflow-tooltip />
@@ -40,12 +40,12 @@
         <el-table-column label="尺码表" prop="sizeTable" width="110" show-overflow-tooltip />
         <el-table-column label="预计卖价" prop="expectPrice" width="100" align="right" />
         <el-table-column label="设计/修改记录" prop="designRemark" min-width="200" show-overflow-tooltip />
-        <el-table-column label="操作" class-name="op-cell" width="270" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:style:edit','garment:sku:add','garment:style:remove'])" label="操作" class-name="op-cell" width="270" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="openDesign(s.row)">设计资料</el-button>
-            <el-button link type="primary" @click="handleUpdate(s.row)">编辑</el-button>
-            <el-button link type="success" @click="openGenerate(s.row)">生成商品</el-button>
-            <el-button link type="danger" @click="handleDelete(s.row)">删除</el-button>
+            <el-button link type="primary" @click="openDesign(s.row)" v-hasPermi="['garment:style:edit']">设计资料</el-button>
+            <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:style:edit']">编辑</el-button>
+            <el-button link type="success" @click="openGenerate(s.row)" v-hasPermi="['garment:sku:add']">生成商品</el-button>
+            <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:style:remove']">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

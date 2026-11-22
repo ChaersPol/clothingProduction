@@ -18,13 +18,13 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd">新增款号</el-button>
+        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:style:add']">新增款号</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate">修改</el-button>
+        <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate" v-hasPermi="['garment:style:edit']">修改</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['garment:style:remove']">删除</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button plain icon="Download" @click="handleExport">导出</el-button>
@@ -34,7 +34,7 @@
 
     <div class="table-wrap">
       <el-table v-loading="loading" :data="styleList" @selection-change="handleSelectionChange" border>
-        <el-table-column type="selection" width="45" align="center" />
+        <el-table-column v-if="checkPermi(['garment:style:remove'])" type="selection" width="45" align="center" />
         <el-table-column label="款号" prop="styleNo" min-width="100" />
         <el-table-column label="品名" prop="cnName" min-width="150" show-overflow-tooltip />
         <el-table-column label="品类" prop="category" width="90" />
@@ -48,10 +48,10 @@
             <el-tag :type="s.row.status === '0' ? 'success' : 'info'" size="small">{{ s.row.status === '0' ? '正常' : '停用' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" class-name="op-cell" width="150" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:style:edit','garment:style:remove'])" label="操作" class-name="op-cell" width="150" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="handleUpdate(s.row)">修改</el-button>
-            <el-button link type="danger" @click="handleDelete(s.row)">删除</el-button>
+            <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:style:edit']">修改</el-button>
+            <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:style:remove']">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -211,6 +211,19 @@
   .el-table {
     font-size: 12px;
   }
+  /* 操作列：移动端按钮紧凑排布，避免挤压、贴边或撑爆列宽 */
+  .el-table .op-cell .cell {
+    white-space: normal;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 4px;
+  }
+  .el-table .op-cell .el-button {
+    margin-left: 0 !important;
+    padding: 0 3px;
+    font-size: 12px;
+  }
   .el-table th,
   .el-table td {
     padding: 5px 0;

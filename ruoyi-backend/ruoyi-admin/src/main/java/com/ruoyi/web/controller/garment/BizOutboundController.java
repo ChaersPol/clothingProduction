@@ -39,6 +39,20 @@ public class BizOutboundController extends BaseController
     {
         List<BizOutbound> list = warehouseService.selectOutboundList(query);
         ExcelUtil<BizOutbound> util = new ExcelUtil<>(BizOutbound.class);
+        // 合计与页面保持一致：已作废单据不计入总数/总金额
+        double totalQty = 0D;
+        double totalAmount = 0D;
+        for (BizOutbound row : list)
+        {
+            if ("1".equals(row.getStatus()))
+            {
+                continue;
+            }
+            totalQty += row.getTotalQty() == null ? 0D : row.getTotalQty();
+            totalAmount += row.getTotalAmount() == null ? 0D : row.getTotalAmount().doubleValue();
+        }
+        util.setStatistics("totalQty", totalQty);
+        util.setStatistics("totalAmount", totalAmount);
         util.exportExcel(response, list, "成品出库单");
     }
 

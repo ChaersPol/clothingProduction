@@ -30,20 +30,20 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd">裁货开单</el-button>
+        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:cutorder:add']">裁货开单</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button plain icon="Download" @click="handleExport">导出</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['garment:cutorder:remove']">删除</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <div class="table-wrap">
       <el-table v-loading="loading" :data="orderList" border @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="50" align="center" />
+            <el-table-column v-if="checkPermi(['garment:cutorder:remove'])" type="selection" width="50" align="center" />
             
         <el-table-column label="裁货单号" prop="cutNo" width="150" fixed="left" />
         <el-table-column label="款号" prop="styleNo" width="100" />
@@ -60,12 +60,12 @@
             <el-tag size="small" :type="s.row.status === '2' ? 'success' : s.row.status === '1' ? 'warning' : 'danger'">{{ statusText(s.row.status) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" class-name="op-cell" width="240" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:cutorder:edit','garment:cutorder:remove'])" label="操作" class-name="op-cell" width="240" align="center" fixed="right">
           <template #default="s">
             <el-button link type="primary" @click="viewDetail(s.row)">明细</el-button>
             <el-button link type="success" @click="goBundle(s.row)">去分扎</el-button>
-            <el-button link type="primary" @click="handleUpdate(s.row)">修改</el-button>
-            <el-button link type="danger" @click="handleDelete(s.row)">删除</el-button>
+            <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:cutorder:edit']">修改</el-button>
+            <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:cutorder:remove']">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

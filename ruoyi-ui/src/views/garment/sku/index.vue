@@ -30,14 +30,14 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd">新增SKU</el-button>
+        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:sku:add']">新增SKU</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" plain icon="MagicStick" @click="generateOpen = true">批量生成</el-button>
+        <el-button type="success" plain icon="MagicStick" @click="generateOpen = true" v-hasPermi="['garment:sku:add']">批量生成</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-upload :show-file-list="false" :http-request="handleImport" accept=".xlsx,.xls">
-          <el-button plain icon="Upload">导入初始库存</el-button>
+          <el-button plain icon="Upload" v-hasPermi="['garment:sku:edit']">导入初始库存</el-button>
         </el-upload>
       </el-col>
       <el-col :span="1.5">
@@ -47,14 +47,14 @@
         <el-button plain icon="Download" @click="handleExport">导出</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete">删除</el-button>
+        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['garment:sku:remove']">删除</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <div class="table-wrap">
       <el-table v-loading="loading" :data="skuList" border @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="50" align="center" />
+            <el-table-column v-if="checkPermi(['garment:sku:remove'])" type="selection" width="50" align="center" />
             
         <el-table-column label="款号" prop="styleNo" min-width="100" fixed="left" />
         <el-table-column label="品名" prop="cnName" min-width="140" show-overflow-tooltip />
@@ -73,10 +73,10 @@
         <el-table-column label="成品" prop="finishQty" width="70" align="center">
           <template #default="s"><strong>{{ s.row.finishQty }}</strong></template>
         </el-table-column>
-        <el-table-column label="操作" class-name="op-cell" width="140" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:sku:edit','garment:sku:remove'])" label="操作" class-name="op-cell" width="140" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="handleUpdate(s.row)">修改</el-button>
-            <el-button link type="danger" @click="handleDelete(s.row)">删除</el-button>
+            <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:sku:edit']">修改</el-button>
+            <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:sku:remove']">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

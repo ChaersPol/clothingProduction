@@ -35,16 +35,16 @@ public class BizShipment extends BaseEntity
     @Excel(name = "尺码")
     private String size;
 
-    @Excel(name = "数量")
+    @Excel(name = "数量", isStatistics = true)
     private Integer qty;
 
     @Excel(name = "单价", cellType = Excel.ColumnType.NUMERIC)
     private BigDecimal price;
 
-    @Excel(name = "金额", cellType = Excel.ColumnType.NUMERIC)
+    @Excel(name = "金额", cellType = Excel.ColumnType.NUMERIC, isStatistics = true)
     private BigDecimal amount;
 
-    @Excel(name = "海运费", cellType = Excel.ColumnType.NUMERIC)
+    @Excel(name = "海运费", cellType = Excel.ColumnType.NUMERIC, isStatistics = true)
     private BigDecimal seaFreight;
 
     /** 关联的成品出库单ID（出货保存时自动生成） */

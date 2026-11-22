@@ -58,7 +58,7 @@
       </el-row>
 
       <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
-         <el-table-column type="selection" width="55" align="center" />
+         <el-table-column v-if="checkPermi(['system:role:edit'])" type="selection" width="55" align="center" />
          <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true" />
          <el-table-column label="用户昵称" prop="nickName" :show-overflow-tooltip="true" />
          <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true" />
@@ -73,7 +73,7 @@
                <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
          </el-table-column>
-         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+         <el-table-column v-if="checkPermi(['system:role:edit'])" label="操作" align="center" class-name="small-padding fixed-width">
             <template #default="scope">
                <el-button link type="primary" icon="CircleClose" @click="cancelAuthUser(scope.row)" v-hasPermi="['system:role:remove']">取消授权</el-button>
             </template>

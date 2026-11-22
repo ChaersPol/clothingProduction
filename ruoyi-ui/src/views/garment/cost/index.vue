@@ -12,7 +12,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd">新增成本核算</el-button>
+        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['garment:cost:edit']">新增成本核算</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -31,9 +31,9 @@
         </el-table-column>
         <el-table-column label="出厂价" prop="exFactoryPrice" width="100" align="right" />
         <el-table-column label="建议售价" prop="suggestPrice" width="100" align="right" />
-        <el-table-column label="操作" class-name="op-cell" width="100" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:cost:edit'])" label="操作" class-name="op-cell" width="100" align="center" fixed="right">
           <template #default="s">
-            <el-button link type="primary" @click="openCost(s.row)">核算</el-button>
+            <el-button link type="primary" @click="openCost(s.row)" v-hasPermi="['garment:cost:edit']">核算</el-button>
           </template>
         </el-table-column>
       </el-table>
