@@ -70,4 +70,15 @@ function loadData() {
 }
 
 loadData()
+
+// 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
+let _pageActivated = false
+onActivated(() => {
+  if (_pageActivated) {
+    loadData()
+  } else {
+    _pageActivated = true
+  }
+})
+
 </script>

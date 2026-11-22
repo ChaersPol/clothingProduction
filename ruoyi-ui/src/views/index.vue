@@ -235,6 +235,16 @@ onBeforeUnmount(() => {
   pieChart && pieChart.dispose()
   barChart && barChart.dispose()
 })
+
+// 从其他标签页切回首页时刷新统计与消息，避免展示缓存中的旧数据
+let _pageActivated = false
+onActivated(() => {
+  if (_pageActivated) {
+    loadData()
+  } else {
+    _pageActivated = true
+  }
+})
 </script>
 
 <style scoped lang="scss">

@@ -320,4 +320,15 @@ function submitGenerate() {
 
 getList()
 commonEmployees().then(res => { employees.value = res.data || [] })
+
+// 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
+let _pageActivated = false
+onActivated(() => {
+  if (_pageActivated) {
+    getList()
+  } else {
+    _pageActivated = true
+  }
+})
+
 </script>
