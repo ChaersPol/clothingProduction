@@ -267,5 +267,11 @@ onActivated(() => {
     height: calc(var(--lh, 30mm) - 0.3mm);
     border: none;
   }
+  /* 厂内标签保持 flex，内容在整张标签内垂直居中 */
+  #label-print-area.label-mode .label-card.factory-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 </style>
