@@ -136,10 +136,10 @@ public interface BizStatMapper
     @Select("select count(1) from biz_bundle where status='1'")
     Integer cutStockBundles();
 
-    @Select("select count(1) from biz_bundle where status='2'")
+    @Select("select count(1) from biz_bundle where status='2' and delivered_qty < qty")
     Integer onlineBundles();
 
-    @Select("select count(1) from biz_bundle where status='2' and datediff(sysdate(), date(pickup_time)) > 3")
+    @Select("select count(1) from biz_bundle where status='2' and delivered_qty < qty and datediff(sysdate(), date(pickup_time)) > 3")
     Integer overdueBundles();
 
     /** 最近7天出库趋势 */
