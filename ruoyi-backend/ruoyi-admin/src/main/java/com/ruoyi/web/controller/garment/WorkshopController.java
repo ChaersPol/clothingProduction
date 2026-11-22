@@ -11,6 +11,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.system.domain.garment.BizBundle;
 import com.ruoyi.system.domain.garment.BizDelivery;
 import com.ruoyi.system.domain.garment.BizPick;
+import com.ruoyi.system.service.garment.GarmentScopeUtils;
 import com.ruoyi.system.service.garment.ReportService;
 import com.ruoyi.system.service.garment.WorkshopService;
 
@@ -31,7 +32,8 @@ public class WorkshopController extends BaseController
     public AjaxResult pick(@RequestBody Map<String, Object> body)
     {
         String code = String.valueOf(body.get("code"));
-        String employee = String.valueOf(body.get("employee"));
+        // 领片人固定为当前登录用户，管理员也不允许代其他员工领片
+        String employee = GarmentScopeUtils.currentEmployee();
         return success(workshopService.pick(code, employee));
     }
 
@@ -39,6 +41,10 @@ public class WorkshopController extends BaseController
     @GetMapping("/picks")
     public TableDataInfo picks(BizPick pick)
     {
+        if (!GarmentScopeUtils.isManager())
+        {
+            pick.setEmployee(GarmentScopeUtils.currentEmployee());
+        }
         startPage();
         return getDataTable(workshopService.selectPickList(pick));
     }
@@ -52,6 +58,10 @@ public class WorkshopController extends BaseController
             bundle.setParams(new java.util.HashMap<>());
         }
         bundle.getParams().put("online", true);
+        if (!GarmentScopeUtils.isManager())
+        {
+            bundle.setPickupUser(GarmentScopeUtils.currentEmployee());
+        }
         startPage();
         return getDataTable(workshopService.selectBundles(bundle));
     }
@@ -63,14 +73,20 @@ public class WorkshopController extends BaseController
         Long bundleId = Long.valueOf(String.valueOf(body.get("bundleId")));
         Integer qty = Integer.valueOf(String.valueOf(body.get("qty")));
         Integer defect = body.get("defectQty") == null ? 0 : Integer.valueOf(String.valueOf(body.get("defectQty")));
-        String employee = body.get("employee") == null ? "" : String.valueOf(body.get("employee"));
-        return success(workshopService.deliver(bundleId, qty, defect, employee));
+        boolean manager = GarmentScopeUtils.isManager();
+        // 交工人固定为当前登录用户，非管理员只能交自己领的扎
+        String employee = GarmentScopeUtils.currentEmployee();
+        return success(workshopService.deliver(bundleId, qty, defect, employee, !manager));
     }
 
     @PreAuthorize("@ss.hasPermi('garment:delivery:list')")
     @GetMapping("/deliveries")
     public TableDataInfo deliveries(BizDelivery delivery)
     {
+        if (!GarmentScopeUtils.isManager())
+        {
+            delivery.setEmployee(GarmentScopeUtils.currentEmployee());
+        }
         startPage();
         return getDataTable(workshopService.selectDeliveryList(delivery));
     }
@@ -79,13 +95,17 @@ public class WorkshopController extends BaseController
     @GetMapping("/pickstat")
     public AjaxResult pickStat(@RequestParam(required = false) String date)
     {
-        return success(reportService.pickByEmployee(date == null ? java.time.LocalDate.now().toString() : date));
+        String day = date == null ? java.time.LocalDate.now().toString() : date;
+        String employee = GarmentScopeUtils.isManager() ? null : GarmentScopeUtils.currentEmployee();
+        return success(reportService.pickByEmployee(day, employee));
     }
 
     @PreAuthorize("@ss.hasPermi('garment:delivery:list')")
     @GetMapping("/deliverystat")
     public AjaxResult deliveryStat(@RequestParam(required = false) String date)
     {
-        return success(reportService.deliveryByEmployee(date == null ? java.time.LocalDate.now().toString() : date));
+        String day = date == null ? java.time.LocalDate.now().toString() : date;
+        String employee = GarmentScopeUtils.isManager() ? null : GarmentScopeUtils.currentEmployee();
+        return success(reportService.deliveryByEmployee(day, employee));
     }
 }

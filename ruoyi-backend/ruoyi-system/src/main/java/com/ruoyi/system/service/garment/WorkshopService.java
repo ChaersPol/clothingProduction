@@ -68,14 +68,19 @@ public class WorkshopService
 
     /**
      * 完工交后道，支持分次交货
+     * @param ownOnly 非管理员只能交本人领的扎
      */
     @Transactional
-    public BizBundle deliver(Long bundleId, Integer qty, Integer defectQty, String employee)
+    public BizBundle deliver(Long bundleId, Integer qty, Integer defectQty, String employee, boolean ownOnly)
     {
         BizBundle bundle = bundleMapper.selectBundleById(bundleId);
         if (bundle == null)
         {
             throw new ServiceException("扎不存在");
+        }
+        if (ownOnly && (bundle.getPickupUser() == null || !bundle.getPickupUser().equals(employee)))
+        {
+            throw new ServiceException("只能对本人的扎交后道");
         }
         if (!"2".equals(bundle.getStatus()))
         {

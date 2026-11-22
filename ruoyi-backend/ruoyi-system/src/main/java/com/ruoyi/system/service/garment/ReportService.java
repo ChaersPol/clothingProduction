@@ -166,14 +166,14 @@ public class ReportService
         return statMapper.cutStatByDay(beginDate, endDate);
     }
 
-    public List<Map<String, Object>> pickByEmployee(String date)
+    public List<Map<String, Object>> pickByEmployee(String date, String employee)
     {
-        return pickMapper.statByEmployee(date);
+        return pickMapper.statByEmployee(date, employee);
     }
 
-    public List<Map<String, Object>> deliveryByEmployee(String date)
+    public List<Map<String, Object>> deliveryByEmployee(String date, String employee)
     {
-        return deliveryMapper.statByEmployee(date);
+        return deliveryMapper.statByEmployee(date, employee);
     }
 
     public List<Map<String, Object>> packByPacker(String date)

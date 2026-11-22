@@ -1,10 +1,13 @@
 <template>
   <div class="app-container garment-page">
     <el-form v-show="showSearch" class="search-form" :inline="true">
-      <el-form-item label="员工" prop="employee">
+      <el-form-item v-if="manager" label="员工" prop="employee">
         <el-select v-model="queryParams.employee" placeholder="员工" clearable filterable style="width: 130px">
           <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
         </el-select>
+      </el-form-item>
+      <el-form-item v-else label="员工">
+        <el-input :model-value="operatorName" disabled style="width: 130px" />
       </el-form-item>
       <el-form-item label="扎号" prop="bundleNo">
         <el-input v-model="queryParams.bundleNo" placeholder="扎号" clearable style="width: 120px" @keyup.enter="handleQuery" />
@@ -23,7 +26,7 @@
     </el-row>
 
     <el-row :gutter="14">
-      <el-col :xs="24" :md="15">
+      <el-col :xs="24" :md="manager ? 15 : 24">
         <el-card shadow="never" class="section-card">
           <template #header><span>交后道记录</span></template>
           <div class="table-wrap">
@@ -42,7 +45,7 @@
           <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
         </el-card>
       </el-col>
-      <el-col :xs="24" :md="9">
+      <el-col v-if="manager" :xs="24" :md="9">
         <el-card shadow="never" class="section-card">
           <template #header>
             <div class="toolbar" style="margin: 0">
@@ -66,8 +69,13 @@
 
 <script setup name="Delivery">
 import { listDeliveries, deliveryStat, commonEmployees } from '@/api/garment'
+import { currentOperatorName, isGarmentManager } from '@/utils/garment'
 
 const showSearch = ref(true)
+
+// 管理员看全部，工人只看本人数据
+const manager = isGarmentManager()
+const operatorName = currentOperatorName()
 
 const { proxy } = getCurrentInstance()
 const deliveryList = ref([])
@@ -77,11 +85,12 @@ const loading = ref(false)
 const total = ref(0)
 const dateRange = ref([])
 const statDate = ref(new Date().toISOString().slice(0, 10))
-const queryParams = ref({ pageNum: 1, pageSize: 10, employee: undefined, bundleNo: undefined })
+const queryParams = ref({ pageNum: 1, pageSize: 10, employee: manager ? undefined : operatorName, bundleNo: undefined })
 
 function getList() {
   loading.value = true
   const params = { ...queryParams.value }
+  if (!manager) params.employee = operatorName
   if (dateRange.value && dateRange.value.length === 2) {
     params.params = { beginDate: dateRange.value[0], endDate: dateRange.value[1] }
   }
@@ -92,10 +101,16 @@ function getList() {
   }).catch(() => { loading.value = false })
 }
 function loadStat() {
+  if (!manager) return
   deliveryStat(statDate.value).then(res => { statList.value = res.data || [] })
 }
 function handleQuery() { queryParams.value.pageNum = 1; getList() }
-function resetQuery() { queryParams.value.employee = undefined; queryParams.value.bundleNo = undefined; dateRange.value = []; handleQuery() }
+function resetQuery() {
+  queryParams.value.employee = manager ? undefined : operatorName
+  queryParams.value.bundleNo = undefined
+  dateRange.value = []
+  handleQuery()
+}
 
 getList()
 loadStat()

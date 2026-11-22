@@ -11,3 +11,13 @@ export function currentOperatorName() {
   const idx = nick.lastIndexOf('-')
   return idx > -1 ? nick.slice(idx + 1) : nick
 }
+
+/**
+ * 当前登录人是否可查看全部车间数据。
+ * 仅管理员、系统管理员可看全部，其他账号只看本人数据。
+ */
+export function isGarmentManager() {
+  const userStore = useUserStore()
+  const roles = userStore.roles || []
+  return roles.includes('admin') || roles.includes('sysadmin')
+}

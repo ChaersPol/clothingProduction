@@ -18,6 +18,7 @@ public interface BizBundleMapper
         <if test="color != null and color != ''"> and b.color = #{color}</if>
         <if test="size != null and size != ''"> and b.size = #{size}</if>
         <if test="bundleNo != null and bundleNo != ''"> and b.bundle_no like concat('%',#{bundleNo},'%')</if>
+        <if test="pickupUser != null and pickupUser != ''"> and b.pickup_user = #{pickupUser}</if>
         <if test="status != null and status != ''"> and b.status = #{status}</if>
         <if test="params.online != null"> and b.status='2' and b.delivered_qty &lt; b.qty</if>
         <if test="params.overdueDays != null"> and b.status='2' and b.delivered_qty &lt; b.qty and datediff(sysdate(), date(b.pickup_time)) &gt; #{params.overdueDays}</if>
