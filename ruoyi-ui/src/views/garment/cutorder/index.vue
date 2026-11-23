@@ -14,7 +14,7 @@
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="全部" clearable style="width: 120px">
-          <el-option label="待分扎" value="0" />
+          <el-option label="待分扎/分扎中" value="0" />
           <el-option label="已入库" value="1" />
           <el-option label="已完成" value="2" />
         </el-select>
@@ -55,9 +55,9 @@
         <el-table-column label="裁工" prop="cutter" width="90" />
         <el-table-column label="裁货日期" prop="cutDate" width="110" />
         <el-table-column label="扎数" prop="bundleCount" width="70" align="center" />
-        <el-table-column label="状态" prop="status" width="105" align="center">
+        <el-table-column label="状态" prop="status" width="120" align="center">
           <template #default="s">
-            <el-tag size="small" :type="s.row.status === '9' ? 'info' : s.row.status === '2' ? 'success' : s.row.status === '1' ? 'warning' : 'danger'">{{ statusText(s.row.status) }}</el-tag>
+            <el-tag size="small" :type="statusInfo(s.row).type">{{ statusInfo(s.row).text }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column v-if="checkPermi(['garment:cutorder:edit','garment:cutorder:remove'])" label="操作" class-name="op-cell" width="295" align="center" fixed="right">
@@ -264,7 +264,18 @@ const rules = { styleNo: [{ required: true, message: '请选择款号', trigger:
 const totalQty = computed(() => (form.value.items || []).reduce((s, i) => s + Number(i.qty || 0), 0))
 watch(totalQty, v => { form.value.totalQty = v })
 
-function statusText(s) { return s === '9' ? '已作废' : s === '2' ? '已完成' : s === '1' ? '已入库' : '待分扎' }
+// 状态按「已分件数 vs 总件数」细分，避免分完扎仍显示「待分扎」的歧义
+function statusInfo(row) {
+  const s = row.status
+  if (s === '9') return { text: '已作废', type: 'info' }
+  if (s === '2') return { text: '已完成', type: 'success' }
+  if (s === '1') return { text: '已入库', type: 'warning' }
+  const done = Number(row.bundleQty || 0)
+  const total = Number(row.totalQty || 0)
+  if (done <= 0) return { text: '待分扎', type: 'danger' }
+  if (done < total) return { text: '分扎中', type: 'warning' }
+  return { text: '已分完待入库', type: 'success' }
+}
 // 仅当裁货单未作废/未完成、且仍有未分扎数量时才显示「去分扎」
 function canBundle(row) {
   return row.status !== '9' && row.status !== '2' && Number(row.bundleQty || 0) < Number(row.totalQty || 0)
