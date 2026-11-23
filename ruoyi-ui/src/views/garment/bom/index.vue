@@ -38,7 +38,11 @@
             <el-table-column v-if="checkPermi(['garment:bom:remove'])" type="selection" width="50" align="center" />
             
         <el-table-column label="款号" prop="styleNo" width="110" />
-        <el-table-column label="类型" prop="materialType" width="90" />
+        <el-table-column label="类型" prop="materialType" width="90">
+          <template #default="s">
+            <el-tag :type="materialTypeTag(s.row.materialType)" size="small">{{ s.row.materialType }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="物料名称" prop="materialName" min-width="140" />
         <el-table-column label="规格" prop="spec" min-width="120" show-overflow-tooltip />
         <el-table-column label="单位" prop="unit" width="70" align="center" />
@@ -108,6 +112,7 @@
 
 <script setup name="Bom">
 import { listBom, addBom, updateBom, delBom, commonStyles, commonMaterials } from '@/api/garment'
+import { materialTypeTag } from '@/utils/garment'
 
 const showSearch = ref(true)
 

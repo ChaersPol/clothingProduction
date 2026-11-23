@@ -1,5 +1,10 @@
 <template>
   <div class="app-container garment-page">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">当前页采购金额</div><div class="stat-value">¥{{ pageAmount }}</div></div>
+      <div class="stat-card green"><div class="stat-label">当前页已入库数量</div><div class="stat-value">{{ pageReceived }}</div></div>
+    </div>
+
     <el-form v-show="showSearch" class="search-form" :model="queryParams" ref="queryRef" :inline="true">
       <el-form-item label="采购单号" prop="purchaseNo">
         <el-input v-model="queryParams.purchaseNo" placeholder="单号" clearable style="width: 150px" @keyup.enter="handleQuery" />
@@ -36,19 +41,20 @@
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <div class="stat-grid">
-      <div class="stat-card"><div class="stat-label">当前页采购金额</div><div class="stat-value">¥{{ pageAmount }}</div></div>
-      <div class="stat-card green"><div class="stat-label">当前页已入库数量</div><div class="stat-value">{{ pageReceived }}</div></div>
-    </div>
-
     <div class="table-wrap">
       <el-table v-loading="loading" :data="itemList" border show-summary :summary-method="getSummary">
         <el-table-column label="采购单号" prop="purchase_no" width="150" />
         <el-table-column label="类型" prop="purchase_type" width="100" align="center">
-          <template #default="s">{{ s.row.purchase_type === 'MATERIAL' ? '按款物料' : '公用耗材' }}</template>
+          <template #default="s">
+            <el-tag size="small" :type="s.row.purchase_type === 'MATERIAL' ? 'warning' : 'info'">{{ s.row.purchase_type === 'MATERIAL' ? '按款物料' : '公用耗材' }}</el-tag>
+          </template>
         </el-table-column>
         <el-table-column label="供应商" prop="supplier_name" min-width="150" show-overflow-tooltip />
-        <el-table-column label="物料类型" prop="material_type" width="95" />
+        <el-table-column label="物料类型" prop="material_type" width="95">
+          <template #default="s">
+            <el-tag :type="materialTypeTag(s.row.material_type)" size="small">{{ s.row.material_type }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="名称" prop="material_name" min-width="150" show-overflow-tooltip />
         <el-table-column label="规格" prop="spec" width="110" />
         <el-table-column label="单位" prop="unit" width="70" align="center" />
@@ -64,6 +70,7 @@
 
 <script setup name="PurchaseQuery">
 import { listPurchaseItems } from '@/api/garment'
+import { materialTypeTag } from '@/utils/garment'
 
 const showSearch = ref(true)
 

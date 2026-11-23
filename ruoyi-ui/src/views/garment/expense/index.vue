@@ -1,5 +1,10 @@
 <template>
   <div class="app-container garment-page">
+    <div class="stat-grid">
+      <div class="stat-card red"><div class="stat-label">当前页费用合计</div><div class="stat-value">¥{{ pageTotal }}</div></div>
+      <div class="stat-card"><div class="stat-label">费用记录数</div><div class="stat-value">{{ total }}</div></div>
+    </div>
+
     <el-form v-show="showSearch" class="search-form" :model="queryParams" ref="queryRef" :inline="true">
       <el-form-item label="费用类型" prop="expenseType">
         <el-select v-model="queryParams.expenseType" placeholder="全部" clearable style="width: 140px">
@@ -25,19 +30,16 @@
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <div class="stat-grid">
-      <div class="stat-card red"><div class="stat-label">当前页费用合计</div><div class="stat-value">¥{{ pageTotal }}</div></div>
-      <div class="stat-card"><div class="stat-label">费用记录数</div><div class="stat-value">{{ total }}</div></div>
-    </div>
-
-
-
     <div class="table-wrap">
       <el-table v-loading="loading" :data="expenseList" border @selection-change="handleSelectionChange">
             <el-table-column v-if="checkPermi(['garment:expense:remove'])" type="selection" width="50" align="center" />
             
         <el-table-column label="费用日期" prop="expenseDate" width="120" />
-        <el-table-column label="费用类型" prop="expenseType" width="130" />
+        <el-table-column label="费用类型" prop="expenseType" width="130">
+          <template #default="s">
+            <el-tag :type="expenseTypeTag(s.row.expenseType)" size="small">{{ s.row.expenseType }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="关联款号" prop="styleNo" width="120" />
         <el-table-column label="金额" prop="amount" width="120" align="right">
           <template #default="s"><span class="money">¥{{ s.row.amount }}</span></template>
@@ -83,6 +85,7 @@
 
 <script setup name="Expense">
 import { listExpense, addExpense, updateExpense, delExpense, commonStyles } from '@/api/garment'
+import { expenseTypeTag } from '@/utils/garment'
 
 const showSearch = ref(true)
 

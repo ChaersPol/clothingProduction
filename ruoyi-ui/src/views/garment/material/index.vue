@@ -2,6 +2,12 @@
   <div class="app-container garment-page">
     <el-tabs v-model="activeTab">
       <el-tab-pane label="物资库存" name="stock">
+        <div class="stat-grid">
+          <div class="stat-card blue"><div class="stat-label">物资种类</div><div class="stat-value">{{ list.length }}</div></div>
+          <div class="stat-card"><div class="stat-label">库存总值</div><div class="stat-value">¥{{ totalValue }}</div></div>
+          <div class="stat-card red"><div class="stat-label">低于安全库存</div><div class="stat-value">{{ warningCount }}</div></div>
+        </div>
+
         <el-form v-show="showSearch" class="search-form" ref="queryRef" :model="queryParams" :inline="true">
           <el-form-item label="物资名称" prop="materialName">
             <el-input v-model="queryParams.materialName" placeholder="名称/规格关键字" clearable style="width: 160px" @keyup.enter="getList" />
@@ -32,18 +38,16 @@
           <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
         </el-row>
 
-        <div class="stat-grid">
-          <div class="stat-card blue"><div class="stat-label">物资种类</div><div class="stat-value">{{ list.length }}</div></div>
-          <div class="stat-card"><div class="stat-label">库存总值</div><div class="stat-value">¥{{ totalValue }}</div></div>
-          <div class="stat-card red"><div class="stat-label">低于安全库存</div><div class="stat-value">{{ warningCount }}</div></div>
-        </div>
-
         <el-alert type="info" :closable="false" show-icon style="margin-bottom: 10px"
           title="采购入库自动增加、裁货开单按 BOM 自动领料扣减；线下补货或实物盘点后，点行内「库存调整」改为实际数量即可。" />
 
         <div class="table-wrap">
           <el-table v-loading="loading" :data="list" border>
-            <el-table-column label="类型" prop="materialType" width="80" align="center" />
+            <el-table-column label="类型" prop="materialType" width="80" align="center">
+              <template #default="s">
+                <el-tag :type="materialTypeTag(s.row.materialType)" size="small">{{ s.row.materialType }}</el-tag>
+              </template>
+            </el-table-column>
             <el-table-column label="物资名称" prop="materialName" min-width="150" show-overflow-tooltip />
             <el-table-column label="规格" prop="spec" width="120" show-overflow-tooltip />
             <el-table-column label="单位" prop="unit" width="70" align="center" />
@@ -103,7 +107,7 @@
             <el-table-column label="规格" prop="spec" width="110" show-overflow-tooltip />
             <el-table-column label="业务类型" prop="bizType" width="115" align="center">
               <template #default="s">
-                <el-tag :type="s.row.bizType === '采购入库' ? 'success' : s.row.bizType === '生产领料' ? 'warning' : 'info'" size="small">
+                <el-tag :type="bizTypeTag(s.row.bizType)" size="small">
                   {{ s.row.bizType }}
                 </el-tag>
               </template>
@@ -195,6 +199,7 @@
 
 <script setup name="Material">
 import { listMaterial, listMaterialLogs, updateMaterialMinStock, adjustMaterialStock, addMaterial, updateMaterialProfile } from '@/api/garment'
+import { materialTypeTag, bizTypeTag } from '@/utils/garment'
 
 const showSearch = ref(true)
 

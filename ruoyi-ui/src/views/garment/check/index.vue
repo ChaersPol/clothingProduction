@@ -83,7 +83,11 @@
           <el-table-column label="款号" prop="styleNo" min-width="100" />
           <el-table-column label="颜色" prop="color" width="90" />
           <el-table-column label="尺码" prop="size" width="65" align="center" />
-          <el-table-column label="库存类型" prop="stockType" width="90" align="center" />
+          <el-table-column label="库存类型" prop="stockType" width="90" align="center">
+            <template #default="s">
+              <el-tag size="small" :class="stockTypeClass(s.row.stockType)">{{ stockTypeText(s.row.stockType) }}</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column label="账面数" prop="bookQty" width="90" align="right" />
           <el-table-column label="实盘数" width="120">
             <template #default="s">
@@ -107,7 +111,7 @@
 
 <script setup name="Check">
 import { listCheck, getCheck, addCheck, saveCheckItems, completeCheck, delCheck } from '@/api/garment'
-import { currentOperatorName } from '@/utils/garment'
+import { currentOperatorName, stockTypeText, stockTypeClass } from '@/utils/garment'
 
 const showSearch = ref(true)
 

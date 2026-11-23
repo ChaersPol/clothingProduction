@@ -91,6 +91,23 @@
   }
 }
 
+/* 三色库存标签：红、蓝、黑均为实心填充，全系统统一 */
+.el-tag.stock-cut-tag {
+  background-color: #f56c6c;
+  border-color: #f56c6c;
+  color: #fff;
+}
+.el-tag.stock-line-tag {
+  background-color: #409eff;
+  border-color: #409eff;
+  color: #fff;
+}
+.el-tag.stock-finish-tag {
+  background-color: #303133;
+  border-color: #303133;
+  color: #fff;
+}
+
 /* 扫码操作区 */
 .scan-bar {
   display: flex;

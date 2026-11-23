@@ -60,10 +60,11 @@ public interface BizStatMapper
         from biz_inventory i join biz_sku k on k.sku_id = i.sku_id
         where i.qty &gt; 0
         <if test="styleNo != null and styleNo != ''"> and k.style_no like concat('%',#{styleNo},'%')</if>
+        <if test="stockType != null and stockType != ''"> and i.stock_type = #{stockType}</if>
         order by amount desc
         </script>
         """)
-    List<Map<String, Object>> inventoryDetail(@Param("styleNo") String styleNo);
+    List<Map<String, Object>> inventoryDetail(@Param("styleNo") String styleNo, @Param("stockType") String stockType);
 
     /** 利润统计（按款） */
     @Select("""

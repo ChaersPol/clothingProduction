@@ -44,8 +44,8 @@
         </el-table-column>
         <el-table-column label="库存类型" prop="stockType" width="90" align="center">
           <template #default="s">
-            <el-tag size="small" :type="s.row.stockType === 'CUT' ? 'danger' : s.row.stockType === 'LINE' ? 'primary' : 'info'">
-              {{ s.row.stockType === 'CUT' ? '裁片' : s.row.stockType === 'LINE' ? '产线' : '成品' }}
+            <el-tag size="small" :class="stockTypeClass(s.row.stockType)">
+              {{ stockTypeText(s.row.stockType) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -56,7 +56,11 @@
         </el-table-column>
         <el-table-column label="变动前" prop="beforeQty" width="80" align="right" />
         <el-table-column label="变动后" prop="afterQty" width="80" align="right" />
-        <el-table-column label="业务类型" prop="bizType" width="110" />
+        <el-table-column label="业务类型" prop="bizType" width="110">
+          <template #default="s">
+            <el-tag size="small" :type="bizTypeTag(s.row.bizType)">{{ s.row.bizType }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="业务单号" prop="bizNo" width="140" />
         <el-table-column label="扎号" prop="bundleNo" width="150" />
         <el-table-column label="操作人" prop="operator" width="100" />
@@ -69,6 +73,7 @@
 
 <script setup name="StockLog">
 import { listStockLogs } from '@/api/garment'
+import { stockTypeText, stockTypeClass, bizTypeTag } from '@/utils/garment'
 
 const showSearch = ref(true)
 

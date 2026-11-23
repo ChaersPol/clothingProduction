@@ -70,7 +70,7 @@
           </el-col>
         </el-row>
         <div class="toolbar">
-          <el-input ref="scanRef" v-model="scanBarcode" placeholder="扫描/输入商品条码后回车添加" style="width: 260px" @keyup.enter="addByBarcode" />
+          <el-input ref="scanRef" v-model="scanBarcode" placeholder="扫描或输入商品条码自动添加" style="width: 260px" @input="onBarcodeInput" @keyup.enter="onBarcodeEnter(scanBarcode)" />
           <GarmentScan size="small" v-hasPermi="['garment:outbound:add']" @scan="onScanBarcode" @error="m => proxy.$modal.msgWarning(m)" />
           <el-button size="small" icon="Plus" v-hasPermi="['garment:outbound:add']" @click="addEmptyItem">手动添加</el-button>
         </div>
@@ -129,6 +129,7 @@
 import { listOutbound, getOutbound, addOutbound, cancelOutbound, skuByBarcode, commonCustomers } from '@/api/garment'
 import { checkPermi } from '@/utils/permission'
 import GarmentScan from '@/components/GarmentScan/index.vue'
+import { useAutoScan } from '@/utils/autoScan'
 
 const showSearch = ref(true)
 
@@ -227,11 +228,11 @@ function onScanBarcode(code) {
   scanBarcode.value = code
   addByBarcode().then(ok => { if (ok) saveDraft() })
 }
-function addByBarcode() {
+function addByBarcode(silent = false) {
   if (!scanBarcode.value) return Promise.resolve(false)
   return skuByBarcode(scanBarcode.value.trim()).then(res => {
     const sku = res.data
-    if (!sku) { proxy.$modal.msgWarning('条码不存在'); return false }
+    if (!sku) { if (!silent) proxy.$modal.msgWarning('条码不存在'); return false }
     const exist = form.value.items.find(i => i.skuId === sku.skuId)
     if (exist) {
       exist.qty += 1
@@ -245,6 +246,16 @@ function addByBarcode() {
     focusScan()
     return true
   })
+}
+// 手动输入或扫码枪：输入停顿后自动添加明细，无需回车
+const { onInput: onBarcodeInput, cancel: cancelBarcode } = useAutoScan(code => {
+  scanBarcode.value = code
+  addByBarcode(true)
+}, { minLength: 6 })
+function onBarcodeEnter(code) {
+  cancelBarcode()
+  scanBarcode.value = code
+  addByBarcode()
 }
 function submitForm() {
   if (!form.value.items.length) { proxy.$modal.msgWarning('请录入出库明细'); return }

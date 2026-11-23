@@ -138,9 +138,9 @@ public class ReportService
         return statMapper.outboundRankStyle(beginDate, endDate);
     }
 
-    public List<Map<String, Object>> inventoryDetail(String styleNo)
+    public List<Map<String, Object>> inventoryDetail(String styleNo, String stockType)
     {
-        return statMapper.inventoryDetail(styleNo);
+        return statMapper.inventoryDetail(styleNo, stockType);
     }
 
     public List<Map<String, Object>> profit(String beginDate, String endDate)

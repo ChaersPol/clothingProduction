@@ -4,7 +4,7 @@
       <template #header><span>成品扫码包装入库（产线 → 成品库）</span></template>
       <el-form class="scan-bar" :inline="true" @submit.prevent>
         <el-form-item label="扎卡条码" class="scan-input">
-          <el-input ref="scanRef" v-model="scan.code" placeholder="扫描扎号后回车入库" clearable @keyup.enter="fetchBundle" />
+          <el-input ref="scanRef" v-model="scan.code" placeholder="扫描或输入扎号自动查询" clearable @input="onCodeInput" @keyup.enter="onCodeEnter(scan.code)" />
         </el-form-item>
         <el-form-item label="入库数量">
           <el-input-number v-model="scan.qty" :min="1" controls-position="right" style="width: 120px" />
@@ -66,7 +66,11 @@
         <el-table-column label="颜色" prop="color" width="100" />
         <el-table-column label="尺码" prop="size" width="65" align="center" />
         <el-table-column label="包装数量" prop="qty" width="90" align="right" />
-        <el-table-column label="方式" prop="packMethod" width="80" align="center" />
+        <el-table-column label="方式" prop="packMethod" width="80" align="center">
+          <template #default="s">
+            <el-tag :type="packMethodTag(s.row.packMethod)" size="small">{{ s.row.packMethod }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="每袋件数" prop="perBag" width="90" align="center" />
         <el-table-column label="包装人" prop="packer" min-width="110" />
       </el-table>
@@ -77,8 +81,9 @@
 
 <script setup name="Packing">
 import { listPack, finishingStockIn, commonBundle, commonUsers } from '@/api/garment'
-import { currentOperatorName } from '@/utils/garment'
+import { currentOperatorName, packMethodTag } from '@/utils/garment'
 import GarmentScan from '@/components/GarmentScan/index.vue'
+import { useAutoScan } from '@/utils/autoScan'
 
 const showSearch = ref(true)
 
@@ -121,11 +126,11 @@ function onScanBundle(code) {
   scan.value.code = code
   fetchBundle()
 }
-function fetchBundle() {
-  if (!scan.value.code) { proxy.$modal.msgWarning('请输入扎卡条码'); return }
+function fetchBundle(silent = false) {
+  if (!scan.value.code) { if (!silent) proxy.$modal.msgWarning('请输入扎卡条码'); return }
   commonBundle(scan.value.code.trim()).then(res => {
     const b = res.data
-    if (!b) { proxy.$modal.msgWarning('扎卡不存在'); return }
+    if (!b) { if (!silent) proxy.$modal.msgWarning('扎卡不存在'); return }
     bundleInfo.value = b
     const delivered = Number(b.deliveredQty || 0) > 0 ? Number(b.deliveredQty) : Number(b.qty || 0)
     const available = delivered - Number(b.packedQty || 0)
@@ -136,6 +141,13 @@ function fetchBundle() {
       scan.value.qty = available
     }
   })
+}
+// 手动输入或扫码枪：输入停顿后自动查询，无需回车
+const { onInput: onCodeInput, cancel: cancelCode } = useAutoScan(() => fetchBundle(true), { minLength: 8 })
+function onCodeEnter(code) {
+  cancelCode()
+  scan.value.code = code
+  fetchBundle()
 }
 function submitStockIn() {
   if (!scan.value.code) { proxy.$modal.msgWarning('请输入扎卡条码'); return }

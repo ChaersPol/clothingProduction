@@ -47,7 +47,7 @@
     <el-dialog title="新增检验" v-model="qcOpen" width="600px" append-to-body>
       <el-form label-width="90px">
         <el-form-item label="扎卡条码" required>
-          <el-input ref="qcScanRef" v-model="qcForm.code" placeholder="扫描或输入扎号后点查询" @keyup.enter="fetchBundle(qcForm)" />
+          <el-input ref="qcScanRef" v-model="qcForm.code" placeholder="扫描或输入扎号自动查询" @input="onQcInput" @keyup.enter="onQcEnter(qcForm.code)" />
           <GarmentScan size="small" v-hasPermi="['garment:qc:add']" style="margin-left: 8px" @scan="onScanQc" @error="m => proxy.$modal.msgWarning(m)" />
         </el-form-item>
         <el-form-item label="扎号信息">
@@ -77,7 +77,7 @@
     <el-dialog title="次品登记" v-model="defectOpen" width="560px" append-to-body>
       <el-form label-width="90px">
         <el-form-item label="扎卡条码" required>
-          <el-input ref="defectScanRef" v-model="defectForm.code" placeholder="扫描扎号后查询" @keyup.enter="fetchBundle(defectForm)" />
+          <el-input ref="defectScanRef" v-model="defectForm.code" placeholder="扫描或输入扎号自动查询" @input="onDefectInput" @keyup.enter="onDefectEnter(defectForm.code)" />
           <GarmentScan size="small" v-hasPermi="['garment:defect:add']" style="margin-left: 8px" @scan="onScanDefect" @error="m => proxy.$modal.msgWarning(m)" />
         </el-form-item>
         <el-form-item label="扎号信息">
@@ -108,6 +108,7 @@
 <script setup name="Qc">
 import { listQc, saveQc, saveDefect, commonBundle } from '@/api/garment'
 import GarmentScan from '@/components/GarmentScan/index.vue'
+import { useAutoScan } from '@/utils/autoScan'
 import { currentOperatorName } from '@/utils/garment'
 
 const showSearch = ref(true)
@@ -149,11 +150,11 @@ function onScanDefect(code) {
   defectForm.value.code = code
   fetchBundle(defectForm.value)
 }
-function fetchBundle(target) {
-  if (!target.code) { proxy.$modal.msgWarning('请输入扎卡条码'); return }
+function fetchBundle(target, silent = false) {
+  if (!target.code) { if (!silent) proxy.$modal.msgWarning('请输入扎卡条码'); return }
   commonBundle(target.code.trim()).then(res => {
     const b = res.data
-    if (!b) { proxy.$modal.msgWarning('扎卡不存在'); return }
+    if (!b) { if (!silent) proxy.$modal.msgWarning('扎卡不存在'); return }
     target.bundleId = b.bundleId
     target.bundleNo = b.bundleNo
     target.skuId = b.skuId
@@ -168,6 +169,25 @@ function fetchBundle(target) {
     }
     proxy.$modal.msgSuccess('已读取扎卡信息')
   })
+}
+// 手动输入或扫码枪：输入停顿后自动查询，无需回车
+const { onInput: onQcInput, cancel: cancelQc } = useAutoScan(code => {
+  qcForm.value.code = code
+  fetchBundle(qcForm.value, true)
+}, { minLength: 8 })
+function onQcEnter(code) {
+  cancelQc()
+  qcForm.value.code = code
+  fetchBundle(qcForm.value)
+}
+const { onInput: onDefectInput, cancel: cancelDefect } = useAutoScan(code => {
+  defectForm.value.code = code
+  fetchBundle(defectForm.value, true)
+}, { minLength: 8 })
+function onDefectEnter(code) {
+  cancelDefect()
+  defectForm.value.code = code
+  fetchBundle(defectForm.value)
 }
 function syncQualified() {
   qcForm.value.qualifiedQty = Math.max(0, Number(qcForm.value.checkQty || 0) - Number(qcForm.value.defectQty || 0))

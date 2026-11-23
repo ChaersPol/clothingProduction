@@ -1,5 +1,11 @@
 <template>
   <div class="app-container garment-page">
+    <div class="stat-grid">
+      <div class="stat-card red"><div class="stat-label">预警 SKU 数</div><div class="stat-value">{{ total }}</div></div>
+      <div class="stat-card orange"><div class="stat-label">建议裁货总件数</div><div class="stat-value">{{ suggestTotal }}</div></div>
+      <div class="stat-card blue"><div class="stat-label">缺货差额合计</div><div class="stat-value">{{ gapTotal }}</div></div>
+    </div>
+
     <el-form v-show="showSearch" class="search-form" :inline="true">
       <el-form-item label="款号" prop="styleNo">
         <el-input v-model="styleNo" placeholder="款号" clearable style="width: 140px" @keyup.enter="loadWarnings" />
@@ -13,12 +19,6 @@
     <el-row :gutter="10" class="mb8">
       <right-toolbar v-model:showSearch="showSearch" @queryTable="loadWarnings"></right-toolbar>
     </el-row>
-
-    <div class="stat-grid">
-      <div class="stat-card red"><div class="stat-label">预警 SKU 数</div><div class="stat-value">{{ total }}</div></div>
-      <div class="stat-card orange"><div class="stat-label">建议裁货总件数</div><div class="stat-value">{{ suggestTotal }}</div></div>
-      <div class="stat-card blue"><div class="stat-label">缺货差额合计</div><div class="stat-value">{{ gapTotal }}</div></div>
-    </div>
 
     <el-tabs v-model="activeTab">
       <el-tab-pane label="库存预警" name="warning">

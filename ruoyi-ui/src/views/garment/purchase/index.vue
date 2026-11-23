@@ -129,7 +129,9 @@
         </div>
         <el-table :data="form.items" border size="small">
           <el-table-column label="物料类型" width="95">
-            <template #default="s"><span>{{ s.row.materialType }}</span></template>
+            <template #default="s">
+              <el-tag :type="materialTypeTag(s.row.materialType)" size="small">{{ s.row.materialType }}</el-tag>
+            </template>
           </el-table-column>
           <el-table-column label="名称" min-width="170">
             <template #default="s">
@@ -174,7 +176,11 @@
         <el-descriptions-item label="合计金额">¥{{ detail.totalAmount }}</el-descriptions-item>
       </el-descriptions>
       <el-table :data="detail.items || []" border size="small" style="margin-top: 12px">
-        <el-table-column label="类型" prop="materialType" width="90" />
+        <el-table-column label="类型" prop="materialType" width="90">
+          <template #default="s">
+            <el-tag :type="materialTypeTag(s.row.materialType)" size="small">{{ s.row.materialType }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="名称" prop="materialName" min-width="140" />
         <el-table-column label="规格" prop="spec" width="100" />
         <el-table-column label="单价" prop="price" width="80" align="right" />
@@ -214,6 +220,7 @@
 
 <script setup name="Purchase">
 import { listPurchase, getPurchase, addPurchase, updatePurchase, delPurchase, receivePurchase, allSuppliers, commonStyles, commonMaterials, listBom } from '@/api/garment'
+import { materialTypeTag } from '@/utils/garment'
 
 const showSearch = ref(true)
 

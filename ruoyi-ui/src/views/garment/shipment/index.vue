@@ -1,5 +1,12 @@
 <template>
   <div class="app-container garment-page">
+    <div class="stat-grid">
+      <div class="stat-card blue"><div class="stat-label">出货数量</div><div class="stat-value">{{ summary.qty || 0 }}</div></div>
+      <div class="stat-card red"><div class="stat-label">出货金额</div><div class="stat-value">¥{{ summary.amount || 0 }}</div></div>
+      <div class="stat-card orange"><div class="stat-label">海运费</div><div class="stat-value">¥{{ summary.seaFreight || 0 }}</div></div>
+      <div class="stat-card"><div class="stat-label">出货单数</div><div class="stat-value">{{ summary.times || 0 }}</div></div>
+    </div>
+
     <el-form v-show="showSearch" class="search-form" :model="queryParams" ref="queryRef" :inline="true">
       <el-form-item label="客户" prop="customer">
         <el-input v-model="queryParams.customer" placeholder="客户" clearable style="width: 140px" @keyup.enter="getList" />
@@ -28,15 +35,6 @@
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
-
-    <div class="stat-grid">
-      <div class="stat-card blue"><div class="stat-label">出货数量</div><div class="stat-value">{{ summary.qty || 0 }}</div></div>
-      <div class="stat-card red"><div class="stat-label">出货金额</div><div class="stat-value">¥{{ summary.amount || 0 }}</div></div>
-      <div class="stat-card orange"><div class="stat-label">海运费</div><div class="stat-value">¥{{ summary.seaFreight || 0 }}</div></div>
-      <div class="stat-card"><div class="stat-label">出货单数</div><div class="stat-value">{{ summary.times || 0 }}</div></div>
-    </div>
-
-
 
     <div class="table-wrap">
       <el-table v-loading="loading" :data="shipmentList" border show-summary :summary-method="getSummary" @selection-change="handleSelectionChange">

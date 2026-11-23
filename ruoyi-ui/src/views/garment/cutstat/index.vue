@@ -1,5 +1,12 @@
 <template>
   <div class="app-container garment-page">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">裁货总单数</div><div class="stat-value">{{ totalOrders }}</div></div>
+      <div class="stat-card orange"><div class="stat-label">裁货总件数</div><div class="stat-value">{{ totalQty }}</div></div>
+      <div class="stat-card blue"><div class="stat-label">裁工人数</div><div class="stat-value">{{ cutterList.length }}</div></div>
+      <div class="stat-card green"><div class="stat-label">平均每单件数</div><div class="stat-value">{{ avgQty }}</div></div>
+    </div>
+
     <el-form v-show="showSearch" class="search-form" :inline="true">
       <el-form-item label="统计日期">
         <el-date-picker v-model="dateRange" type="daterange" value-format="YYYY-MM-DD" start-placeholder="开始" end-placeholder="结束" style="width: 240px" />
@@ -13,13 +20,6 @@
     <el-row :gutter="10" class="mb8">
       <right-toolbar v-model:showSearch="showSearch" @queryTable="loadData"></right-toolbar>
     </el-row>
-
-    <div class="stat-grid">
-      <div class="stat-card"><div class="stat-label">裁货总单数</div><div class="stat-value">{{ totalOrders }}</div></div>
-      <div class="stat-card orange"><div class="stat-label">裁货总件数</div><div class="stat-value">{{ totalQty }}</div></div>
-      <div class="stat-card blue"><div class="stat-label">裁工人数</div><div class="stat-value">{{ cutterList.length }}</div></div>
-      <div class="stat-card green"><div class="stat-label">平均每单件数</div><div class="stat-value">{{ avgQty }}</div></div>
-    </div>
 
     <el-row :gutter="14">
       <el-col :xs="24" :md="12">

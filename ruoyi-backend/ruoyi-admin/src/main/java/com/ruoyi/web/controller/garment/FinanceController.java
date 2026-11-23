@@ -37,9 +37,10 @@ public class FinanceController extends BaseController
 
     @PreAuthorize("@ss.hasPermi('garment:finance:list')")
     @GetMapping("/finance/inventoryDetail")
-    public AjaxResult inventoryDetail(@RequestParam(required = false) String styleNo)
+    public AjaxResult inventoryDetail(@RequestParam(required = false) String styleNo,
+            @RequestParam(required = false) String stockType)
     {
-        return success(reportService.inventoryDetail(styleNo));
+        return success(reportService.inventoryDetail(styleNo, stockType));
     }
 
     @PreAuthorize("@ss.hasPermi('garment:finance:list')")

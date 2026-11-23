@@ -4,7 +4,7 @@
       <template #header><span>扫码操作</span></template>
       <el-form class="scan-bar" :inline="true" @submit.prevent>
         <el-form-item label="扎卡条码" class="scan-input">
-          <el-input ref="scanRef" v-model="scanCode" placeholder="扫描扎卡条码或扎号后回车" clearable @keyup.enter="doStockIn" />
+          <el-input ref="scanRef" v-model="scanCode" placeholder="扫描或输入扎卡条码/扎号自动入库" clearable @input="onCodeInput" @keyup.enter="onCodeEnter(scanCode)" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Upload" v-hasPermi="['garment:bundle:edit']" @click="doStockIn">裁片入库</el-button>
@@ -151,9 +151,10 @@
 import { useRoute } from 'vue-router'
 import JsBarcode from 'jsbarcode'
 import QRCode from 'qrcode'
-import { listBundle, listCutOrder, autoBundle, bundleStockIn, patchBundle, delBundle } from '@/api/garment'
+import { listBundle, listCutOrder, autoBundle, bundleStockIn, patchBundle, delBundle, commonBundle } from '@/api/garment'
 import { currentOperatorName } from '@/utils/garment'
 import GarmentScan from '@/components/GarmentScan/index.vue'
+import { useAutoScan } from '@/utils/autoScan'
 
 const showSearch = ref(true)
 
@@ -308,6 +309,17 @@ function doStockIn() {
     focusScan()
     getList()
   })
+}
+// 手动输入或扫码枪：输入停顿后自动入库，无需回车
+const { onInput: onCodeInput, cancel: cancelCode } = useAutoScan(code => {
+  scanCode.value = code
+  // 先静默判断扎卡是否存在，避免输入过程中弹出“扎卡不存在”
+  commonBundle(code).then(res => { if (res.data) doStockIn() })
+}, { minLength: 8 })
+function onCodeEnter(code) {
+  cancelCode()
+  scanCode.value = code
+  doStockIn()
 }
 function stockInRow(row) {
   bundleStockIn(row.barcode || row.bundleNo).then(() => {

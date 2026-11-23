@@ -1,5 +1,11 @@
 <template>
   <div class="app-container garment-page">
+    <div class="stat-grid">
+      <div class="stat-card blue"><div class="stat-label">产线扎数</div><div class="stat-value">{{ total }}</div></div>
+      <div class="stat-card"><div class="stat-label">产线在制件数</div><div class="stat-value">{{ lineQty }}</div></div>
+      <div class="stat-card orange"><div class="stat-label">超期扎数（>3天）</div><div class="stat-value">{{ overdueCount }}</div></div>
+    </div>
+
     <el-form v-show="showSearch" class="search-form" :model="queryParams" ref="queryRef" :inline="true">
       <el-form-item label="扎号" prop="bundleNo">
         <el-input v-model="queryParams.bundleNo" placeholder="扎号" clearable style="width: 130px" @keyup.enter="handleQuery" />
@@ -19,12 +25,6 @@
     <el-row :gutter="10" class="mb8">
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
-
-    <div class="stat-grid">
-      <div class="stat-card blue"><div class="stat-label">产线扎数</div><div class="stat-value">{{ total }}</div></div>
-      <div class="stat-card"><div class="stat-label">产线在制件数</div><div class="stat-value">{{ lineQty }}</div></div>
-      <div class="stat-card orange"><div class="stat-label">超期扎数（>3天）</div><div class="stat-value">{{ overdueCount }}</div></div>
-    </div>
 
     <div class="table-wrap">
       <el-table v-loading="loading" :data="bundleList" border>

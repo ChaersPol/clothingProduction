@@ -1,5 +1,13 @@
 <template>
   <div class="app-container garment-page">
+    <div class="stat-grid">
+      <div class="stat-card blue"><div class="stat-label">销售额</div><div class="stat-value">¥{{ totals.revenue }}</div></div>
+      <div class="stat-card orange"><div class="stat-label">销售成本</div><div class="stat-value">¥{{ totals.cost }}</div></div>
+      <div class="stat-card red"><div class="stat-label">费用支出</div><div class="stat-value">¥{{ totals.expense }}</div></div>
+      <div class="stat-card green"><div class="stat-label">利润</div><div class="stat-value">¥{{ totals.profit }}</div></div>
+      <div class="stat-card black"><div class="stat-label">库存货值</div><div class="stat-value">¥{{ totals.stockValue }}</div></div>
+    </div>
+
     <el-form v-show="showSearch" class="search-form" :inline="true">
       <el-form-item label="统计日期">
         <el-date-picker v-model="dateRange" type="daterange" value-format="YYYY-MM-DD" start-placeholder="开始" end-placeholder="结束" style="width: 240px" />
@@ -13,14 +21,6 @@
     <el-row :gutter="10" class="mb8">
       <right-toolbar v-model:showSearch="showSearch" @queryTable="loadAll"></right-toolbar>
     </el-row>
-
-    <div class="stat-grid">
-      <div class="stat-card blue"><div class="stat-label">销售额</div><div class="stat-value">¥{{ totals.revenue }}</div></div>
-      <div class="stat-card orange"><div class="stat-label">销售成本</div><div class="stat-value">¥{{ totals.cost }}</div></div>
-      <div class="stat-card red"><div class="stat-label">费用支出</div><div class="stat-value">¥{{ totals.expense }}</div></div>
-      <div class="stat-card green"><div class="stat-label">利润</div><div class="stat-value">¥{{ totals.profit }}</div></div>
-      <div class="stat-card black"><div class="stat-label">库存货值</div><div class="stat-value">¥{{ totals.stockValue }}</div></div>
-    </div>
 
     <el-tabs v-model="activeTab">
       <el-tab-pane label="出库排行" name="rank">
@@ -58,6 +58,16 @@
       </el-tab-pane>
 
       <el-tab-pane label="库存货值" name="inventory">
+        <el-form :inline="true" class="search-form" style="margin-bottom: 8px">
+          <el-form-item label="库存类型">
+            <el-radio-group v-model="stockTypeFilter" @change="loadInventory">
+              <el-radio-button value="">全部</el-radio-button>
+              <el-radio-button value="CUT">裁片</el-radio-button>
+              <el-radio-button value="LINE">产线</el-radio-button>
+              <el-radio-button value="FINISH">成品</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
         <div class="table-wrap">
           <el-table :data="inventoryList" border size="small" show-summary :summary-method="sumInventory">
             <el-table-column label="款号" prop="style_no" width="110" />
@@ -65,7 +75,9 @@
             <el-table-column label="颜色" prop="color" width="100" />
             <el-table-column label="尺码" prop="size" width="65" align="center" />
             <el-table-column label="库存类型" prop="stockType" width="95" align="center">
-              <template #default="s">{{ s.row.stockType === 'CUT' ? '裁片' : s.row.stockType === 'LINE' ? '产线' : '成品' }}</template>
+              <template #default="s">
+                <el-tag size="small" :class="stockTypeClass(s.row.stockType)">{{ stockTypeText(s.row.stockType) }}</el-tag>
+              </template>
             </el-table-column>
             <el-table-column label="数量" prop="qty" width="80" align="right" />
             <el-table-column label="成本价" prop="costPrice" width="90" align="right" />
@@ -127,6 +139,7 @@
 
 <script setup name="Finance">
 import { rankSku, rankStyle, financeInventory, profitReport, returnReport } from '@/api/garment'
+import { stockTypeText, stockTypeClass } from '@/utils/garment'
 
 const showSearch = ref(true)
 
@@ -136,6 +149,7 @@ const dateRange = ref([])
 const rankSkuList = ref([])
 const rankStyleList = ref([])
 const inventoryList = ref([])
+const stockTypeFilter = ref('')
 const profitList = ref([])
 const returnByStyle = ref([])
 const returnByReason = ref([])
@@ -152,14 +166,19 @@ function params() {
 function sumBy(list, key) {
   return list.reduce((s, i) => s + Number(i[key] || 0), 0)
 }
+function loadInventory() {
+  const q = stockTypeFilter.value ? { stockType: stockTypeFilter.value } : {}
+  financeInventory(q).then(res => {
+    inventoryList.value = res.data || []
+    // 顶部库存货值卡片始终展示全部库存，筛选只影响表格
+    if (!stockTypeFilter.value) totals.value.stockValue = sumBy(inventoryList.value, 'amount').toFixed(2)
+  })
+}
 function loadAll() {
   const p = params()
   rankSku(p).then(res => { rankSkuList.value = res.data || [] })
   rankStyle(p).then(res => { rankStyleList.value = res.data || [] })
-  financeInventory({}).then(res => {
-    inventoryList.value = res.data || []
-    totals.value.stockValue = sumBy(inventoryList.value, 'amount').toFixed(2)
-  })
+  loadInventory()
   profitReport(p).then(res => {
     profitList.value = res.data || []
     totals.value.revenue = sumBy(profitList.value, 'revenue').toFixed(2)

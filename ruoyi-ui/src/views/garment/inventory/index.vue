@@ -54,11 +54,6 @@
       <el-col :span="1.5" v-if="canAccess('/warehouse/warning')">
         <el-button plain type="warning" v-hasPermi="['garment:warning:list']" @click="$router.push('/warehouse/warning')">库存预警</el-button>
       </el-col>
-      <el-col :span="6" style="display: flex; align-items: center; gap: 6px">
-        <el-tag type="danger">裁片</el-tag>
-        <el-tag type="primary">产线</el-tag>
-        <el-tag type="info" effect="dark">成品</el-tag>
-      </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -71,7 +66,7 @@
         <el-table-column label="条码" prop="barcode" min-width="160" show-overflow-tooltip />
         <el-table-column label="库存类型" prop="stockType" width="90" align="center">
           <template #default="s">
-            <el-tag size="small" :type="typeTag(s.row.stockType)">{{ typeText(s.row.stockType) }}</el-tag>
+            <el-tag size="small" :class="stockTypeClass(s.row.stockType)">{{ stockTypeText(s.row.stockType) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="数量" prop="qty" width="80" align="right" />
@@ -91,6 +86,7 @@
 
 <script setup name="Inventory">
 import { listInventory } from '@/api/garment'
+import { stockTypeText, stockTypeClass } from '@/utils/garment'
 
 const showSearch = ref(true)
 
@@ -119,8 +115,6 @@ watch(() => route.query, q => {
   getList()
 }, { immediate: true })
 
-function typeText(t) { return t === 'CUT' ? '裁片' : t === 'LINE' ? '产线' : '成品' }
-function typeTag(t) { return t === 'CUT' ? 'danger' : t === 'LINE' ? 'primary' : 'info' }
 function getList() {
   loading.value = true
   listInventory(queryParams.value).then(res => {

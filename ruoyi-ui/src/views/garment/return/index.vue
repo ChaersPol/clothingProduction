@@ -53,7 +53,7 @@
     <el-dialog title="退货入库" v-model="open" width="600px" append-to-body>
       <el-form label-width="90px">
         <el-form-item label="商品条码" required>
-          <el-input ref="scanRef" v-model="form.barcode" placeholder="扫描或输入条码后回车" @keyup.enter="fetchSku" />
+          <el-input ref="scanRef" v-model="form.barcode" placeholder="扫描或输入条码自动查询" @input="onBarcodeInput" @keyup.enter="onBarcodeEnter(form.barcode)" />
           <GarmentScan size="small" v-hasPermi="['garment:return:add']" style="margin-left: 8px" @scan="onScanReturn" @error="m => proxy.$modal.msgWarning(m)" />
         </el-form-item>
         <el-form-item label="商品信息">
@@ -101,6 +101,7 @@
 <script setup name="ReturnGoods">
 import { listReturn, addReturn, delReturn, skuByBarcode, commonCustomers } from '@/api/garment'
 import GarmentScan from '@/components/GarmentScan/index.vue'
+import { useAutoScan } from '@/utils/autoScan'
 
 const showSearch = ref(true)
 
@@ -159,17 +160,24 @@ function onScanReturn(code) {
   form.value.barcode = code
   fetchSku()
 }
-function fetchSku() {
+function fetchSku(silent = false) {
   if (!form.value.barcode) return
   skuByBarcode(form.value.barcode.trim()).then(res => {
     const sku = res.data
-    if (!sku) { proxy.$modal.msgWarning('条码不存在'); return }
+    if (!sku) { if (!silent) proxy.$modal.msgWarning('条码不存在'); return }
     form.value.skuId = sku.skuId
     form.value.styleNo = sku.styleNo
     form.value.color = sku.color
     form.value.size = sku.size
     proxy.$modal.msgSuccess('已读取商品信息')
   })
+}
+// 手动输入或扫码枪：输入停顿后自动查询商品信息，无需回车
+const { onInput: onBarcodeInput, cancel: cancelBarcode } = useAutoScan(() => fetchSku(true), { minLength: 6 })
+function onBarcodeEnter(code) {
+  cancelBarcode()
+  form.value.barcode = code
+  fetchSku()
 }
 function syncGood() {
   form.value.badQty = Math.min(form.value.badQty || 0, form.value.qty || 0)

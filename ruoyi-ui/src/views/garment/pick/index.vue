@@ -7,7 +7,7 @@
           <el-input :model-value="operatorName" disabled style="width: 180px" />
         </el-form-item>
         <el-form-item label="扎卡条码" class="scan-input">
-          <el-input ref="scanRef" v-model="scanCode" placeholder="扫描扎卡条码后回车领片" clearable @keyup.enter="doPick" />
+          <el-input ref="scanRef" v-model="scanCode" placeholder="扫描或输入扎卡条码自动领片" clearable @input="onCodeInput" @keyup.enter="onCodeEnter(scanCode)" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Search" v-hasPermi="['garment:pick:add']" @click="doPick">确认领片</el-button>
@@ -55,9 +55,10 @@
 </template>
 
 <script setup name="Pick">
-import { pickBundle, listPicks } from '@/api/garment'
+import { pickBundle, listPicks, commonBundle } from '@/api/garment'
 import { currentOperatorName } from '@/utils/garment'
 import GarmentScan from '@/components/GarmentScan/index.vue'
+import { useAutoScan } from '@/utils/autoScan'
 
 const showSearch = ref(true)
 
@@ -103,6 +104,18 @@ function doPick() {
     focusScan()
     getList()
   })
+}
+
+// 手动输入或扫码枪：输入停顿后自动查询并领片，无需回车
+const { onInput: onCodeInput, cancel: cancelCode } = useAutoScan(code => {
+  scanCode.value = code
+  // 先静默判断扎卡是否存在，避免输入过程中弹出“扎卡不存在”
+  commonBundle(code).then(res => { if (res.data) doPick() })
+}, { minLength: 8 })
+function onCodeEnter(code) {
+  cancelCode()
+  scanCode.value = code
+  doPick()
 }
 
 // 手机系统相机扫扎卡上的二维码后打开本页，自动带入扎号
