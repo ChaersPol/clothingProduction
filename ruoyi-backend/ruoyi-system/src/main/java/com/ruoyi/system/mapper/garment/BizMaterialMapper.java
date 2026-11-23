@@ -83,4 +83,22 @@ public interface BizMaterialMapper
 
     @Select("select count(1) from biz_material_log where biz_no=#{bizNo} and biz_type=#{bizType}")
     int countLog(@Param("bizNo") String bizNo, @Param("bizType") String bizType);
+
+    /** 按业务单号精确取流水，用于裁货单修改/删除时原路退回已领物资 */
+    @Select("select * from biz_material_log where biz_no=#{bizNo} and biz_type=#{bizType} order by log_id")
+    List<BizMaterialLog> selectLogsByBizNo(@Param("bizNo") String bizNo, @Param("bizType") String bizType);
+
+    /** 用料清单引用数量：BOM 通过「名称+规格」关联物资档案，改名/改规格会导致历史 BOM 脱节 */
+    @Select("""
+        select count(1) from biz_bom
+        where material_name=#{name} and ifnull(spec,'')=ifnull(#{spec},'')
+        """)
+    int countBomRef(@Param("name") String name, @Param("spec") String spec);
+
+    /** 采购明细引用数量 */
+    @Select("""
+        select count(1) from biz_purchase_item
+        where material_name=#{name} and ifnull(spec,'')=ifnull(#{spec},'')
+        """)
+    int countPurchaseRef(@Param("name") String name, @Param("spec") String spec);
 }

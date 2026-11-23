@@ -8,7 +8,9 @@
         <el-input v-model="queryParams.cnName" placeholder="请输入品名" clearable style="width: 160px" @keyup.enter="handleQuery" />
       </el-form-item>
       <el-form-item label="品类" prop="category">
-        <el-input v-model="queryParams.category" placeholder="品类" clearable style="width: 130px" @keyup.enter="handleQuery" />
+        <el-select v-model="queryParams.category" placeholder="品类" clearable style="width: 130px">
+          <el-option v-for="d in garment_category" :key="d.dictValue" :label="d.dictLabel" :value="d.dictValue" />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
@@ -84,18 +86,22 @@
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="品类" prop="category">
-              <el-input v-model="form.category" placeholder="连衣裙/上衣/裤装" />
+              <el-select v-model="form.category" placeholder="选择品类" clearable style="width: 100%">
+                <el-option v-for="d in garment_category" :key="d.dictValue" :label="d.dictLabel" :value="d.dictValue" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="季节" prop="season">
-              <el-input v-model="form.season" placeholder="春夏/秋季/冬季" />
+              <el-select v-model="form.season" placeholder="选择季节" clearable style="width: 100%">
+                <el-option v-for="d in garment_season" :key="d.dictValue" :label="d.dictLabel" :value="d.dictValue" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="设计人" prop="designer">
               <el-select v-model="form.designer" placeholder="选择设计人" clearable style="width: 100%">
-                <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+                <el-option v-for="e in employees" :key="e.userId" :label="e.displayName" :value="e.displayName" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -147,9 +153,10 @@
 </template>
 
 <script setup name="Style">
-import { listStyle, getStyle, addStyle, updateStyle, delStyle, commonEmployees, commonSizes } from '@/api/garment'
+import { listStyle, getStyle, addStyle, updateStyle, delStyle, commonUsers, commonSizes } from '@/api/garment'
 
 const { proxy } = getCurrentInstance()
+const { garment_category, garment_season } = useDict('garment_category', 'garment_season')
 const styleList = ref([])
 const employees = ref([])
 const sizes = ref([])
@@ -233,7 +240,7 @@ function handleExport() {
 }
 
 getList()
-commonEmployees('设计').then(res => { employees.value = res.data || [] })
+commonUsers('设计').then(res => { employees.value = res.data || [] })
 commonSizes().then(res => { sizes.value = res.data || [] })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表

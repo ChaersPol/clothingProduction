@@ -3,7 +3,7 @@
     <el-form v-show="showSearch" class="search-form" :model="queryParams" ref="queryRef" :inline="true">
       <el-form-item label="费用类型" prop="expenseType">
         <el-select v-model="queryParams.expenseType" placeholder="全部" clearable style="width: 140px">
-          <el-option v-for="t in types" :key="t" :label="t" :value="t" />
+          <el-option v-for="d in garment_expense_type" :key="d.dictValue" :label="d.dictLabel" :value="d.dictValue" />
         </el-select>
       </el-form-item>
       <el-form-item label="款号" prop="styleNo">
@@ -57,10 +57,14 @@
       <el-form ref="expenseRef" :model="form" :rules="rules" label-width="90px">
         <el-form-item label="费用类型" prop="expenseType">
           <el-select v-model="form.expenseType" placeholder="选择类型" style="width: 100%">
-            <el-option v-for="t in types" :key="t" :label="t" :value="t" />
+            <el-option v-for="d in garment_expense_type" :key="d.dictValue" :label="d.dictLabel" :value="d.dictValue" />
           </el-select>
         </el-form-item>
-        <el-form-item label="关联款号"><el-input v-model="form.styleNo" placeholder="可选" /></el-form-item>
+        <el-form-item label="关联款号">
+          <el-select v-model="form.styleNo" placeholder="可选" clearable filterable style="width: 100%">
+            <el-option v-for="s in styles" :key="s.styleNo" :label="s.styleNo + ' ' + s.cnName" :value="s.styleNo" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="金额" prop="amount">
           <el-input-number v-model="form.amount" :min="0" :precision="2" controls-position="right" style="width: 100%" />
         </el-form-item>
@@ -78,7 +82,7 @@
 </template>
 
 <script setup name="Expense">
-import { listExpense, addExpense, updateExpense, delExpense } from '@/api/garment'
+import { listExpense, addExpense, updateExpense, delExpense, commonStyles } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -91,7 +95,8 @@ function handleSelectionChange(selection) {
 }
 
 const { proxy } = getCurrentInstance()
-const types = ['辅料', '加工费', '运费', '海运费', '头程运费', '尾程运费', '运营费', '拍摄费', '办公', '差旅', '推广', '其他']
+const { garment_expense_type } = useDict('garment_expense_type')
+const styles = ref([])
 const expenseList = ref([])
 const loading = ref(false)
 const total = ref(0)
@@ -146,6 +151,7 @@ function handleDelete(row) {
 }
 
 getList()
+commonStyles().then(res => { styles.value = res.data || [] })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
 let _pageActivated = false

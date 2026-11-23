@@ -42,6 +42,9 @@ public class BizDelivery extends BaseEntity
     @Excel(name = "员工")
     private String employee;
 
+    /** 交后道人用户ID */
+    private Long userId;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "交货时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date deliveryTime;

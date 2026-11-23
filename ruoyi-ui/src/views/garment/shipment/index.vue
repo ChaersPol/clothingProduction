@@ -76,16 +76,32 @@
             <el-form-item label="出货日期"><el-date-picker v-model="form.shipDate" type="date" value-format="YYYY-MM-DD" style="width: 100%" /></el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
-            <el-form-item label="客户"><el-input v-model="form.customer" /></el-form-item>
+            <el-form-item label="客户">
+              <el-select v-model="form.customer" placeholder="选择客户" filterable clearable style="width: 100%">
+                <el-option v-for="c in customers" :key="c.customerId" :label="c.customerName" :value="c.customerName" />
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
-            <el-form-item label="款号"><el-input v-model="form.styleNo" /></el-form-item>
+            <el-form-item label="款号">
+              <el-select v-model="form.styleNo" placeholder="选择款号" filterable style="width: 100%" @change="onStyleChange">
+                <el-option v-for="s in styles" :key="s.styleNo" :label="s.styleNo + ' ' + (s.cnName || '')" :value="s.styleNo" />
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
-            <el-form-item label="颜色"><el-input v-model="form.color" /></el-form-item>
+            <el-form-item label="颜色">
+              <el-select v-model="form.color" placeholder="选择颜色" filterable style="width: 100%" @change="onColorChange">
+                <el-option v-for="c in styleColors" :key="c" :label="c" :value="c" />
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
-            <el-form-item label="尺码"><el-input v-model="form.size" /></el-form-item>
+            <el-form-item label="尺码">
+              <el-select v-model="form.size" placeholder="选择尺码" filterable style="width: 100%">
+                <el-option v-for="sz in styleSizes" :key="sz" :label="sz" :value="sz" />
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="数量"><el-input-number v-model="form.qty" :min="0" controls-position="right" style="width: 100%" /></el-form-item>
@@ -107,7 +123,7 @@
 </template>
 
 <script setup name="Shipment">
-import { listShipment, addShipment, updateShipment, delShipment, shipmentSummary } from '@/api/garment'
+import { listShipment, addShipment, updateShipment, delShipment, shipmentSummary, listSku, commonCustomers, commonStyles } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -128,6 +144,16 @@ const total = ref(0)
 const open = ref(false)
 const dateRange = ref([])
 const form = ref({})
+const customers = ref([])
+const styles = ref([])
+const allSkus = ref([])
+// 款号 → 颜色 → 尺码 全部来自已生成的商品，避免手填导致匹配不到库存
+const styleColors = computed(() => [...new Set(allSkus.value.filter(k => k.styleNo === form.value.styleNo).map(k => k.color))])
+const styleSizes = computed(() => [...new Set(allSkus.value
+  .filter(k => k.styleNo === form.value.styleNo && (!form.value.color || k.color === form.value.color))
+  .map(k => k.size))])
+function onStyleChange() { form.value.color = ''; form.value.size = '' }
+function onColorChange() { form.value.size = '' }
 const queryParams = ref({ pageNum: 1, pageSize: 10, customer: undefined, styleNo: undefined })
 
 function params() {
@@ -206,5 +232,9 @@ onActivated(() => {
     _pageActivated = true
   }
 })
+
+commonCustomers().then(res => { customers.value = res.data || [] })
+commonStyles().then(res => { styles.value = res.data || [] })
+listSku({ pageNum: 1, pageSize: 5000 }).then(res => { allSkus.value = res.rows || [] })
 
 </script>

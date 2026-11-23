@@ -90,4 +90,8 @@ public interface BizPurchaseMapper
 
     @Select("select count(1) from biz_purchase where date_format(create_time,'%Y%m%d')=date_format(sysdate(),'%Y%m%d')")
     int countTodayAll();
+
+    /** 取指定前缀下最大流水号，避免删除采购单后单号重复 */
+    @Select("select coalesce(max(cast(right(purchase_no,3) as unsigned)),0) from biz_purchase where purchase_no like concat(#{prefix},'%')")
+    int maxSeq(@Param("prefix") String prefix);
 }

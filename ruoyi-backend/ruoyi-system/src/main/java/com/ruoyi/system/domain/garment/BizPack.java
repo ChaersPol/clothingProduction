@@ -45,6 +45,9 @@ public class BizPack extends BaseEntity
     @Excel(name = "包装人")
     private String packer;
 
+    /** 包装人用户ID，包装统计按人聚合 */
+    private Long userId;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "包装时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date packTime;

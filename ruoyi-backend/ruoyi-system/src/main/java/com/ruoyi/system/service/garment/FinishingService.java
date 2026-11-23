@@ -61,6 +61,7 @@ public class FinishingService
         {
             qc.setInspector(com.ruoyi.common.utils.SecurityUtils.getUsername());
         }
+        qc.setUserId(com.ruoyi.common.utils.SecurityUtils.getUserId());
         return qcMapper.insertQc(qc);
     }
 
@@ -94,6 +95,7 @@ public class FinishingService
         {
             pack.setPacker(com.ruoyi.common.utils.SecurityUtils.getUsername());
         }
+        pack.setUserId(com.ruoyi.common.utils.SecurityUtils.getUserId());
         return packMapper.insertPack(pack);
     }
 
@@ -143,6 +145,7 @@ public class FinishingService
             pack.setPackMethod(StringUtils.isEmpty(packMethod) ? "袋装" : packMethod);
             pack.setPerBag(perBag == null || perBag <= 0 ? 1 : perBag);
             pack.setPacker(packer);
+            pack.setUserId(com.ruoyi.common.utils.SecurityUtils.getUserId());
             pack.setRemark("成品扫码入库");
             packMapper.insertPack(pack);
         }
@@ -182,6 +185,7 @@ public class FinishingService
         {
             defect.setHandler(com.ruoyi.common.utils.SecurityUtils.getUsername());
         }
+        defect.setUserId(com.ruoyi.common.utils.SecurityUtils.getUserId());
         return defectMapper.insertDefect(defect);
     }
 

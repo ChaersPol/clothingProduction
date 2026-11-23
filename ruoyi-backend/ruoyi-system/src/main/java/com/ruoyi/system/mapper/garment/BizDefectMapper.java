@@ -21,6 +21,6 @@ public interface BizDefectMapper
         """)
     List<BizDefect> selectDefectList(BizDefect defect);
 
-    @Insert("insert into biz_defect(bundle_id,bundle_no,sku_id,qty,defect_type,handler,handle_time,remark) values(#{bundleId},#{bundleNo},#{skuId},#{qty},#{defectType},#{handler},sysdate(),#{remark})")
+    @Insert("insert into biz_defect(bundle_id,bundle_no,sku_id,qty,defect_type,handler,user_id,handle_time,remark) values(#{bundleId},#{bundleNo},#{skuId},#{qty},#{defectType},#{handler},#{userId},sysdate(),#{remark})")
     int insertDefect(BizDefect defect);
 }

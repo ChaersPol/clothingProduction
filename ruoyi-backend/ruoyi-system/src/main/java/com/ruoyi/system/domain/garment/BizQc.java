@@ -48,6 +48,9 @@ public class BizQc extends BaseEntity
     @Excel(name = "检验人")
     private String inspector;
 
+    /** 检验人用户ID */
+    private Long userId;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "检验时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date checkTime;

@@ -56,8 +56,9 @@ public interface BizBundleMapper
         """)
     int updateBundle(BizBundle bundle);
 
-    @Update("update biz_bundle set status=#{status}, pickup_user=#{user}, pickup_time=sysdate(), update_time=sysdate() where bundle_id=#{bundleId}")
-    int updatePickup(@Param("bundleId") Long bundleId, @Param("user") String user, @Param("status") String status);
+    @Update("update biz_bundle set status=#{status}, pickup_user=#{user}, pickup_user_id=#{userId}, pickup_time=sysdate(), update_time=sysdate() where bundle_id=#{bundleId}")
+    int updatePickup(@Param("bundleId") Long bundleId, @Param("user") String user, @Param("userId") Long userId,
+            @Param("status") String status);
 
     @Update("update biz_bundle set delivered_qty = delivered_qty + #{qty}, defect_qty = defect_qty + #{defect}, status=#{status}, update_time=sysdate() where bundle_id=#{bundleId}")
     int addDelivery(@Param("bundleId") Long bundleId, @Param("qty") int qty, @Param("defect") int defect, @Param("status") String status);
@@ -76,6 +77,10 @@ public interface BizBundleMapper
 
     @Select("select count(1) from biz_bundle")
     int countAll();
+
+    /** 取指定前缀（如 Z20261123）下最大流水号，避免删除扎卡后按总数生成造成扎号重复 */
+    @Select("select coalesce(max(cast(right(bundle_no,4) as unsigned)),0) from biz_bundle where bundle_no like concat(#{prefix},'%')")
+    int maxSeq(@Param("prefix") String prefix);
 
     @Select("select count(1) from biz_bundle where status=#{status}")
     int countByStatus(@Param("status") String status);

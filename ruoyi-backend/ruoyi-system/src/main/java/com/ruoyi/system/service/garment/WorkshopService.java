@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.garment.BizBundle;
 import com.ruoyi.system.domain.garment.BizDelivery;
 import com.ruoyi.system.domain.garment.BizPick;
@@ -50,7 +51,8 @@ public class WorkshopService
                 bundle.getCutNo(), bundle.getBundleNo(), "领片人：" + employee);
         stockService.change(bundle.getSkuId(), GarmentStockService.LINE, bundle.getQty(), "车间领片",
                 bundle.getCutNo(), bundle.getBundleNo(), "领片人：" + employee);
-        bundleMapper.updatePickup(bundle.getBundleId(), employee, "2");
+        Long userId = SecurityUtils.getUserId();
+        bundleMapper.updatePickup(bundle.getBundleId(), employee, userId, "2");
         BizPick pick = new BizPick();
         pick.setBundleId(bundle.getBundleId());
         pick.setBundleNo(bundle.getBundleNo());
@@ -60,9 +62,11 @@ public class WorkshopService
         pick.setSize(bundle.getSize());
         pick.setQty(bundle.getQty());
         pick.setEmployee(employee);
+        pick.setUserId(userId);
         pickMapper.insertPick(pick);
         bundle.setStatus("2");
         bundle.setPickupUser(employee);
+        bundle.setPickupUserId(userId);
         return bundle;
     }
 
@@ -78,7 +82,7 @@ public class WorkshopService
         {
             throw new ServiceException("扎不存在");
         }
-        if (ownOnly && (bundle.getPickupUser() == null || !bundle.getPickupUser().equals(employee)))
+        if (ownOnly && (bundle.getPickupUserId() == null || !bundle.getPickupUserId().equals(SecurityUtils.getUserId())))
         {
             throw new ServiceException("只能对本人的扎交后道");
         }
@@ -113,6 +117,7 @@ public class WorkshopService
         delivery.setQty(qty);
         delivery.setDefectQty(defect);
         delivery.setEmployee(employee);
+        delivery.setUserId(SecurityUtils.getUserId());
         deliveryMapper.insertDelivery(delivery);
         bundle.setDeliveredQty(delivered);
         bundle.setStatus(status);

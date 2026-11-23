@@ -153,13 +153,13 @@ public interface BizStatMapper
     /** 裁床产量 */
     @Select("""
         <script>
-        select cutter, count(1) as orders, sum(total_qty) as qty, sum(layer_count) as layers
+        select max(cutter) as cutter, count(1) as orders, sum(total_qty) as qty, sum(layer_count) as layers
         from biz_cut_order
         <where>
         <if test="beginDate != null and beginDate != ''"> and cut_date &gt;= #{beginDate}</if>
         <if test="endDate != null and endDate != ''"> and cut_date &lt;= #{endDate}</if>
         </where>
-        group by cutter order by qty desc
+        group by ifnull(cutter_id, 0) order by qty desc
         </script>
         """)
     List<Map<String, Object>> cutStatByCutter(@Param("beginDate") String beginDate, @Param("endDate") String endDate);

@@ -9,7 +9,7 @@
       </el-form-item>
       <el-form-item label="裁工" prop="cutter">
         <el-select v-model="queryParams.cutter" placeholder="裁工" clearable filterable style="width: 120px">
-          <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+          <el-option v-for="e in employees" :key="e.userId" :label="e.displayName" :value="e.displayName" />
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
@@ -86,7 +86,11 @@
             <el-form-item label="品名"><el-input v-model="form.cnName" /></el-form-item>
           </el-col>
           <el-col :xs="24" :sm="8">
-            <el-form-item label="客户"><el-input v-model="form.customer" /></el-form-item>
+            <el-form-item label="客户">
+              <el-select v-model="form.customer" placeholder="选择客户" filterable clearable style="width: 100%">
+                <el-option v-for="c in customers" :key="c.customerId" :label="c.customerName" :value="c.customerName" />
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="8">
             <el-form-item label="面料"><el-input v-model="form.fabric" /></el-form-item>
@@ -100,7 +104,7 @@
           <el-col :xs="24" :sm="8">
             <el-form-item label="裁工">
               <el-select v-model="form.cutter" placeholder="选择裁工" filterable style="width: 100%">
-                <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+                <el-option v-for="e in employees" :key="e.userId" :label="e.displayName" :value="e.displayName" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -131,10 +135,18 @@
             <template #default="s"><el-input-number v-model="s.row.layerNo" :min="1" size="small" controls-position="right" style="width: 100%" /></template>
           </el-table-column>
           <el-table-column label="颜色" min-width="150">
-            <template #default="s"><el-input v-model="s.row.color" size="small" /></template>
+            <template #default="s">
+              <el-select v-model="s.row.color" size="small" filterable placeholder="颜色" style="width: 100%">
+                <el-option v-for="c in colors" :key="c.cnName" :label="c.cnName" :value="c.cnName" />
+              </el-select>
+            </template>
           </el-table-column>
           <el-table-column label="尺码" min-width="110">
-            <template #default="s"><el-input v-model="s.row.size" size="small" /></template>
+            <template #default="s">
+              <el-select v-model="s.row.size" size="small" filterable placeholder="尺码" style="width: 100%">
+                <el-option v-for="sz in sizeOptions" :key="sz" :label="sz" :value="sz" />
+              </el-select>
+            </template>
           </el-table-column>
           <el-table-column label="数量" width="130">
             <template #default="s"><el-input-number v-model="s.row.qty" :min="0" size="small" controls-position="right" style="width: 100%" /></template>
@@ -185,7 +197,7 @@
 
 <script setup name="CutOrder">
 import { useRouter } from 'vue-router'
-import { listCutOrder, getCutOrder, addCutOrder, updateCutOrder, delCutOrder, commonStyles, commonColors, commonSizes, commonEmployees } from '@/api/garment'
+import { listCutOrder, getCutOrder, addCutOrder, updateCutOrder, delCutOrder, commonStyles, commonColors, commonSizes, commonUsers, commonCustomers } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -203,6 +215,10 @@ const orderList = ref([])
 const styles = ref([])
 const colors = ref([])
 const sizes = ref([])
+const customers = ref([])
+const styleSizes = ref([])
+// 尺码优先取款号尺码表，未配置时退回基础资料全部尺码
+const sizeOptions = computed(() => styleSizes.value.length ? styleSizes.value : sizes.value.map(i => i.sizeName))
 const employees = ref([])
 const loading = ref(false)
 const total = ref(0)
@@ -268,7 +284,12 @@ function handleQuery() { queryParams.value.pageNum = 1; getList() }
 function resetQuery() { proxy.resetForm('queryRef'); dateRange.value = []; handleQuery() }
 function onStyleChange(styleNo) {
   const s = styles.value.find(i => i.styleNo === styleNo)
-  if (s) form.value.cnName = s.cnName
+  if (s) {
+    form.value.cnName = s.cnName
+    styleSizes.value = (s.sizeTable || '').split(',').map(i => i.trim()).filter(Boolean)
+  } else {
+    styleSizes.value = []
+  }
 }
 function addRow() {
   if (!form.value.items) form.value.items = []
@@ -369,7 +390,8 @@ function handleExport() {
 commonStyles().then(res => { styles.value = res.data || []; tryPrefill() })
 commonColors().then(res => { colors.value = res.data || [] })
 commonSizes().then(res => { sizes.value = res.data || [] })
-commonEmployees('裁床').then(res => { employees.value = res.data || [] })
+commonUsers('裁床').then(res => { employees.value = res.data || [] })
+commonCustomers().then(res => { customers.value = res.data || [] })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
 let _pageActivated = false

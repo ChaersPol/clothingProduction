@@ -59,7 +59,11 @@
       <el-form label-width="90px">
         <el-row :gutter="12">
           <el-col :xs="24" :sm="12">
-            <el-form-item label="客户"><el-input v-model="form.customer" /></el-form-item>
+            <el-form-item label="客户">
+              <el-select v-model="form.customer" placeholder="选择客户" filterable clearable style="width: 100%">
+                <el-option v-for="c in customers" :key="c.customerId" :label="c.customerName" :value="c.customerName" />
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="出库日期"><el-date-picker v-model="form.outboundDate" type="date" value-format="YYYY-MM-DD" style="width: 100%" /></el-form-item>
@@ -122,7 +126,7 @@
 </template>
 
 <script setup name="Outbound">
-import { listOutbound, getOutbound, addOutbound, cancelOutbound, skuByBarcode } from '@/api/garment'
+import { listOutbound, getOutbound, addOutbound, cancelOutbound, skuByBarcode, commonCustomers } from '@/api/garment'
 import { checkPermi } from '@/utils/permission'
 import GarmentScan from '@/components/GarmentScan/index.vue'
 
@@ -138,6 +142,8 @@ const detailOpen = ref(false)
 const detail = ref({})
 const dateRange = ref([])
 const form = ref({})
+const customers = ref([])
+commonCustomers().then(res => { customers.value = res.data || [] })
 const scanBarcode = ref('')
 const scanRef = ref()
 const queryParams = ref({ pageNum: 1, pageSize: 10, outboundNo: undefined, customer: undefined, status: undefined })

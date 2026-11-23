@@ -60,6 +60,9 @@ public class BizBundle extends BaseEntity
 
     private String pickupUser;
 
+    /** 领片人用户ID，用于"只能交本人领的扎"判断 */
+    private Long pickupUserId;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date pickupTime;
 

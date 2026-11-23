@@ -392,10 +392,8 @@ public class GoodsService
         {
             bom.setLossRate(BigDecimal.ZERO);
         }
-        if (bom.getUnitPrice() == null)
-        {
-            bom.setUnitPrice(BigDecimal.ZERO);
-        }
+        // 单价统一取物资档案价格，避免 BOM 与物资库存价格口径不一致
+        bom.setUnitPrice(material.getPrice() == null ? BigDecimal.ZERO : material.getPrice());
         BigDecimal amount = bom.getQtyPerPiece()
                 .multiply(BigDecimal.ONE.add(bom.getLossRate().divide(new BigDecimal("100"))))
                 .multiply(bom.getUnitPrice()).setScale(2, java.math.RoundingMode.HALF_UP);

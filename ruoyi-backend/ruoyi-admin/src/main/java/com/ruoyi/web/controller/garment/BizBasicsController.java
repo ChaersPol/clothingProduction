@@ -38,6 +38,10 @@ public class BizBasicsController extends BaseController
     private BizEmployeeService employeeService;
     @Autowired
     private BizMaterialMapper materialMapper;
+    @Autowired
+    private com.ruoyi.system.mapper.garment.BizCustomerMapper customerMapper;
+    @Autowired
+    private com.ruoyi.system.mapper.garment.GarmentUserMapper garmentUserMapper;
 
     @PreAuthorize("@ss.hasPermi('garment:basics:list')")
     @GetMapping("/color/list")
@@ -179,5 +183,19 @@ public class BizBasicsController extends BaseController
     public AjaxResult materials()
     {
         return success(materialMapper.selectMaterialList(new BizMaterial()));
+    }
+
+    /** 客户档案下拉：裁货、出货、出库、退货统一从客户档案选择 */
+    @GetMapping("/common/customers")
+    public AjaxResult customers()
+    {
+        return success(customerMapper.selectCustomerAll());
+    }
+
+    /** 人员下拉：以系统用户为唯一人员来源，岗位取岗位管理（如 设计、裁床、车间、后道） */
+    @GetMapping("/common/users")
+    public AjaxResult users(@RequestParam(required = false) String post)
+    {
+        return success(garmentUserMapper.selectActiveUsers(post));
     }
 }

@@ -42,6 +42,9 @@ public class BizDefect extends BaseEntity
     @Excel(name = "处理人")
     private String handler;
 
+    /** 处理人用户ID */
+    private Long userId;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "处理时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date handleTime;

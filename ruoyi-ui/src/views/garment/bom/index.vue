@@ -91,7 +91,7 @@
             <el-form-item label="损耗率%"><el-input-number v-model="form.lossRate" :min="0" :precision="2" controls-position="right" style="width: 100%" /></el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
-            <el-form-item label="单价"><el-input-number v-model="form.unitPrice" :min="0" :precision="2" controls-position="right" style="width: 100%" /></el-form-item>
+            <el-form-item label="单价"><el-input-number v-model="form.unitPrice" :min="0" :precision="2" controls-position="right" disabled style="width: 100%" /></el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="备注"><el-input v-model="form.remark" /></el-form-item>
@@ -147,7 +147,8 @@ function onMaterialChange(key) {
   form.value.spec = m.spec
   form.value.unit = m.unit
   form.value.materialType = m.materialType
-  if (!form.value.unitPrice) form.value.unitPrice = Number(m.price || 0)
+  // 单价跟随物资档案，不允许在 BOM 里单独改价
+  form.value.unitPrice = Number(m.price || 0)
 }
 
 function getList() {

@@ -42,7 +42,7 @@
       </el-form-item>
       <el-form-item label="包装人" prop="packer">
         <el-select v-model="queryParams.packer" placeholder="包装人" clearable filterable style="width: 130px">
-          <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+          <el-option v-for="e in employees" :key="e.userId" :label="e.displayName" :value="e.displayName" />
         </el-select>
       </el-form-item>
       <el-form-item label="包装日期">
@@ -76,7 +76,7 @@
 </template>
 
 <script setup name="Packing">
-import { listPack, finishingStockIn, commonBundle, commonEmployees } from '@/api/garment'
+import { listPack, finishingStockIn, commonBundle, commonUsers } from '@/api/garment'
 import { currentOperatorName } from '@/utils/garment'
 import GarmentScan from '@/components/GarmentScan/index.vue'
 
@@ -158,7 +158,7 @@ function focusScan() {
   nextTick(() => { if (scanRef.value) scanRef.value.focus() })
 }
 
-commonEmployees('后道').then(res => {
+commonUsers('后道').then(res => {
   employees.value = res.data || []
   focusScan()
 })

@@ -24,15 +24,15 @@ public interface BizPackMapper
         """)
     List<BizPack> selectPackList(BizPack pack);
 
-    @Insert("insert into biz_pack(bundle_id,bundle_no,sku_id,qty,pack_method,per_bag,packer,pack_time,remark) values(#{bundleId},#{bundleNo},#{skuId},#{qty},#{packMethod},#{perBag},#{packer},sysdate(),#{remark})")
+    @Insert("insert into biz_pack(bundle_id,bundle_no,sku_id,qty,pack_method,per_bag,packer,user_id,pack_time,remark) values(#{bundleId},#{bundleNo},#{skuId},#{qty},#{packMethod},#{perBag},#{packer},#{userId},sysdate(),#{remark})")
     int insertPack(BizPack pack);
 
     @Select("select coalesce(sum(qty),0) from biz_pack where bundle_id=#{bundleId}")
     int sumPackQtyByBundle(Long bundleId);
 
     @Select("""
-        select packer, sum(qty) as qty, count(1) as times from biz_pack
-        where date_format(pack_time,'%Y-%m-%d') = #{date} group by packer order by qty desc
+        select max(packer) as packer, sum(qty) as qty, count(1) as times from biz_pack
+        where date_format(pack_time,'%Y-%m-%d') = #{date} group by ifnull(user_id, 0) order by qty desc
         """)
     List<Map<String, Object>> statByPacker(@Param("date") String date);
 }

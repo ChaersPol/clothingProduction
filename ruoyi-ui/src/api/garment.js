@@ -124,6 +124,23 @@ export function updateSupplier(data) {
 export function delSupplier(supplierId) {
   return request({ url: '/garment/supplier/' + supplierId, method: 'delete' })
 }
+
+/* ---------------- 客户档案 ---------------- */
+export function listCustomer(query) {
+  return request({ url: '/garment/customer/list', method: 'get', params: query })
+}
+export function addCustomer(data) {
+  return request({ url: '/garment/customer', method: 'post', data })
+}
+export function updateCustomer(data) {
+  return request({ url: '/garment/customer', method: 'put', data })
+}
+export function delCustomer(customerId) {
+  return request({ url: '/garment/customer/' + customerId, method: 'delete' })
+}
+export function commonCustomers() {
+  return request({ url: '/garment/common/customers', method: 'get' })
+}
 export function reconciliation(query) {
   return request({ url: '/garment/supplier/reconciliation', method: 'get', params: query })
 }
@@ -358,29 +375,12 @@ export function skuByBarcode(barcode) {
 export function commonBundle(code) {
   return request({ url: '/garment/common/bundle', method: 'get', params: { code } })
 }
-export function commonEmployees(position) {
-  return request({ url: '/garment/common/employees', method: 'get', params: { position } })
+export function commonUsers(post) {
+  return request({ url: '/garment/common/users', method: 'get', params: { post } })
 }
 // 物资档案下拉（BOM/采购选物料）
 export function commonMaterials() {
   return request({ url: '/garment/common/materials', method: 'get' })
-}
-
-/* ---------------- 员工档案 ---------------- */
-export function listEmployee(query) {
-  return request({ url: '/garment/employee/list', method: 'get', params: query })
-}
-export function allEmployees() {
-  return request({ url: '/garment/employee/all', method: 'get' })
-}
-export function addEmployee(data) {
-  return request({ url: '/garment/employee', method: 'post', data })
-}
-export function updateEmployee(data) {
-  return request({ url: '/garment/employee', method: 'put', data })
-}
-export function delEmployee(employeeId) {
-  return request({ url: '/garment/employee/' + employeeId, method: 'delete' })
 }
 
 /* ---------------- 看板 ---------------- */

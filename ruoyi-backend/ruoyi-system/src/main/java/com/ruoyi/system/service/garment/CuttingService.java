@@ -34,6 +34,8 @@ public class CuttingService
     private MaterialService materialService;
     @Autowired
     private GarmentStockService stockService;
+    @Autowired
+    private BizCustomerMapper customerMapper;
 
     public List<BizCutOrder> selectList(BizCutOrder order)
     {
@@ -73,19 +75,29 @@ public class CuttingService
         }
         order.setTotalQty(total);
         order.setLayerCount(maxLayer);
+        if (!StringUtils.isEmpty(order.getCustomer()))
+        {
+            order.setCustomer(order.getCustomer().trim());
+            if (customerMapper.selectByName(order.getCustomer()) == null)
+            {
+                throw new ServiceException("客户「" + order.getCustomer() + "」不在客户档案中，请先在 商品资料-客户管理 新增");
+            }
+        }
         if (StringUtils.isEmpty(order.getStatus()))
         {
             order.setStatus("0");
         }
         boolean isNew = order.getCutId() == null;
+        BizCutOrder oldOrder = isNew ? null : cutOrderMapper.selectCutOrderById(order.getCutId());
         if (order.getCutId() == null)
         {
             if (StringUtils.isEmpty(order.getCutNo()))
             {
-                order.setCutNo("CH" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE)
-                        + String.format("%03d", cutOrderMapper.countToday() + 1));
+                String prefix = "CH" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE);
+                order.setCutNo(prefix + String.format("%03d", cutOrderMapper.maxSeq(prefix) + 1));
             }
             order.setCreateBy(SecurityUtils.getUsername());
+            order.setCutterId(SecurityUtils.getUserId());
             cutOrderMapper.insertCutOrder(order);
         }
         else
@@ -104,7 +116,50 @@ public class CuttingService
         {
             changeBomStock(order, -1);
         }
+        else if (oldOrder != null)
+        {
+            // 修改裁货单：先按原流水原路退回已领物资，再按修改后的件数/款号重新扣减，避免领料量与裁货量脱节
+            String cutNo = StringUtils.isEmpty(oldOrder.getCutNo()) ? order.getCutNo() : oldOrder.getCutNo();
+            if (!StringUtils.isEmpty(cutNo) && materialMapper.countLog(cutNo, "生产领料") > 0)
+            {
+                reverseMaterialByLogs(cutNo);
+                order.setCutNo(cutNo);
+                changeBomStock(order, -1);
+            }
+        }
         return 1;
+    }
+
+    /**
+     * 按物资流水原路退回已领物料（裁货单修改、删除时使用）。
+     * 按「名称+规格+单位」汇总该裁货单的领料净额后反向退回，避免重复修改后多退。
+     */
+    private void reverseMaterialByLogs(String cutNo)
+    {
+        java.util.Map<String, BigDecimal> netMap = new java.util.LinkedHashMap<>();
+        java.util.Map<String, BizMaterialLog> sampleMap = new java.util.LinkedHashMap<>();
+        for (String bizType : new String[] { "生产领料", "领料退回" })
+        {
+            for (BizMaterialLog log : materialMapper.selectLogsByBizNo(cutNo, bizType))
+            {
+                String key = log.getMaterialName() + "|" + (log.getSpec() == null ? "" : log.getSpec()) + "|"
+                        + (log.getUnit() == null ? "" : log.getUnit());
+                BigDecimal qty = log.getChangeQty() == null ? BigDecimal.ZERO : log.getChangeQty();
+                netMap.merge(key, qty, BigDecimal::add);
+                sampleMap.putIfAbsent(key, log);
+            }
+        }
+        for (java.util.Map.Entry<String, BigDecimal> entry : netMap.entrySet())
+        {
+            BigDecimal net = entry.getValue();
+            if (net.compareTo(BigDecimal.ZERO) == 0)
+            {
+                continue;
+            }
+            BizMaterialLog log = sampleMap.get(entry.getKey());
+            materialService.stockChange(log.getMaterialName(), log.getSpec(), log.getUnit(), null, net.negate(),
+                    "领料退回", cutNo, "裁货单修改/删除，退回已领物资");
+        }
     }
 
     /**
@@ -189,11 +244,11 @@ public class CuttingService
         BizCutOrder order = cutOrderMapper.selectCutOrderById(id);
         cutOrderMapper.deleteItems(id);
         int rows = cutOrderMapper.deleteCutOrder(id);
-        // 删除未分扎的裁货单时，已领用的物资自动退回库存
+        // 删除未分扎的裁货单时，按当初领料流水净额原路退回物资
         if (order != null && !StringUtils.isEmpty(order.getCutNo())
                 && materialMapper.countLog(order.getCutNo(), "生产领料") > 0)
         {
-            changeBomStock(order, 1);
+            reverseMaterialByLogs(order.getCutNo());
         }
         return rows;
     }
@@ -271,8 +326,8 @@ public class CuttingService
         {
             throw new ServiceException("未找到商品资料：" + order.getStyleNo() + "-" + color + "-" + size + "，请先生成SKU");
         }
-        String no = "Z" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE)
-                + String.format("%04d", bundleMapper.countAll() + 1);
+        String prefix = "Z" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE);
+        String no = prefix + String.format("%04d", bundleMapper.maxSeq(prefix) + 1);
         BizBundle bundle = new BizBundle();
         bundle.setBundleNo(no);
         bundle.setBarcode(no);
@@ -311,7 +366,7 @@ public class CuttingService
         stockService.change(bundle.getSkuId(), GarmentStockService.CUT, bundle.getQty(), "裁片入库",
                 bundle.getCutNo(), bundle.getBundleNo(), "裁片扫码入库");
         bundle.setStatus("1");
-        bundleMapper.updatePickup(bundle.getBundleId(), "", "1");
+        bundleMapper.updatePickup(bundle.getBundleId(), null, null, "1");
         BizCutOrder order = cutOrderMapper.selectCutOrderById(bundle.getCutId());
         if (order != null && bundleMapper.countNotStocked(order.getCutId()) == 0)
         {

@@ -38,6 +38,8 @@ public class WarehouseService
     private BizDefectMapper defectMapper;
     @Autowired
     private GarmentStockService stockService;
+    @Autowired
+    private BizCustomerMapper customerMapper;
 
     public List<BizInventory> selectInventory(BizInventory query)
     {
@@ -106,14 +108,15 @@ public class WarehouseService
         {
             throw new ServiceException("出库单已生成，如数量有误请先作废再重新开单");
         }
+        checkCustomer(outbound.getCustomer());
         if (outbound.getItems() == null || outbound.getItems().isEmpty())
         {
             throw new ServiceException("请录入出库明细");
         }
         if (StringUtils.isEmpty(outbound.getOutboundNo()))
         {
-            outbound.setOutboundNo("CK" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE)
-                    + String.format("%03d", outboundMapper.countAll() + 1));
+            String prefix = "CK" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE);
+            outbound.setOutboundNo(prefix + String.format("%03d", outboundMapper.maxSeq(prefix) + 1));
         }
         if (StringUtils.isEmpty(outbound.getOperator()))
         {
@@ -201,6 +204,7 @@ public class WarehouseService
     @Transactional
     public int saveShipment(BizShipment shipment)
     {
+        checkCustomer(shipment.getCustomer());
         if (shipment.getAmount() == null)
         {
             BigDecimal price = shipment.getPrice() == null ? BigDecimal.ZERO : shipment.getPrice();
@@ -293,10 +297,11 @@ public class WarehouseService
     @Transactional
     public BizCheck createCheck(BizCheck check, String stockType)
     {
-        check.setCheckNo(StringUtils.isEmpty(check.getCheckNo())
-                ? "PD" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE)
-                        + String.format("%03d", checkMapper.countAll() + 1)
-                : check.getCheckNo());
+        if (StringUtils.isEmpty(check.getCheckNo()))
+        {
+            String prefix = "PD" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE);
+            check.setCheckNo(prefix + String.format("%03d", checkMapper.maxSeq(prefix) + 1));
+        }
         check.setStatus("0");
         check.setCreateBy(SecurityUtils.getUsername());
         if (StringUtils.isEmpty(check.getChecker()))
@@ -304,16 +309,25 @@ public class WarehouseService
             check.setChecker(SecurityUtils.getUsername());
         }
         checkMapper.insertCheck(check);
+        // 盘点单覆盖全部在售 SKU：无库存记录的 SKU 账面数按 0 生成，避免漏盘
         BizInventory query = new BizInventory();
         query.setStockType(stockType);
+        Map<Long, Integer> bookQtyMap = new HashMap<>();
         for (BizInventory inv : inventoryMapper.selectInventoryList(query))
         {
+            bookQtyMap.merge(inv.getSkuId(), inv.getQty() == null ? 0 : inv.getQty(), Integer::sum);
+        }
+        BizSku skuQuery = new BizSku();
+        skuQuery.setStatus("0");
+        for (BizSku sku : skuMapper.selectSkuList(skuQuery))
+        {
+            int bookQty = bookQtyMap.getOrDefault(sku.getSkuId(), 0);
             BizCheckItem item = new BizCheckItem();
             item.setCheckId(check.getCheckId());
-            item.setSkuId(inv.getSkuId());
-            item.setStockType(inv.getStockType());
-            item.setBookQty(inv.getQty());
-            item.setActualQty(inv.getQty());
+            item.setSkuId(sku.getSkuId());
+            item.setStockType(stockType);
+            item.setBookQty(bookQty);
+            item.setActualQty(bookQty);
             item.setDiffQty(0);
             checkMapper.insertItem(item);
         }
@@ -368,6 +382,7 @@ public class WarehouseService
     @Transactional
     public int saveReturn(BizReturn ret)
     {
+        checkCustomer(ret.getCustomer());
         BizSku sku = ret.getSkuId() != null ? skuMapper.selectSkuById(ret.getSkuId())
                 : (StringUtils.isEmpty(ret.getBarcode()) ? null : skuMapper.selectSkuByBarcode(ret.getBarcode()));
         if (sku == null)
@@ -390,8 +405,8 @@ public class WarehouseService
         ret.setSize(sku.getSize());
         if (StringUtils.isEmpty(ret.getReturnNo()))
         {
-            ret.setReturnNo("TH" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE)
-                    + String.format("%03d", returnMapper.countAll() + 1));
+            String prefix = "TH" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE);
+            ret.setReturnNo(prefix + String.format("%03d", returnMapper.maxSeq(prefix) + 1));
         }
         if (StringUtils.isEmpty(ret.getOperator()))
         {
@@ -439,5 +454,19 @@ public class WarehouseService
             return 0;
         }
         return ((Number) value).intValue();
+    }
+
+    /** 客户必须来自客户档案，避免同一客户多种写法导致按客户统计分裂 */
+    private void checkCustomer(String customer)
+    {
+        if (StringUtils.isEmpty(customer))
+        {
+            return;
+        }
+        String name = customer.trim();
+        if (customerMapper.selectByName(name) == null)
+        {
+            throw new ServiceException("客户「" + name + "」不在客户档案中，请先在 商品资料-客户管理 新增");
+        }
     }
 }

@@ -47,6 +47,9 @@ public class BizCutOrder extends BaseEntity
     @Excel(name = "裁工")
     private String cutter;
 
+    /** 裁工用户ID，裁货统计按人聚合 */
+    private Long cutterId;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "裁货日期", width = 30, dateFormat = "yyyy-MM-dd")
     private Date cutDate;

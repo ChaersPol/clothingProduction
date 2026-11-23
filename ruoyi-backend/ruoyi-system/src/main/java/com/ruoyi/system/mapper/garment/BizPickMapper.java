@@ -23,15 +23,15 @@ public interface BizPickMapper
         """)
     List<BizPick> selectPickList(BizPick pick);
 
-    @Insert("insert into biz_pick(bundle_id,bundle_no,sku_id,style_no,color,size,qty,employee,pick_time,remark) values(#{bundleId},#{bundleNo},#{skuId},#{styleNo},#{color},#{size},#{qty},#{employee},sysdate(),#{remark})")
+    @Insert("insert into biz_pick(bundle_id,bundle_no,sku_id,style_no,color,size,qty,employee,user_id,pick_time,remark) values(#{bundleId},#{bundleNo},#{skuId},#{styleNo},#{color},#{size},#{qty},#{employee},#{userId},sysdate(),#{remark})")
     int insertPick(BizPick pick);
 
     @Select("""
         <script>
-        select employee, sum(qty) as qty, count(1) as bundles from biz_pick
+        select max(employee) as employee, sum(qty) as qty, count(1) as bundles from biz_pick
         where date_format(pick_time,'%Y-%m-%d') = #{date}
         <if test="employee != null and employee != ''"> and employee = #{employee}</if>
-        group by employee order by qty desc
+        group by ifnull(user_id, 0) order by qty desc
         </script>
         """)
     List<Map<String, Object>> statByEmployee(@Param("date") String date, @Param("employee") String employee);

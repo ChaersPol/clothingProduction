@@ -50,4 +50,8 @@ public interface BizCheckMapper
 
     @Select("select count(1) from biz_check")
     int countAll();
+
+    /** 取指定前缀下最大流水号，避免删除盘点单后单号重复 */
+    @Select("select coalesce(max(cast(right(check_no,3) as unsigned)),0) from biz_check where check_no like concat(#{prefix},'%')")
+    int maxSeq(@Param("prefix") String prefix);
 }

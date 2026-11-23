@@ -24,15 +24,15 @@ public interface BizDeliveryMapper
         """)
     List<BizDelivery> selectDeliveryList(BizDelivery delivery);
 
-    @Insert("insert into biz_delivery(bundle_id,bundle_no,sku_id,qty,defect_qty,employee,delivery_time,remark) values(#{bundleId},#{bundleNo},#{skuId},#{qty},#{defectQty},#{employee},sysdate(),#{remark})")
+    @Insert("insert into biz_delivery(bundle_id,bundle_no,sku_id,qty,defect_qty,employee,user_id,delivery_time,remark) values(#{bundleId},#{bundleNo},#{skuId},#{qty},#{defectQty},#{employee},#{userId},sysdate(),#{remark})")
     int insertDelivery(BizDelivery delivery);
 
     @Select("""
         <script>
-        select employee, sum(qty) as qty, sum(defect_qty) as defectQty, count(1) as times from biz_delivery
+        select max(employee) as employee, sum(qty) as qty, sum(defect_qty) as defectQty, count(1) as times from biz_delivery
         where date_format(delivery_time,'%Y-%m-%d') = #{date}
         <if test="employee != null and employee != ''"> and employee = #{employee}</if>
-        group by employee order by qty desc
+        group by ifnull(user_id, 0) order by qty desc
         </script>
         """)
     List<Map<String, Object>> statByEmployee(@Param("date") String date, @Param("employee") String employee);

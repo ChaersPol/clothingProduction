@@ -23,6 +23,6 @@ public interface BizQcMapper
         """)
     List<BizQc> selectQcList(BizQc qc);
 
-    @Insert("insert into biz_qc(bundle_id,bundle_no,sku_id,check_qty,qualified_qty,defect_qty,defect_reason,inspector,check_time,remark) values(#{bundleId},#{bundleNo},#{skuId},#{checkQty},#{qualifiedQty},#{defectQty},#{defectReason},#{inspector},sysdate(),#{remark})")
+    @Insert("insert into biz_qc(bundle_id,bundle_no,sku_id,check_qty,qualified_qty,defect_qty,defect_reason,inspector,user_id,check_time,remark) values(#{bundleId},#{bundleNo},#{skuId},#{checkQty},#{qualifiedQty},#{defectQty},#{defectReason},#{inspector},#{userId},sysdate(),#{remark})")
     int insertQc(BizQc qc);
 }

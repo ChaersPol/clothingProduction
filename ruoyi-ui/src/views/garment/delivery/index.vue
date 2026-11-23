@@ -3,7 +3,7 @@
     <el-form v-show="showSearch" class="search-form" :inline="true">
       <el-form-item v-if="manager" label="员工" prop="employee">
         <el-select v-model="queryParams.employee" placeholder="员工" clearable filterable style="width: 130px">
-          <el-option v-for="e in employees" :key="e.employeeId" :label="e.name" :value="e.name" />
+          <el-option v-for="e in employees" :key="e.userId" :label="e.displayName" :value="e.displayName" />
         </el-select>
       </el-form-item>
       <el-form-item v-else label="员工">
@@ -68,7 +68,7 @@
 </template>
 
 <script setup name="Delivery">
-import { listDeliveries, deliveryStat, commonEmployees } from '@/api/garment'
+import { listDeliveries, deliveryStat, commonUsers } from '@/api/garment'
 import { currentOperatorName, isGarmentManager } from '@/utils/garment'
 
 const showSearch = ref(true)
@@ -114,7 +114,7 @@ function resetQuery() {
 
 getList()
 loadStat()
-commonEmployees('车间').then(res => { employees.value = res.data || [] })
+commonUsers('车间').then(res => { employees.value = res.data || [] })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
 let _pageActivated = false

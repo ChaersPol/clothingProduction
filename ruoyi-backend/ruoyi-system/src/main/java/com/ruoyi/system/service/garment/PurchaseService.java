@@ -111,8 +111,8 @@ public class PurchaseService
         {
             if (StringUtils.isEmpty(purchase.getPurchaseNo()))
             {
-                purchase.setPurchaseNo("CG" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE)
-                        + String.format("%03d", purchaseMapper.countTodayAll() + 1));
+                String prefix = "CG" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE);
+                purchase.setPurchaseNo(prefix + String.format("%03d", purchaseMapper.maxSeq(prefix) + 1));
             }
             purchase.setCreateBy(SecurityUtils.getUsername());
             purchaseMapper.insertPurchase(purchase);

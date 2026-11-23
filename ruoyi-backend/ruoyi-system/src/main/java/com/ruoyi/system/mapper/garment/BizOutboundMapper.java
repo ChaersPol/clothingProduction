@@ -51,6 +51,10 @@ public interface BizOutboundMapper
     @Select("select count(1) from biz_outbound")
     int countAll();
 
+    /** 取指定前缀下最大流水号，避免作废/删除后单号重复 */
+    @Select("select coalesce(max(cast(right(outbound_no,3) as unsigned)),0) from biz_outbound where outbound_no like concat(#{prefix},'%')")
+    int maxSeq(@Param("prefix") String prefix);
+
     @Update("update biz_outbound set status='1', cancel_reason=#{reason}, update_time=sysdate() where outbound_id=#{outboundId}")
     int cancel(@Param("outboundId") Long outboundId, @Param("reason") String reason);
 }

@@ -99,7 +99,7 @@
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="颜色" prop="color">
-              <el-select v-model="form.color" placeholder="颜色" filterable allow-create style="width: 100%">
+              <el-select v-model="form.color" placeholder="颜色" filterable style="width: 100%">
                 <el-option v-for="c in colors" :key="c.cnName" :label="c.cnName" :value="c.cnName">
                   <div class="color-opt"><span>{{ c.cnName }}</span><span class="color-opt-chip" :style="{ background: c.colorCode }"></span></div>
                 </el-option>
@@ -108,7 +108,7 @@
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="尺码" prop="size">
-              <el-select v-model="form.size" placeholder="尺码" filterable allow-create style="width: 100%">
+              <el-select v-model="form.size" placeholder="尺码" filterable style="width: 100%">
                 <el-option v-for="s in sizes" :key="s.sizeName" :label="s.sizeName" :value="s.sizeName" />
               </el-select>
             </el-form-item>

@@ -39,6 +39,9 @@ public class BizPick extends BaseEntity
     @Excel(name = "员工")
     private String employee;
 
+    /** 领片人用户ID，统计按人聚合，避免改名/重名导致产量串人 */
+    private Long userId;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "领片时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date pickTime;

@@ -127,6 +127,20 @@ public class MaterialService
             throw new ServiceException("该物资当前库存为 " + stock.stripTrailingZeros().toPlainString() + " " + old.getUnit()
                     + "，不能直接修改单位，请先盘点清零或新建一条物资档案");
         }
+        // 名称/规格是 BOM、采购明细与物资档案的关联键，已被引用时改名会导致历史单据与库存分叉
+        String oldName = old.getMaterialName() == null ? "" : old.getMaterialName().trim();
+        String oldSpec = old.getSpec() == null ? "" : old.getSpec().trim();
+        if (!material.getMaterialName().equals(oldName) || !material.getSpec().equals(oldSpec))
+        {
+            int bomRef = materialMapper.countBomRef(oldName, oldSpec);
+            int purchaseRef = materialMapper.countPurchaseRef(oldName, oldSpec);
+            if (bomRef > 0 || purchaseRef > 0)
+            {
+                throw new ServiceException("物资「" + oldName + (StringUtils.isEmpty(oldSpec) ? "" : " / " + oldSpec)
+                        + "」已被" + (bomRef > 0 ? "用料清单" : "") + (bomRef > 0 && purchaseRef > 0 ? "、" : "")
+                        + (purchaseRef > 0 ? "采购单" : "") + "引用，不能修改名称或规格；如确需变更，请新建一条物资档案");
+            }
+        }
         if (material.getMinStock() == null)
         {
             material.setMinStock(old.getMinStock());
