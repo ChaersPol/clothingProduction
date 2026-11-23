@@ -26,6 +26,9 @@
         </el-form>
 
         <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button type="primary" plain icon="Plus" @click="handleAddMaterial" v-hasPermi="['garment:material:edit']">新增物资</el-button>
+          </el-col>
           <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
         </el-row>
 
@@ -61,8 +64,9 @@
                 <el-tag v-else type="success" size="small">正常</el-tag>
               </template>
             </el-table-column>
-            <el-table-column v-if="checkPermi(['garment:material:edit'])" label="操作" class-name="op-cell" width="180" align="center" fixed="right">
+            <el-table-column v-if="checkPermi(['garment:material:edit'])" label="操作" class-name="op-cell" width="270" align="center" fixed="right">
               <template #default="s">
+                <el-button link type="primary" v-hasPermi="['garment:material:edit']" @click="handleEditProfile(s.row)">修改档案</el-button>
                 <el-button link type="primary" v-hasPermi="['garment:material:edit']" @click="handleAdjust(s.row)">库存调整</el-button>
                 <el-button link type="primary" v-hasPermi="['garment:material:edit']" @click="handleMinStock(s.row)">安全库存</el-button>
               </template>
@@ -141,6 +145,39 @@
       </template>
     </el-dialog>
 
+    <el-dialog :title="profileForm.materialId ? '修改物资档案' : '新增物资'" v-model="profileOpen" width="520px" append-to-body>
+      <el-alert type="info" :closable="false" show-icon style="margin-bottom: 12px"
+        title="BOM、采购只能选择这里维护的物资，规格和单位以档案为准；单位一旦有库存不允许再改，避免不同单位混算库存。" />
+      <el-form ref="profileRef" :model="profileForm" :rules="profileRules" label-width="90px">
+        <el-form-item label="物资类型" prop="materialType">
+          <el-select v-model="profileForm.materialType" style="width: 100%">
+            <el-option v-for="t in materialTypes" :key="t" :label="t" :value="t" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="物资名称" prop="materialName">
+          <el-input v-model="profileForm.materialName" placeholder="如 雪纺印花、隐形拉链" maxlength="50" />
+        </el-form-item>
+        <el-form-item label="规格">
+          <el-input v-model="profileForm.spec" placeholder="如 150D、25cm黑色" maxlength="50" />
+        </el-form-item>
+        <el-form-item label="计量单位" prop="unit">
+          <el-select v-model="profileForm.unit" placeholder="请选择计量单位" style="width: 100%">
+            <el-option v-for="d in garment_unit" :key="d.value" :label="d.label" :value="d.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="单价">
+          <el-input-number v-model="profileForm.price" :min="0" :precision="2" controls-position="right" style="width: 100%" />
+        </el-form-item>
+        <el-form-item label="安全库存">
+          <el-input-number v-model="profileForm.minStock" :min="0" :precision="2" controls-position="right" style="width: 100%" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button type="primary" v-hasPermi="['garment:material:edit']" @click="submitProfile">确 定</el-button>
+        <el-button @click="profileOpen = false">取 消</el-button>
+      </template>
+    </el-dialog>
+
     <el-dialog title="设置安全库存" v-model="minOpen" width="380px" append-to-body>
       <el-form label-width="90px">
         <el-form-item label="物资">{{ minForm.materialName }} {{ minForm.spec }}</el-form-item>
@@ -157,11 +194,13 @@
 </template>
 
 <script setup name="Material">
-import { listMaterial, listMaterialLogs, updateMaterialMinStock, adjustMaterialStock } from '@/api/garment'
+import { listMaterial, listMaterialLogs, updateMaterialMinStock, adjustMaterialStock, addMaterial, updateMaterialProfile } from '@/api/garment'
 
 const showSearch = ref(true)
 
 const { proxy } = getCurrentInstance()
+const { garment_unit } = useDict('garment_unit')
+const materialTypes = ['面料', '里布', '辅料', '配件', '耗材', '包装']
 const activeTab = ref('stock')
 const list = ref([])
 const logs = ref([])
@@ -174,6 +213,13 @@ const minOpen = ref(false)
 const minForm = ref({})
 const adjustOpen = ref(false)
 const adjustForm = ref({})
+const profileOpen = ref(false)
+const profileForm = ref({})
+const profileRules = {
+  materialType: [{ required: true, message: '请选择物资类型', trigger: 'change' }],
+  materialName: [{ required: true, message: '请填写物资名称', trigger: 'blur' }],
+  unit: [{ required: true, message: '请选择计量单位', trigger: 'change' }]
+}
 const queryParams = ref({ pageNum: 1, pageSize: 10, materialName: undefined, materialType: undefined })
 const logQuery = ref({ pageNum: 1, pageSize: 10, materialName: undefined, bizType: undefined, bizNo: undefined })
 
@@ -202,6 +248,33 @@ function getLogs() {
     logTotal.value = res.total
     logLoading.value = false
   }).catch(() => { logLoading.value = false })
+}
+function handleAddMaterial() {
+  profileForm.value = { materialId: null, materialType: '面料', materialName: '', spec: '', unit: '米', price: 0, minStock: 0 }
+  profileOpen.value = true
+}
+function handleEditProfile(row) {
+  profileForm.value = {
+    materialId: row.materialId,
+    materialType: row.materialType,
+    materialName: row.materialName,
+    spec: row.spec,
+    unit: row.unit,
+    price: Number(row.price || 0),
+    minStock: Number(row.minStock || 0)
+  }
+  profileOpen.value = true
+}
+function submitProfile() {
+  proxy.$refs['profileRef'].validate(valid => {
+    if (!valid) return
+    const fn = profileForm.value.materialId ? updateMaterialProfile : addMaterial
+    fn(profileForm.value).then(() => {
+      proxy.$modal.msgSuccess(profileForm.value.materialId ? '档案已更新' : '物资已新增')
+      profileOpen.value = false
+      getList()
+    })
+  })
 }
 function handleMinStock(row) {
   minForm.value = { materialId: row.materialId, materialName: row.materialName, spec: row.spec, minStock: Number(row.minStock || 0) }

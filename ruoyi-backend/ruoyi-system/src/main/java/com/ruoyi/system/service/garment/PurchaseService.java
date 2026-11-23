@@ -11,6 +11,8 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.garment.BizPurchase;
 import com.ruoyi.system.domain.garment.BizPurchaseItem;
 import com.ruoyi.system.domain.garment.BizSupplier;
+import com.ruoyi.system.domain.garment.BizMaterial;
+import com.ruoyi.system.mapper.garment.BizMaterialMapper;
 import com.ruoyi.system.mapper.garment.BizPurchaseMapper;
 import com.ruoyi.system.mapper.garment.BizSupplierMapper;
 
@@ -24,6 +26,8 @@ public class PurchaseService
     private BizPurchaseMapper purchaseMapper;
     @Autowired
     private BizSupplierMapper supplierMapper;
+    @Autowired
+    private BizMaterialMapper materialMapper;
     @Autowired
     private MaterialService materialService;
 
@@ -65,6 +69,22 @@ public class PurchaseService
         BigDecimal total = BigDecimal.ZERO;
         for (BizPurchaseItem item : purchase.getItems())
         {
+            // 采购物料必须来自物资档案，规格/单位/类型以档案为准，保证入库时数量口径一致
+            if (StringUtils.isEmpty(item.getMaterialName()))
+            {
+                throw new ServiceException("请选择采购物料");
+            }
+            BizMaterial material = materialMapper.selectByKey(item.getMaterialName().trim(),
+                    item.getSpec() == null ? "" : item.getSpec().trim());
+            if (material == null)
+            {
+                throw new ServiceException("物资档案中不存在「" + item.getMaterialName()
+                        + (StringUtils.isEmpty(item.getSpec()) ? "" : " / " + item.getSpec()) + "」，请先到「物资库存」新增该物资");
+            }
+            item.setMaterialName(material.getMaterialName());
+            item.setSpec(material.getSpec());
+            item.setUnit(material.getUnit());
+            item.setMaterialType(material.getMaterialType());
             if (item.getPrice() == null)
             {
                 item.setPrice(BigDecimal.ZERO);

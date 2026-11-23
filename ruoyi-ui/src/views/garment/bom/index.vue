@@ -68,19 +68,21 @@
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="物料类型">
-              <el-select v-model="form.materialType" style="width: 100%">
-                <el-option v-for="t in types" :key="t" :label="t" :value="t" />
+              <el-input v-model="form.materialType" disabled placeholder="选择物料后自动带出" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12">
+            <el-form-item label="物料名称" prop="materialName">
+              <el-select v-model="form.materialKey" placeholder="从物资档案选择" filterable style="width: 100%" @change="onMaterialChange">
+                <el-option v-for="m in materials" :key="m.materialId" :label="materialLabel(m)" :value="materialKeyOf(m)" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
-            <el-form-item label="物料名称" prop="materialName"><el-input v-model="form.materialName" /></el-form-item>
+            <el-form-item label="规格"><el-input v-model="form.spec" disabled placeholder="选择物料后自动带出" /></el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
-            <el-form-item label="规格"><el-input v-model="form.spec" /></el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12">
-            <el-form-item label="单位"><el-input v-model="form.unit" placeholder="米/个/条" /></el-form-item>
+            <el-form-item label="单位"><el-input v-model="form.unit" disabled placeholder="选择物料后自动带出" /></el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="单件用量"><el-input-number v-model="form.qtyPerPiece" :min="0" :precision="3" controls-position="right" style="width: 100%" /></el-form-item>
@@ -105,7 +107,7 @@
 </template>
 
 <script setup name="Bom">
-import { listBom, addBom, updateBom, delBom, commonStyles } from '@/api/garment'
+import { listBom, addBom, updateBom, delBom, commonStyles, commonMaterials } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -122,6 +124,7 @@ const types = ['面料', '里布', '辅料', '配件']
 const bomList = ref([])
 const sumRows = ref([])
 const styles = ref([])
+const materials = ref([])
 const loading = ref(false)
 const total = ref(0)
 const open = ref(false)
@@ -129,7 +132,22 @@ const form = ref({})
 const queryParams = ref({ pageNum: 1, pageSize: 20, styleNo: undefined, materialType: undefined, materialName: undefined })
 const rules = {
   styleNo: [{ required: true, message: '请选择款号', trigger: 'change' }],
-  materialName: [{ required: true, message: '请输入物料名称', trigger: 'blur' }]
+  materialName: [{ required: true, message: '请选择物料', trigger: 'change' }]
+}
+function materialKeyOf(m) {
+  return (m.materialName || '') + '|' + (m.spec || '')
+}
+function materialLabel(m) {
+  return m.materialName + (m.spec ? ' / ' + m.spec : '') + '（' + (m.unit || '') + '）'
+}
+function onMaterialChange(key) {
+  const m = materials.value.find(x => materialKeyOf(x) === key)
+  if (!m) return
+  form.value.materialName = m.materialName
+  form.value.spec = m.spec
+  form.value.unit = m.unit
+  form.value.materialType = m.materialType
+  if (!form.value.unitPrice) form.value.unitPrice = Number(m.price || 0)
 }
 
 function getList() {
@@ -143,13 +161,16 @@ function getList() {
   }).catch(() => { loading.value = false })
 }
 function reset() {
-  form.value = { styleNo: queryParams.value.styleNo, materialType: '面料', materialName: undefined, spec: undefined, unit: '米', qtyPerPiece: 0, lossRate: 0, unitPrice: 0, remark: undefined }
+  form.value = { styleNo: queryParams.value.styleNo, materialType: undefined, materialKey: undefined, materialName: undefined, spec: undefined, unit: undefined, qtyPerPiece: 0, lossRate: 0, unitPrice: 0, remark: undefined }
   proxy.resetForm('bomRef')
 }
 function handleQuery() { queryParams.value.pageNum = 1; getList() }
 function resetQuery() { proxy.resetForm('queryRef'); handleQuery() }
 function handleAdd() { reset(); open.value = true }
-function handleUpdate(row) { form.value = { ...row }; open.value = true }
+function handleUpdate(row) {
+  form.value = { ...row, materialKey: materialKeyOf(row) }
+  open.value = true
+}
 function submitForm() {
   proxy.$refs['bomRef'].validate(valid => {
     if (!valid) return
@@ -190,6 +211,7 @@ function handleExport() {
 
 getList()
 commonStyles().then(res => { styles.value = res.data || [] })
+commonMaterials().then(res => { materials.value = res.data || [] })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
 let _pageActivated = false

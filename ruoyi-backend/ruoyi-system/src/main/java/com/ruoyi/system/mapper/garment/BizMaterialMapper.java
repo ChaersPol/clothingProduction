@@ -51,6 +51,9 @@ public interface BizMaterialMapper
         """)
     int updateMaterial(BizMaterial material);
 
+    @Update("update biz_material set material_code=#{materialCode}, update_time=sysdate() where material_id=#{materialId}")
+    int updateCode(@Param("materialId") Long materialId, @Param("materialCode") String materialCode);
+
     @Update("update biz_material set min_stock=#{minStock}, update_time=sysdate() where material_id=#{materialId}")
     int updateMinStock(@Param("materialId") Long materialId, @Param("minStock") java.math.BigDecimal minStock);
 

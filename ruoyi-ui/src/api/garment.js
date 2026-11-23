@@ -361,6 +361,10 @@ export function commonBundle(code) {
 export function commonEmployees(position) {
   return request({ url: '/garment/common/employees', method: 'get', params: { position } })
 }
+// 物资档案下拉（BOM/采购选物料）
+export function commonMaterials() {
+  return request({ url: '/garment/common/materials', method: 'get' })
+}
 
 /* ---------------- 员工档案 ---------------- */
 export function listEmployee(query) {
@@ -407,4 +411,12 @@ export function updateMaterialMinStock(data) {
 // 物资手工库存调整（盘盈盘亏）
 export function adjustMaterialStock(data) {
   return request({ url: '/garment/material/adjust', method: 'put', data })
+}
+// 新增物资档案
+export function addMaterial(data) {
+  return request({ url: '/garment/material', method: 'post', data })
+}
+// 修改物资档案（名称/规格/单位/单价/安全库存）
+export function updateMaterialProfile(data) {
+  return request({ url: '/garment/material/profile', method: 'put', data })
 }

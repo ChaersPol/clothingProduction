@@ -47,4 +47,29 @@ public class BizMaterialController extends BaseController
         String remark = body.get("remark") == null ? null : String.valueOf(body.get("remark"));
         return toAjax(materialService.adjustStock(materialId, stockQty, remark));
     }
+
+    @PreAuthorize("@ss.hasPermi('garment:material:edit')")
+    @PutMapping("/minstock")
+    public AjaxResult minStock(@RequestBody Map<String, Object> body)
+    {
+        Long materialId = body.get("materialId") == null ? null : Long.valueOf(String.valueOf(body.get("materialId")));
+        BigDecimal minStock = body.get("minStock") == null ? null : new BigDecimal(String.valueOf(body.get("minStock")));
+        return toAjax(materialService.updateMinStock(materialId, minStock));
+    }
+
+    /** 新增物资档案 */
+    @PreAuthorize("@ss.hasPermi('garment:material:edit')")
+    @PostMapping
+    public AjaxResult add(@RequestBody BizMaterial material)
+    {
+        return toAjax(materialService.addMaterial(material));
+    }
+
+    /** 修改物资档案（库存数量不在这里改） */
+    @PreAuthorize("@ss.hasPermi('garment:material:edit')")
+    @PutMapping("/profile")
+    public AjaxResult profile(@RequestBody BizMaterial material)
+    {
+        return toAjax(materialService.updateMaterialProfile(material));
+    }
 }

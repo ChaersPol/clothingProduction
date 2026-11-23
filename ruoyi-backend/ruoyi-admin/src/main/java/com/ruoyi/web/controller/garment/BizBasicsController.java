@@ -13,6 +13,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.garment.*;
 import com.ruoyi.system.mapper.garment.BizBundleMapper;
+import com.ruoyi.system.mapper.garment.BizMaterialMapper;
 import com.ruoyi.system.mapper.garment.BizSkuMapper;
 import com.ruoyi.system.mapper.garment.BizStyleMapper;
 import com.ruoyi.system.service.garment.GoodsService;
@@ -35,6 +36,8 @@ public class BizBasicsController extends BaseController
     private BizBundleMapper bundleMapper;
     @Autowired
     private BizEmployeeService employeeService;
+    @Autowired
+    private BizMaterialMapper materialMapper;
 
     @PreAuthorize("@ss.hasPermi('garment:basics:list')")
     @GetMapping("/color/list")
@@ -169,5 +172,12 @@ public class BizBasicsController extends BaseController
             list.add(item);
         }
         return success(list);
+    }
+
+    /** 物资档案下拉：BOM、采购选物料用，单位/规格以档案为准 */
+    @GetMapping("/common/materials")
+    public AjaxResult materials()
+    {
+        return success(materialMapper.selectMaterialList(new BizMaterial()));
     }
 }

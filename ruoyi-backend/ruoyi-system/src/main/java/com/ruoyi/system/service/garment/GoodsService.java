@@ -33,6 +33,8 @@ public class GoodsService
     @Autowired
     private BizCostMapper costMapper;
     @Autowired
+    private BizMaterialMapper materialMapper;
+    @Autowired
     private GarmentStockService stockService;
 
     /* ---------------- 款号 ---------------- */
@@ -296,6 +298,22 @@ public class GoodsService
 
     public int saveBom(BizBom bom)
     {
+        // 物料必须来自物资档案，单位/规格/类型以档案为准，避免 BOM 与库存口径不一致
+        if (StringUtils.isEmpty(bom.getMaterialName()))
+        {
+            throw new ServiceException("请选择物料名称");
+        }
+        BizMaterial material = materialMapper.selectByKey(bom.getMaterialName().trim(),
+                bom.getSpec() == null ? "" : bom.getSpec().trim());
+        if (material == null)
+        {
+            throw new ServiceException("物资档案中不存在「" + bom.getMaterialName()
+                    + (StringUtils.isEmpty(bom.getSpec()) ? "" : " / " + bom.getSpec()) + "」，请先到「物资库存」新增该物资");
+        }
+        bom.setMaterialName(material.getMaterialName());
+        bom.setSpec(material.getSpec());
+        bom.setUnit(material.getUnit());
+        bom.setMaterialType(material.getMaterialType());
         if (bom.getQtyPerPiece() == null)
         {
             bom.setQtyPerPiece(BigDecimal.ZERO);

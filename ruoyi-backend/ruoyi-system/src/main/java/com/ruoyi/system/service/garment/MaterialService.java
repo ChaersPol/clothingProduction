@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.DictUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.garment.BizMaterial;
@@ -44,6 +45,114 @@ public class MaterialService
     public int updateMaterial(BizMaterial material)
     {
         return materialMapper.updateMaterial(material);
+    }
+
+    /**
+     * 新增物资档案：名称+规格唯一，单位必须取自「计量单位」字典
+     */
+    @Transactional
+    public int addMaterial(BizMaterial material)
+    {
+        if (StringUtils.isEmpty(material.getMaterialName()))
+        {
+            throw new ServiceException("请填写物资名称");
+        }
+        material.setMaterialName(material.getMaterialName().trim());
+        material.setSpec(material.getSpec() == null ? "" : material.getSpec().trim());
+        checkUnit(material.getUnit());
+        if (StringUtils.isEmpty(material.getMaterialType()))
+        {
+            throw new ServiceException("请选择物资类型");
+        }
+        if (materialMapper.selectByKey(material.getMaterialName(), material.getSpec()) != null)
+        {
+            throw new ServiceException("物资档案已存在同名同规格的物资：" + material.getMaterialName()
+                    + (StringUtils.isEmpty(material.getSpec()) ? "" : " / " + material.getSpec()));
+        }
+        if (material.getStockQty() == null)
+        {
+            material.setStockQty(BigDecimal.ZERO);
+        }
+        if (material.getMinStock() == null)
+        {
+            material.setMinStock(BigDecimal.ZERO);
+        }
+        if (material.getPrice() == null)
+        {
+            material.setPrice(BigDecimal.ZERO);
+        }
+        material.setCreateBy(SecurityUtils.getUsername());
+        int rows = materialMapper.insertMaterial(material);
+        String code = StringUtils.isEmpty(material.getMaterialCode()) ? "WL" + material.getMaterialId() : material.getMaterialCode();
+        materialMapper.updateCode(material.getMaterialId(), code);
+        return rows;
+    }
+
+    /**
+     * 修改物资档案（名称/规格/类型/单位/单价/安全库存），库存数量不在这里改
+     */
+    @Transactional
+    public int updateMaterialProfile(BizMaterial material)
+    {
+        if (material.getMaterialId() == null)
+        {
+            throw new ServiceException("请选择物资");
+        }
+        BizMaterial old = materialMapper.selectMaterialById(material.getMaterialId());
+        if (old == null)
+        {
+            throw new ServiceException("物资不存在");
+        }
+        if (StringUtils.isEmpty(material.getMaterialName()))
+        {
+            throw new ServiceException("请填写物资名称");
+        }
+        material.setMaterialName(material.getMaterialName().trim());
+        material.setSpec(material.getSpec() == null ? "" : material.getSpec().trim());
+        checkUnit(material.getUnit());
+        if (StringUtils.isEmpty(material.getMaterialType()))
+        {
+            throw new ServiceException("请选择物资类型");
+        }
+        BizMaterial exist = materialMapper.selectByKey(material.getMaterialName(), material.getSpec());
+        if (exist != null && !exist.getMaterialId().equals(material.getMaterialId()))
+        {
+            throw new ServiceException("物资档案已存在同名同规格的物资：" + material.getMaterialName()
+                    + (StringUtils.isEmpty(material.getSpec()) ? "" : " / " + material.getSpec()));
+        }
+        BigDecimal stock = old.getStockQty() == null ? BigDecimal.ZERO : old.getStockQty();
+        if (!material.getUnit().trim().equals(old.getUnit() == null ? "" : old.getUnit().trim())
+                && stock.compareTo(BigDecimal.ZERO) != 0)
+        {
+            throw new ServiceException("该物资当前库存为 " + stock.stripTrailingZeros().toPlainString() + " " + old.getUnit()
+                    + "，不能直接修改单位，请先盘点清零或新建一条物资档案");
+        }
+        if (material.getMinStock() == null)
+        {
+            material.setMinStock(old.getMinStock());
+        }
+        if (material.getPrice() == null)
+        {
+            material.setPrice(old.getPrice());
+        }
+        material.setUpdateBy(SecurityUtils.getUsername());
+        return materialMapper.updateMaterial(material);
+    }
+
+    /**
+     * 校验计量单位是否在「计量单位」字典内（字典缓存未加载时仅校验非空，避免误拦）
+     */
+    private void checkUnit(String unit)
+    {
+        if (StringUtils.isEmpty(unit))
+        {
+            throw new ServiceException("请选择计量单位");
+        }
+        String values = DictUtils.getDictValues("garment_unit");
+        if (StringUtils.isNotEmpty(values) && !("," + values + ",").contains("," + unit.trim() + ","))
+        {
+            throw new ServiceException("计量单位「" + unit + "」不在单位字典中，请重新选择");
+        }
     }
 
     /**
@@ -121,6 +230,14 @@ public class MaterialService
             material.setPrice(BigDecimal.ZERO);
             material.setCreateBy(SecurityUtils.getUsername());
             materialMapper.insertMaterial(material);
+            materialMapper.updateCode(material.getMaterialId(), "WL" + material.getMaterialId());
+        }
+        else if (StringUtils.isNotEmpty(unit) && StringUtils.isNotEmpty(material.getUnit())
+                && !unit.trim().equals(material.getUnit().trim()))
+        {
+            // 单位口径不一致时直接拦截，禁止把不同单位的数量直接累加进同一库存
+            throw new ServiceException("物资「" + material.getMaterialName() + "」档案单位为【" + material.getUnit()
+                    + "】，本次业务单位为【" + unit + "】，单位不一致无法入库，请先在物资档案与业务单据中统一单位");
         }
         BizMaterial locked = materialMapper.lockById(material.getMaterialId());
         BigDecimal before = locked.getStockQty() == null ? BigDecimal.ZERO : locked.getStockQty();

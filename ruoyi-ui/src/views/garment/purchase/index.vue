@@ -128,21 +128,21 @@
           <el-button type="primary" plain size="small" icon="Plus" v-hasPermi="['garment:purchase:add','garment:purchase:edit']" @click="addItem">添加明细</el-button>
         </div>
         <el-table :data="form.items" border size="small">
-          <el-table-column label="物料类型" width="110">
+          <el-table-column label="物料类型" width="95">
+            <template #default="s"><span>{{ s.row.materialType }}</span></template>
+          </el-table-column>
+          <el-table-column label="名称" min-width="170">
             <template #default="s">
-              <el-select v-model="s.row.materialType" size="small">
-                <el-option v-for="t in materialTypes" :key="t" :label="t" :value="t" />
+              <el-select v-model="s.row.materialKey" size="small" filterable placeholder="从物资档案选择" style="width: 100%" @change="onItemMaterialChange(s.row)">
+                <el-option v-for="m in materials" :key="m.materialId" :label="materialLabel(m)" :value="materialKeyOf(m)" />
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column label="名称" min-width="140">
-            <template #default="s"><el-input v-model="s.row.materialName" size="small" /></template>
-          </el-table-column>
           <el-table-column label="规格" width="110">
-            <template #default="s"><el-input v-model="s.row.spec" size="small" /></template>
+            <template #default="s"><el-input v-model="s.row.spec" size="small" disabled /></template>
           </el-table-column>
           <el-table-column label="单位" width="80">
-            <template #default="s"><el-input v-model="s.row.unit" size="small" /></template>
+            <template #default="s"><el-input v-model="s.row.unit" size="small" disabled /></template>
           </el-table-column>
           <el-table-column label="单价" width="110">
             <template #default="s"><el-input-number v-model="s.row.price" :min="0" :precision="2" size="small" controls-position="right" style="width: 100%" /></template>
@@ -213,7 +213,7 @@
 </template>
 
 <script setup name="Purchase">
-import { listPurchase, getPurchase, addPurchase, updatePurchase, delPurchase, receivePurchase, allSuppliers, commonStyles, listBom } from '@/api/garment'
+import { listPurchase, getPurchase, addPurchase, updatePurchase, delPurchase, receivePurchase, allSuppliers, commonStyles, commonMaterials, listBom } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -227,10 +227,10 @@ function handleSelectionChange(selection) {
 
 const { proxy } = getCurrentInstance()
 const categories = ['办公室', '裁床', '仓库', '车间', '后道']
-const materialTypes = ['面料', '里布', '辅料', '配件', '耗材', '包装']
 const purchaseList = ref([])
 const suppliers = ref([])
 const styles = ref([])
+const materials = ref([])
 const loading = ref(false)
 const total = ref(0)
 const open = ref(false)
@@ -251,6 +251,21 @@ function today() {
   const m = String(d.getMonth() + 1).padStart(2, '0')
   const day = String(d.getDate()).padStart(2, '0')
   return `${d.getFullYear()}-${m}-${day}`
+}
+function materialKeyOf(m) {
+  return (m.materialName || '') + '|' + (m.spec || '')
+}
+function materialLabel(m) {
+  return m.materialName + (m.spec ? ' / ' + m.spec : '') + '（' + (m.unit || '') + '）'
+}
+function onItemMaterialChange(row) {
+  const m = materials.value.find(x => materialKeyOf(x) === row.materialKey)
+  if (!m) return
+  row.materialName = m.materialName
+  row.spec = m.spec
+  row.unit = m.unit
+  row.materialType = m.materialType
+  if (!row.price) row.price = Number(m.price || 0)
 }
 function statusText(s) {
   return s === '2' ? '已入库' : s === '1' ? '部分入库' : '待入库'
@@ -277,6 +292,7 @@ function onStyleChange(styleNo) {
       return
     }
     form.value.items = rows.map(b => ({
+      materialKey: (b.materialName || '') + '|' + (b.spec || ''),
       materialType: b.materialType,
       materialName: b.materialName,
       spec: b.spec,
@@ -290,7 +306,7 @@ function onStyleChange(styleNo) {
 
 function addItem() {
   if (!form.value.items) form.value.items = []
-  form.value.items.push({ materialType: '面料', materialName: '', spec: '', unit: '米', price: 0, qty: 0 })
+  form.value.items.push({ materialKey: '', materialType: '', materialName: '', spec: '', unit: '', price: 0, qty: 0 })
 }
 function handleAdd() {
   form.value = { purchaseType: 'COMMON', category: '裁床', styleNo: undefined, supplierId: undefined, purchaseDate: today(), paidAmount: 0, remark: undefined, items: [] }
@@ -301,6 +317,8 @@ function handleUpdate(row) {
   getPurchase(row.purchaseId).then(res => {
     form.value = res.data
     if (!form.value.items) form.value.items = []
+    // 回显时补齐物资下拉选中值
+    form.value.items.forEach(i => { i.materialKey = (i.materialName || '') + '|' + (i.spec || '') })
     open.value = true
   })
 }
@@ -310,11 +328,13 @@ function submitForm() {
     return
   }
   if (form.value.items.some(i => !i.materialName)) {
-    proxy.$modal.msgWarning('请填写物料名称')
+    proxy.$modal.msgWarning('请选择采购物料')
     return
   }
   const fn = form.value.purchaseId ? updatePurchase : addPurchase
-  fn(form.value).then(() => {
+  // materialKey 仅用于前端下拉回显，不提交
+  const payload = { ...form.value, items: form.value.items.map(i => { const { materialKey, ...rest } = i; return rest }) }
+  fn(payload).then(() => {
     proxy.$modal.msgSuccess('保存成功')
     open.value = false
     getList()
@@ -362,6 +382,7 @@ function handleExport() {
 getList()
 allSuppliers().then(res => { suppliers.value = res.data || [] })
 commonStyles().then(res => { styles.value = res.data || [] })
+commonMaterials().then(res => { materials.value = res.data || [] })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
 let _pageActivated = false
