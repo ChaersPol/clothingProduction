@@ -3,7 +3,7 @@
     <el-form v-show="showSearch" class="search-form" :model="queryParams" ref="queryRef" :inline="true">
       <el-form-item label="费用类型" prop="expenseType">
         <el-select v-model="queryParams.expenseType" placeholder="全部" clearable style="width: 140px">
-          <el-option v-for="d in garment_expense_type" :key="d.dictValue" :label="d.dictLabel" :value="d.dictValue" />
+          <el-option v-for="d in garment_expense_type" :key="d.value" :label="d.label" :value="d.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="款号" prop="styleNo">
@@ -57,7 +57,7 @@
       <el-form ref="expenseRef" :model="form" :rules="rules" label-width="90px">
         <el-form-item label="费用类型" prop="expenseType">
           <el-select v-model="form.expenseType" placeholder="选择类型" style="width: 100%">
-            <el-option v-for="d in garment_expense_type" :key="d.dictValue" :label="d.dictLabel" :value="d.dictValue" />
+            <el-option v-for="d in garment_expense_type" :key="d.value" :label="d.label" :value="d.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="关联款号">

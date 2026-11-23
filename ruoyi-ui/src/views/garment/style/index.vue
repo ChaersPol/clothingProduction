@@ -9,7 +9,7 @@
       </el-form-item>
       <el-form-item label="品类" prop="category">
         <el-select v-model="queryParams.category" placeholder="品类" clearable style="width: 130px">
-          <el-option v-for="d in garment_category" :key="d.dictValue" :label="d.dictLabel" :value="d.dictValue" />
+          <el-option v-for="d in garment_category" :key="d.value" :label="d.label" :value="d.value" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -87,14 +87,14 @@
           <el-col :xs="24" :sm="12">
             <el-form-item label="品类" prop="category">
               <el-select v-model="form.category" placeholder="选择品类" clearable style="width: 100%">
-                <el-option v-for="d in garment_category" :key="d.dictValue" :label="d.dictLabel" :value="d.dictValue" />
+                <el-option v-for="d in garment_category" :key="d.value" :label="d.label" :value="d.value" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="季节" prop="season">
               <el-select v-model="form.season" placeholder="选择季节" clearable style="width: 100%">
-                <el-option v-for="d in garment_season" :key="d.dictValue" :label="d.dictLabel" :value="d.dictValue" />
+                <el-option v-for="d in garment_season" :key="d.value" :label="d.label" :value="d.value" />
               </el-select>
             </el-form-item>
           </el-col>
