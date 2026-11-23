@@ -64,6 +64,9 @@ public class BizCutOrder extends BaseEntity
     @Excel(name = "状态", readConverterExp = "0=待分扎,1=已入库,2=已完成,9=已作废")
     private String status;
 
+    /** 分扎进度筛选（非数据库字段）：pending待分扎 / splitting分扎中 / split_done已分完待入库 */
+    private String progress;
+
     /** 作废原因 */
     private String cancelReason;
 

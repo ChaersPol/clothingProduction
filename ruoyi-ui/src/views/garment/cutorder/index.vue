@@ -12,11 +12,13 @@
           <el-option v-for="e in employees" :key="e.userId" :label="e.displayName" :value="e.displayName" />
         </el-select>
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="全部" clearable style="width: 120px">
-          <el-option label="待分扎/分扎中" value="0" />
-          <el-option label="已入库" value="1" />
-          <el-option label="已完成" value="2" />
+      <el-form-item label="状态" prop="state">
+        <el-select v-model="queryParams.state" placeholder="全部" clearable style="width: 150px">
+          <el-option label="待分扎" value="pending" />
+          <el-option label="分扎中" value="splitting" />
+          <el-option label="已分完待入库" value="split_done" />
+          <el-option label="已入库" value="stored" />
+          <el-option label="已完成" value="done" />
         </el-select>
       </el-form-item>
       <el-form-item label="裁货日期">
@@ -229,7 +231,7 @@ const detail = ref({})
 const dateRange = ref([])
 const form = ref({})
 const gen = ref({ colors: [], sizes: [], qty: 1 })
-const queryParams = ref({ pageNum: 1, pageSize: 10, cutNo: undefined, styleNo: undefined, cutter: undefined, status: undefined })
+const queryParams = ref({ pageNum: 1, pageSize: 10, cutNo: undefined, styleNo: undefined, cutter: undefined, status: undefined, state: undefined })
 const route = useRoute()
 const overdraftOpen = ref(false)
 const overdraftMsg = ref('')
@@ -238,7 +240,8 @@ const pendingAdd = ref(null)
 
 // 支持从消息提醒/首页卡片深链过来，直接定位到指定状态、单号或日期的裁货单
 watch(() => route.query, q => {
-  queryParams.value.status = q.status || undefined
+  queryParams.value.state = q.status === '1' ? 'stored' : q.status === '2' ? 'done' : undefined
+  queryParams.value.status = q.status === '0' ? '0' : undefined
   queryParams.value.cutNo = q.cutNo || undefined
   dateRange.value = q.beginDate ? [q.beginDate, q.endDate || q.beginDate] : []
   queryParams.value.pageNum = 1
@@ -299,6 +302,16 @@ function today() {
 function getList() {
   loading.value = true
   const params = { ...queryParams.value }
+  const state = params.state
+  delete params.state
+  if (state === 'pending' || state === 'splitting' || state === 'split_done') {
+    params.progress = state
+    delete params.status
+  } else if (state === 'stored') {
+    params.status = '1'
+  } else if (state === 'done') {
+    params.status = '2'
+  }
   if (dateRange.value && dateRange.value.length === 2) {
     params.params = { beginDate: dateRange.value[0], endDate: dateRange.value[1] }
   }
@@ -309,7 +322,7 @@ function getList() {
   }).catch(() => { loading.value = false })
 }
 function handleQuery() { queryParams.value.pageNum = 1; getList() }
-function resetQuery() { proxy.resetForm('queryRef'); dateRange.value = []; handleQuery() }
+function resetQuery() { proxy.resetForm('queryRef'); queryParams.value.state = undefined; queryParams.value.status = undefined; dateRange.value = []; handleQuery() }
 function onStyleChange(styleNo) {
   const s = styles.value.find(i => i.styleNo === styleNo)
   if (s) {

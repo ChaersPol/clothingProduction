@@ -18,6 +18,13 @@ public interface BizCutOrderMapper
         <if test="styleNo != null and styleNo != ''"> and c.style_no like concat('%',#{styleNo},'%')</if>
         <if test="cutter != null and cutter != ''"> and c.cutter = #{cutter}</if>
         <if test="status != null and status != ''"> and c.status = #{status}</if>
+        <if test="progress != null and progress != ''">
+        <choose>
+        <when test="progress == 'pending'"> and c.status='0' and (select coalesce(sum(b.qty),0) from biz_bundle b where b.cut_id=c.cut_id)=0</when>
+        <when test="progress == 'splitting'"> and c.status='0' and (select coalesce(sum(b.qty),0) from biz_bundle b where b.cut_id=c.cut_id) &gt; 0 and (select coalesce(sum(b.qty),0) from biz_bundle b where b.cut_id=c.cut_id) &lt; c.total_qty</when>
+        <when test="progress == 'split_done'"> and c.status='0' and (select coalesce(sum(b.qty),0) from biz_bundle b where b.cut_id=c.cut_id) &gt;= c.total_qty</when>
+        </choose>
+        </if>
         <if test="params.beginDate != null and params.beginDate != ''"> and c.cut_date &gt;= #{params.beginDate}</if>
         <if test="params.endDate != null and params.endDate != ''"> and c.cut_date &lt;= #{params.endDate}</if>
         </where>

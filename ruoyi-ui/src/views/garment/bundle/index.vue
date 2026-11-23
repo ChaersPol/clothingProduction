@@ -4,7 +4,7 @@
       <template #header><span>扫码操作</span></template>
       <el-form class="scan-bar" :inline="true" @submit.prevent>
         <el-form-item label="扎卡条码" class="scan-input">
-          <el-input ref="scanRef" v-model="scanCode" placeholder="扫描或输入扎卡条码/扎号自动入库" clearable @input="onCodeInput" @keyup.enter="onCodeEnter(scanCode)" />
+          <el-input ref="scanRef" v-model="scanCode" placeholder="扫描/输入扎号自动入库" clearable @input="onCodeInput" @keyup.enter="onCodeEnter(scanCode)" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Upload" v-hasPermi="['garment:bundle:edit']" @click="doStockIn">裁片入库</el-button>
@@ -290,6 +290,11 @@ function loadCuts() {
 // 打开自动分扎窗口前先刷新可选的裁货单，确保不出现已分完的单
 function openAuto() {
   loadCuts().then(() => {
+    // 没有可分的裁货单时直接提示，不再打开空白弹窗误导用户
+    if (!cutOrders.value.length) {
+      proxy.$modal.msgWarning('当前没有可分扎的裁货单（均已分完或已作废）')
+      return
+    }
     if (autoForm.value.cutId && !cutOrders.value.some(c => Number(c.cutId) === Number(autoForm.value.cutId))) {
       autoForm.value.cutId = undefined
     }

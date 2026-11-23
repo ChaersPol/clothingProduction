@@ -7,7 +7,7 @@
           <el-input :model-value="operatorName" disabled style="width: 180px" />
         </el-form-item>
         <el-form-item label="扎卡条码" class="scan-input">
-          <el-input ref="scanRef" v-model="scanCode" placeholder="扫描或输入扎卡条码自动领片" clearable @input="onCodeInput" @keyup.enter="onCodeEnter(scanCode)" />
+          <el-input ref="scanRef" v-model="scanCode" placeholder="扫描/输入扎号自动领片" clearable @input="onCodeInput" @keyup.enter="onCodeEnter(scanCode)" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Search" v-hasPermi="['garment:pick:add']" @click="doPick">确认领片</el-button>
