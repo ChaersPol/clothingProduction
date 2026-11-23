@@ -175,6 +175,8 @@ watch([paperMode, cardW, cardH], () => {
 
 // 打印前才注入 @page，避免影响其他模块打印
 function applyPageStyle() {
+  // 清掉另一个打印模块遗留的纸张设置，避免两套 @page 互相覆盖
+  document.getElementById('label-page-style')?.remove()
   let el = document.getElementById('bundle-page-style')
   if (!el) {
     el = document.createElement('style')
@@ -188,9 +190,20 @@ function applyPageStyle() {
 function clearPageStyle() {
   document.getElementById('bundle-page-style')?.remove()
 }
-window.addEventListener('afterprint', clearPageStyle)
+// 打印结束后清空扎卡缓存，避免与标签打印内容混在一起
+function handleAfterPrint() {
+  printRows.value = []
+  clearPageStyle()
+}
+window.addEventListener('afterprint', handleAfterPrint)
 onUnmounted(() => {
-  window.removeEventListener('afterprint', clearPageStyle)
+  window.removeEventListener('afterprint', handleAfterPrint)
+  printRows.value = []
+  clearPageStyle()
+})
+// 切到其他模块时清空本页打印缓存，避免残留卡片混入其他模块的打印
+onDeactivated(() => {
+  printRows.value = []
   clearPageStyle()
 })
 

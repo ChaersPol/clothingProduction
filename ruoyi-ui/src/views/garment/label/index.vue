@@ -116,6 +116,8 @@ const qrSize = computed(() => Math.max(5, Math.min(12, Number(labelW.value) * 0.
 
 // 打印前才注入 @page，避免离开页面后影响扎卡等其他打印
 function applyPageStyle() {
+  // 清掉另一个打印模块遗留的纸张设置，避免两套 @page 互相覆盖
+  document.getElementById('bundle-page-style')?.remove()
   let el = document.getElementById('label-page-style')
   if (!el) {
     el = document.createElement('style')
@@ -129,7 +131,17 @@ function applyPageStyle() {
 function clearPageStyle() {
   document.getElementById('label-page-style')?.remove()
 }
-window.addEventListener('afterprint', clearPageStyle)
+// 打印结束后清空打印缓存，避免与扎卡打印内容混在一起
+function resetPrintCache() {
+  printItems.value = []
+  barcodeRefs.length = 0
+  qrRefs.length = 0
+}
+function handleAfterPrint() {
+  resetPrintCache()
+  clearPageStyle()
+}
+window.addEventListener('afterprint', handleAfterPrint)
 watch([paperMode, labelW, labelH, copies, labelType], () => {
   localStorage.setItem(PRINT_KEY, JSON.stringify({
     paperMode: paperMode.value,
@@ -140,7 +152,13 @@ watch([paperMode, labelW, labelH, copies, labelType], () => {
   }))
 })
 onUnmounted(() => {
-  window.removeEventListener('afterprint', clearPageStyle)
+  window.removeEventListener('afterprint', handleAfterPrint)
+  resetPrintCache()
+  clearPageStyle()
+})
+// 切到其他模块时清空本页打印缓存，避免残留卡片混入其他模块的打印
+onDeactivated(() => {
+  resetPrintCache()
   clearPageStyle()
 })
 
