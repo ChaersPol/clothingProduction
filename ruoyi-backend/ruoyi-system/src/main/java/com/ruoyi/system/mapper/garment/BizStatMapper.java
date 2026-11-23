@@ -148,7 +148,7 @@ public interface BizStatMapper
     @Select("select (select count(1) from biz_style where del_flag='0') as styleCount, (select count(1) from biz_sku where status='0') as skuCount")
     Map<String, Object> baseCount();
 
-    @Select("select coalesce(sum(total_qty),0) from biz_cut_order where ifnull(status,'0') &lt;&gt; '9' and date_format(cut_date,'%Y-%m-%d')=curdate()")
+    @Select("select coalesce(sum(total_qty),0) from biz_cut_order where ifnull(status,'0') != '9' and date_format(cut_date,'%Y-%m-%d')=curdate()")
     Integer todayCutQty();
 
     @Select("select coalesce(sum(total_qty),0) from biz_outbound where outbound_date=curdate()")
