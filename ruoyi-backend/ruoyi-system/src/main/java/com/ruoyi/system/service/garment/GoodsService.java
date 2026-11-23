@@ -50,6 +50,11 @@ public class GoodsService
 
     public int saveStyle(BizStyle style)
     {
+        // 尺码表只允许基础资料里已维护的尺码，并按尺码排序统一存储
+        if (StringUtils.isNotEmpty(style.getSizeTable()))
+        {
+            style.setSizeTable(normalizeSizeTable(style.getSizeTable()));
+        }
         if (StringUtils.isEmpty(style.getParentStyleNo()))
         {
             style.setParentStyleNo(style.getStyleNo());
@@ -109,6 +114,16 @@ public class GoodsService
 
     public int deleteColor(Long id)
     {
+        BizColor color = colorMapper.selectColorById(id);
+        if (color == null)
+        {
+            return 0;
+        }
+        int used = skuMapper.countByColor(color.getCnName());
+        if (used > 0)
+        {
+            throw new ServiceException("颜色「" + color.getCnName() + "」已被 " + used + " 个商品使用，不能删除，可改为停用");
+        }
         return colorMapper.deleteColorById(id);
     }
 
@@ -130,7 +145,62 @@ public class GoodsService
 
     public int deleteSize(Long id)
     {
+        BizSize size = sizeMapper.selectSizeById(id);
+        if (size == null)
+        {
+            return 0;
+        }
+        int used = skuMapper.countBySize(size.getSizeName());
+        if (used > 0)
+        {
+            throw new ServiceException("尺码「" + size.getSizeName() + "」已被 " + used + " 个商品使用，不能删除，可改为停用");
+        }
+        int styles = styleMapper.countBySizeTable(size.getSizeName());
+        if (styles > 0)
+        {
+            throw new ServiceException("尺码「" + size.getSizeName() + "」仍被 " + styles + " 个款号的尺码表引用，请先修改这些款号的尺码表");
+        }
         return sizeMapper.deleteSizeById(id);
+    }
+
+    /**
+     * 款号尺码表规范化：只允许基础资料尺码管理中启用的尺码，并按尺码排序输出逗号串
+     */
+    private String normalizeSizeTable(String sizeTable)
+    {
+        String[] tokens = sizeTable.split("[,，、;；\\s]+");
+        Set<String> requested = new HashSet<>();
+        for (String t : tokens)
+        {
+            if (StringUtils.isNotEmpty(t.trim()))
+            {
+                requested.add(t.trim());
+            }
+        }
+        if (requested.isEmpty())
+        {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        Set<String> matched = new HashSet<>();
+        for (BizSize s : sizeMapper.selectSizeAll())
+        {
+            if (requested.contains(s.getSizeName()))
+            {
+                if (sb.length() > 0)
+                {
+                    sb.append(",");
+                }
+                sb.append(s.getSizeName());
+                matched.add(s.getSizeName());
+            }
+        }
+        requested.removeAll(matched);
+        if (!requested.isEmpty())
+        {
+            throw new ServiceException("尺码「" + String.join("、", requested) + "」不在基础资料尺码管理中，请先到基础资料新增该尺码");
+        }
+        return sb.toString();
     }
 
     /* ---------------- SKU ---------------- */

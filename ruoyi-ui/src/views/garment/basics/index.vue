@@ -112,6 +112,8 @@ const colorOpen = ref(false)
 const sizeOpen = ref(false)
 const colorForm = ref({})
 const sizeForm = ref({ colorCode: '#000000' })
+const colorOriginName = ref('')
+const sizeOriginName = ref('')
 const colorRules = { cnName: [{ required: true, message: '颜色名称不能为空', trigger: 'blur' }] }
 const sizeRules = { sizeName: [{ required: true, message: '尺码不能为空', trigger: 'blur' }] }
 
@@ -131,17 +133,25 @@ function getSizes() {
 }
 function openColor(row) {
   colorForm.value = row ? { ...row } : { cnName: '', enName: '', colorCode: '#000000', sort: 0, status: '0' }
+  colorOriginName.value = row ? row.cnName : ''
   colorOpen.value = true
 }
 function submitColor() {
   proxy.$refs['colorRef'].validate(valid => {
     if (!valid) return
-    const fn = colorForm.value.colorId ? updateColor : addColor
-    fn(colorForm.value).then(() => {
-      proxy.$modal.msgSuccess('保存成功')
-      colorOpen.value = false
-      getColors()
-    })
+    const doSave = () => {
+      const fn = colorForm.value.colorId ? updateColor : addColor
+      fn(colorForm.value).then(() => {
+        proxy.$modal.msgSuccess('保存成功')
+        colorOpen.value = false
+        getColors()
+      })
+    }
+    if (colorForm.value.colorId && colorForm.value.cnName !== colorOriginName.value) {
+      proxy.$modal.confirm('颜色名称修改后，已生成的商品和历史单据仍保留原颜色名称，是否继续？').then(doSave).catch(() => {})
+      return
+    }
+    doSave()
   })
 }
 function delColorRow(row) {
@@ -156,17 +166,25 @@ function delColorRow(row) {
 }
 function openSize(row) {
   sizeForm.value = row ? { ...row } : { sizeName: '', sort: 0, status: '0' }
+  sizeOriginName.value = row ? row.sizeName : ''
   sizeOpen.value = true
 }
 function submitSize() {
   proxy.$refs['sizeRef'].validate(valid => {
     if (!valid) return
-    const fn = sizeForm.value.sizeId ? updateSize : addSize
-    fn(sizeForm.value).then(() => {
-      proxy.$modal.msgSuccess('保存成功')
-      sizeOpen.value = false
-      getSizes()
-    })
+    const doSave = () => {
+      const fn = sizeForm.value.sizeId ? updateSize : addSize
+      fn(sizeForm.value).then(() => {
+        proxy.$modal.msgSuccess('保存成功')
+        sizeOpen.value = false
+        getSizes()
+      })
+    }
+    if (sizeForm.value.sizeId && sizeForm.value.sizeName !== sizeOriginName.value) {
+      proxy.$modal.confirm('尺码名称修改后，已生成的商品和历史单据仍保留原尺码名称，是否继续？').then(doSave).catch(() => {})
+      return
+    }
+    doSave()
   })
 }
 function delSizeRow(row) {

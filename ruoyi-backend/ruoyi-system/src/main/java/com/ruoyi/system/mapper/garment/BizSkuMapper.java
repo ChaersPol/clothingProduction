@@ -50,6 +50,12 @@ public interface BizSkuMapper
     @Select("select count(1) from biz_sku where style_no=#{styleNo}")
     int countByStyleNo(String styleNo);
 
+    @Select("select count(1) from biz_sku where size=#{size}")
+    int countBySize(String size);
+
+    @Select("select count(1) from biz_sku where color=#{color}")
+    int countByColor(String color);
+
     @Insert("""
         insert into biz_sku(style_id,style_no,parent_style_no,cn_name,color,size,barcode,cost_price,sale_price,min_stock,status,create_by,create_time,remark)
         values(#{styleId},#{styleNo},#{parentStyleNo},#{cnName},#{color},#{size},#{barcode},#{costPrice},#{salePrice},#{minStock},#{status},#{createBy},sysdate(),#{remark})

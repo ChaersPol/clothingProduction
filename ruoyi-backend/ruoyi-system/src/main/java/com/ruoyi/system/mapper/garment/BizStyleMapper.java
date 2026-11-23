@@ -51,4 +51,8 @@ public interface BizStyleMapper
 
     @Update("update biz_style set del_flag='2', update_time=sysdate() where style_id=#{styleId}")
     int deleteStyleById(Long styleId);
+
+    /** 统计尺码表里引用该尺码的款号数量 */
+    @Select("select count(1) from biz_style where del_flag='0' and find_in_set(#{sizeName}, replace(size_table,' ','')) > 0")
+    int countBySizeTable(String sizeName);
 }

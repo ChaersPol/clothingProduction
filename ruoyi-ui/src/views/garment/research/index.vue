@@ -151,7 +151,9 @@
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="尺码表">
-              <el-input v-model="form2.sizeTable" placeholder="如 S,M,L,XL" />
+              <el-select v-model="form2.sizeTableArr" multiple collapse-tags placeholder="从基础资料选择尺码" style="width: 100%">
+                <el-option v-for="s in sizes" :key="s.sizeId" :label="s.sizeName" :value="s.sizeName" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
@@ -268,18 +270,25 @@ function submit() {
   })
 }
 function handleAdd() {
-  form2.value = { status: '0', expectPrice: 0 }
+  form2.value = { status: '0', expectPrice: 0, sizeTableArr: defaultSizes() }
   open2.value = true
 }
 function handleUpdate(row) {
-  form2.value = { ...row }
+  form2.value = { ...row, sizeTableArr: (row.sizeTable || '').split(',').map(s => s.trim()).filter(Boolean) }
   open2.value = true
+}
+function defaultSizes() {
+  const names = ['S', 'M', 'L', 'XL', 'XXL']
+  if (!sizes.value.length) return names
+  return names.filter(n => sizes.value.some(s => s.sizeName === n))
 }
 function submitStyle() {
   proxy.$refs['styleRef'].validate(valid => {
     if (!valid) return
-    const fn = form2.value.styleId ? updateStyle : addStyle
-    fn(form2.value).then(() => {
+    const { sizeTableArr, ...rest } = form2.value
+    const payload = { ...rest, sizeTable: (sizeTableArr || []).join(',') }
+    const fn = payload.styleId ? updateStyle : addStyle
+    fn(payload).then(() => {
       proxy.$modal.msgSuccess('保存成功')
       open2.value = false
       getList()
@@ -320,6 +329,7 @@ function submitGenerate() {
 
 getList()
 commonEmployees('设计').then(res => { employees.value = res.data || [] })
+commonSizes().then(res => { sizes.value = res.data || [] })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
 let _pageActivated = false

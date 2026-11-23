@@ -101,7 +101,9 @@
           </el-col>
           <el-col :xs="24" :sm="12">
             <el-form-item label="尺码表" prop="sizeTable">
-              <el-input v-model="form.sizeTable" placeholder="S,M,L,XL,XXL" />
+              <el-select v-model="form.sizeTableArr" multiple collapse-tags placeholder="从基础资料选择尺码" style="width: 100%">
+                <el-option v-for="s in sizes" :key="s.sizeId" :label="s.sizeName" :value="s.sizeName" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
@@ -145,11 +147,12 @@
 </template>
 
 <script setup name="Style">
-import { listStyle, getStyle, addStyle, updateStyle, delStyle, commonEmployees } from '@/api/garment'
+import { listStyle, getStyle, addStyle, updateStyle, delStyle, commonEmployees, commonSizes } from '@/api/garment'
 
 const { proxy } = getCurrentInstance()
 const styleList = ref([])
 const employees = ref([])
+const sizes = ref([])
 const open = ref(false)
 const loading = ref(true)
 const showSearch = ref(true)
@@ -179,8 +182,13 @@ function getList() {
 }
 function cancel() { open.value = false; reset() }
 function reset() {
-  form.value = { styleNo: undefined, parentStyleNo: undefined, cnName: undefined, styleName: undefined, category: undefined, season: undefined, designer: undefined, sizeTable: 'S,M,L,XL,XXL', expectPrice: 0, status: '0', image: undefined, refImage: undefined, patternFile: undefined, sampleImage: undefined, designRemark: undefined }
+  form.value = { styleNo: undefined, parentStyleNo: undefined, cnName: undefined, styleName: undefined, category: undefined, season: undefined, designer: undefined, sizeTable: 'S,M,L,XL,XXL', sizeTableArr: defaultSizes(), expectPrice: 0, status: '0', image: undefined, refImage: undefined, patternFile: undefined, sampleImage: undefined, designRemark: undefined }
   proxy.resetForm('styleRef')
+}
+function defaultSizes() {
+  const names = ['S', 'M', 'L', 'XL', 'XXL']
+  if (!sizes.value.length) return names
+  return names.filter(n => sizes.value.some(s => s.sizeName === n))
 }
 function handleQuery() { queryParams.value.pageNum = 1; getList() }
 function resetQuery() { proxy.resetForm('queryRef'); handleQuery() }
@@ -193,14 +201,21 @@ function handleAdd() { reset(); open.value = true; title.value = '新增款号' 
 function handleUpdate(row) {
   reset()
   const id = row.styleId || ids.value[0]
-  getStyle(id).then(res => { form.value = res.data; open.value = true; title.value = '修改款号' })
+  getStyle(id).then(res => {
+    const d = res.data || {}
+    form.value = { ...d, sizeTableArr: (d.sizeTable || '').split(',').map(s => s.trim()).filter(Boolean) }
+    open.value = true
+    title.value = '修改款号'
+  })
 }
 function submitForm() {
   proxy.$refs['styleRef'].validate(valid => {
     if (!valid) return
-    const fn = form.value.styleId ? updateStyle : addStyle
-    fn(form.value).then(() => {
-      proxy.$modal.msgSuccess(form.value.styleId ? '修改成功' : '新增成功')
+    const { sizeTableArr, ...rest } = form.value
+    const payload = { ...rest, sizeTable: (sizeTableArr || []).join(',') }
+    const fn = payload.styleId ? updateStyle : addStyle
+    fn(payload).then(() => {
+      proxy.$modal.msgSuccess(payload.styleId ? '修改成功' : '新增成功')
       open.value = false
       getList()
     })
@@ -219,6 +234,7 @@ function handleExport() {
 
 getList()
 commonEmployees('设计').then(res => { employees.value = res.data || [] })
+commonSizes().then(res => { sizes.value = res.data || [] })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
 let _pageActivated = false
