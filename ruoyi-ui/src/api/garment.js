@@ -358,8 +358,8 @@ export function skuByBarcode(barcode) {
 export function commonBundle(code) {
   return request({ url: '/garment/common/bundle', method: 'get', params: { code } })
 }
-export function commonEmployees() {
-  return request({ url: '/garment/common/employees', method: 'get' })
+export function commonEmployees(position) {
+  return request({ url: '/garment/common/employees', method: 'get', params: { position } })
 }
 
 /* ---------------- 员工档案 ---------------- */

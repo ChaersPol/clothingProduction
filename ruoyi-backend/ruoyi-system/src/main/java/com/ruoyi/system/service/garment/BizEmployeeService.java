@@ -27,6 +27,11 @@ public class BizEmployeeService
         return employeeMapper.selectEmployeeAll();
     }
 
+    public List<BizEmployee> selectEmployeeByPosition(String position)
+    {
+        return employeeMapper.selectEmployeeByPosition(position);
+    }
+
     public int saveEmployee(BizEmployee employee)
     {
         if (StringUtils.isEmpty(employee.getStatus()))

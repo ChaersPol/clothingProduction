@@ -158,7 +158,7 @@ function focusScan() {
   nextTick(() => { if (scanRef.value) scanRef.value.focus() })
 }
 
-commonEmployees().then(res => {
+commonEmployees('后道').then(res => {
   employees.value = res.data || []
   focusScan()
 })

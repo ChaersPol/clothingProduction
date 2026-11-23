@@ -369,7 +369,7 @@ function handleExport() {
 commonStyles().then(res => { styles.value = res.data || []; tryPrefill() })
 commonColors().then(res => { colors.value = res.data || [] })
 commonSizes().then(res => { sizes.value = res.data || [] })
-commonEmployees().then(res => { employees.value = res.data || [] })
+commonEmployees('裁床').then(res => { employees.value = res.data || [] })
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表
 let _pageActivated = false

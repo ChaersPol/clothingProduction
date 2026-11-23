@@ -23,6 +23,10 @@ public interface BizEmployeeMapper
     @Select("select * from biz_employee where status='0' order by sort, employee_id")
     List<BizEmployee> selectEmployeeAll();
 
+    /** 按岗位前缀筛选在职员工，例如「设计」匹配设计部全部岗位 */
+    @Select("select * from biz_employee where status='0' and position like concat(#{position}, '%') order by sort, employee_id")
+    List<BizEmployee> selectEmployeeByPosition(@Param("position") String position);
+
     @Select("select * from biz_employee where employee_id=#{employeeId}")
     BizEmployee selectEmployeeById(Long employeeId);
 

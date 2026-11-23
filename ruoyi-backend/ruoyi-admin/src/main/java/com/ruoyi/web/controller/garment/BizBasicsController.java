@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.garment.*;
 import com.ruoyi.system.mapper.garment.BizBundleMapper;
 import com.ruoyi.system.mapper.garment.BizSkuMapper;
@@ -153,10 +154,13 @@ public class BizBasicsController extends BaseController
     }
 
     @GetMapping("/common/employees")
-    public AjaxResult employees()
+    public AjaxResult employees(@RequestParam(required = false) String position)
     {
         List<Map<String, Object>> list = new ArrayList<>();
-        for (BizEmployee e : employeeService.selectEmployeeAll())
+        List<BizEmployee> employees = StringUtils.isEmpty(position)
+                ? employeeService.selectEmployeeAll()
+                : employeeService.selectEmployeeByPosition(position);
+        for (BizEmployee e : employees)
         {
             Map<String, Object> item = new HashMap<>();
             item.put("employeeId", e.getEmployeeId());
