@@ -245,29 +245,47 @@ public class GoodsService
     @Transactional
     public int importInitialStock(List<BizInitialStock> rows)
     {
-        int success = 0;
+        // 先整体校验，全部通过后再统一入库，避免部分导入后又回滚造成提示与实际不符
         List<String> errors = new ArrayList<>();
+        List<BizInitialStock> validRows = new ArrayList<>();
+        List<BizSku> validSkus = new ArrayList<>();
         for (BizInitialStock row : rows)
         {
             if (StringUtils.isEmpty(row.getBarcode()) || row.getQty() == null || row.getQty() == 0)
             {
                 continue;
             }
-            BizSku sku = skuMapper.selectSkuByBarcode(row.getBarcode().trim());
-            if (sku == null)
+            String barcode = row.getBarcode().trim();
+            if (row.getQty() < 0)
             {
-                errors.add(row.getBarcode() + " 未找到");
+                errors.add(barcode + " 数量不能为负数");
                 continue;
             }
-            stockService.change(sku.getSkuId(), GarmentStockService.FINISH, row.getQty(),
-                    "初始库存", "INIT", "", StringUtils.isEmpty(row.getRemark()) ? "Excel导入初始库存" : row.getRemark());
-            success++;
+            BizSku sku = skuMapper.selectSkuByBarcode(barcode);
+            if (sku == null)
+            {
+                errors.add(barcode + " 未找到对应商品");
+                continue;
+            }
+            validRows.add(row);
+            validSkus.add(sku);
         }
         if (!errors.isEmpty())
         {
-            throw new ServiceException("成功" + success + "条，以下条码未找到：" + String.join("、", errors));
+            String detail = String.join("；", errors.subList(0, Math.min(errors.size(), 20)));
+            if (errors.size() > 20)
+            {
+                detail += "；…等共 " + errors.size() + " 行有误";
+            }
+            throw new ServiceException("导入失败，未导入任何数据：" + detail);
         }
-        return success;
+        for (int i = 0; i < validRows.size(); i++)
+        {
+            BizInitialStock row = validRows.get(i);
+            stockService.change(validSkus.get(i).getSkuId(), GarmentStockService.FINISH, row.getQty(),
+                    "初始库存", "INIT", "", StringUtils.isEmpty(row.getRemark()) ? "Excel导入初始库存" : row.getRemark());
+        }
+        return validRows.size();
     }
 
     /* ---------------- BOM ---------------- */
