@@ -24,7 +24,7 @@ public class BizCutOrder extends BaseEntity
 
     private Long styleId;
 
-    @Excel(name = "货号")
+    @Excel(name = "款号")
     private String styleNo;
 
     @Excel(name = "品名")
@@ -36,7 +36,6 @@ public class BizCutOrder extends BaseEntity
     @Excel(name = "面料")
     private String fabric;
 
-    @Excel(name = "里布")
     private String lining;
 
     @Excel(name = "总件数")
@@ -52,10 +51,12 @@ public class BizCutOrder extends BaseEntity
     @Excel(name = "裁货日期", width = 30, dateFormat = "yyyy-MM-dd")
     private Date cutDate;
 
-    /** 0待分扎 1已入库 2已完成 */
-    private String status;
-
+    @Excel(name = "扎数")
     private Integer bundleCount;
+
+    /** 0待分扎 1已入库 2已完成 */
+    @Excel(name = "状态", readConverterExp = "0=待分扎,1=已入库,2=已完成")
+    private String status;
 
     /** 是否允许超库存领料（需同时填写超领原因） */
     private Boolean allowOverdraft;

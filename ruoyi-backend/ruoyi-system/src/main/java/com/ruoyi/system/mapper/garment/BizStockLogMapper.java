@@ -9,7 +9,7 @@ public interface BizStockLogMapper
 {
     @Select("""
         <script>
-        select * from biz_stock_log
+        select *, concat(ifnull(color,''),'/',ifnull(size,'')) as color_size from biz_stock_log
         <where>
         <if test="styleNo != null and styleNo != ''"> and style_no like concat('%',#{styleNo},'%')</if>
         <if test="color != null and color != ''"> and color = #{color}</if>

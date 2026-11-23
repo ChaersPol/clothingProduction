@@ -22,10 +22,9 @@ public class BizSku extends BaseEntity
     @Excel(name = "款号")
     private String styleNo;
 
-    @Excel(name = "父体款号")
     private String parentStyleNo;
 
-    @Excel(name = "中文品名")
+    @Excel(name = "品名")
     private String cnName;
 
     @Excel(name = "颜色")
@@ -47,26 +46,25 @@ public class BizSku extends BaseEntity
     @Excel(name = "最低库存")
     private Integer minStock;
 
-    @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
     private String status;
 
     /** 裁片库存(红) */
-    @Excel(name = "裁片库存")
+    @Excel(name = "裁片")
     private Integer cutQty;
 
     /** 产线库存(蓝) */
-    @Excel(name = "产线库存")
+    @Excel(name = "产线")
     private Integer lineQty;
 
     /** 成品库存(黑) */
-    @Excel(name = "成品库存")
+    @Excel(name = "成品")
     private Integer finishQty;
 
     /** 总库存 */
-    @Excel(name = "总库存")
+    
     private Integer totalQty;
 
     /** 库存货值 */
-    @Excel(name = "库存货值", cellType = Excel.ColumnType.NUMERIC)
+    
     private BigDecimal stockValue;
 }

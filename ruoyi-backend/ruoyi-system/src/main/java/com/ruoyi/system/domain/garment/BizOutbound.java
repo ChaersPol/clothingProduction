@@ -39,6 +39,7 @@ public class BizOutbound extends BaseEntity
     @Excel(name = "操作人")
     private String operator;
 
+    @Excel(name = "状态", readConverterExp = "0=正常,1=已作废")
     private String status;
 
     private String cancelReason;

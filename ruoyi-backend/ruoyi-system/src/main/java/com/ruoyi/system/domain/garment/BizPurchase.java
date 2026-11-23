@@ -24,6 +24,7 @@ public class BizPurchase extends BaseEntity
     private String purchaseNo;
 
     /** COMMON 公用耗材 / MATERIAL 按款物料 */
+    @Excel(name = "类型", readConverterExp = "COMMON=公用耗材,MATERIAL=按款物料")
     private String purchaseType;
 
     @Excel(name = "类别")
@@ -41,13 +42,14 @@ public class BizPurchase extends BaseEntity
     @Excel(name = "采购日期", width = 30, dateFormat = "yyyy-MM-dd")
     private Date purchaseDate;
 
-    @Excel(name = "采购金额", cellType = Excel.ColumnType.NUMERIC)
+    @Excel(name = "金额", cellType = Excel.ColumnType.NUMERIC)
     private BigDecimal totalAmount;
 
-    @Excel(name = "已付金额", cellType = Excel.ColumnType.NUMERIC)
+    @Excel(name = "已付", cellType = Excel.ColumnType.NUMERIC)
     private BigDecimal paidAmount;
 
     /** 0待入库 1部分入库 2已入库 */
+    @Excel(name = "状态", readConverterExp = "0=待入库,1=部分入库,2=已入库")
     private String status;
 
     private String statusLabel;

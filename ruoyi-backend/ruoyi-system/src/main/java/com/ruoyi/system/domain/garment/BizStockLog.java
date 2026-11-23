@@ -19,25 +19,29 @@ public class BizStockLog extends BaseEntity
     private Long logId;
     private Long skuId;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "操作时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date operateTime;
+
     @Excel(name = "款号")
     private String styleNo;
 
-    @Excel(name = "中文品名")
     private String cnName;
 
-    @Excel(name = "颜色")
     private String color;
 
-    @Excel(name = "尺码")
     private String size;
 
+    @Excel(name = "颜色/尺码")
+    private String colorSize;
+
     /** CUT/LINE/FINISH */
+    @Excel(name = "库存类型", readConverterExp = "CUT=裁片,LINE=产线,FINISH=成品")
     private String stockType;
 
-    @Excel(name = "库存类型")
     private String stockTypeLabel;
 
-    @Excel(name = "变动数量")
+    @Excel(name = "变动")
     private Integer changeQty;
 
     @Excel(name = "变动前")
@@ -57,10 +61,6 @@ public class BizStockLog extends BaseEntity
 
     @Excel(name = "操作人")
     private String operator;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Excel(name = "操作时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
-    private Date operateTime;
 
     @Excel(name = "备注")
     private String remark;

@@ -23,15 +23,13 @@ public class BizStyle extends BaseEntity
     private String styleNo;
 
     /** 父体款号 */
-    @Excel(name = "父体款号")
     private String parentStyleNo;
 
     /** 中文品名 */
-    @Excel(name = "中文品名")
+    @Excel(name = "品名")
     private String cnName;
 
     /** 名称 */
-    @Excel(name = "名称")
     private String styleName;
 
     /** 品类 */
@@ -49,6 +47,7 @@ public class BizStyle extends BaseEntity
     private String designer;
 
     /** 尺码表(逗号分隔) */
+    @Excel(name = "尺码表", width = 20)
     private String sizeTable;
 
     private String refImage;
@@ -62,11 +61,12 @@ public class BizStyle extends BaseEntity
 
     private String designRemark;
 
+    /** 已生成SKU数 */
+    @Excel(name = "SKU数", cellType = Excel.ColumnType.NUMERIC, width = 8)
+    private Integer skuCount;
+
     @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
     private String status;
 
     private String delFlag;
-
-    /** 已生成SKU数 */
-    private Integer skuCount;
 }

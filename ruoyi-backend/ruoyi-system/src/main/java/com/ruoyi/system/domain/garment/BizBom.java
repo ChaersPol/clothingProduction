@@ -20,7 +20,7 @@ public class BizBom extends BaseEntity
     @Excel(name = "款号")
     private String styleNo;
 
-    @Excel(name = "物料类型")
+    @Excel(name = "类型")
     private String materialType;
 
     @Excel(name = "物料名称")

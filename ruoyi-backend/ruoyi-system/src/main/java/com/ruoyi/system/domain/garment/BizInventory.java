@@ -20,16 +20,12 @@ public class BizInventory extends BaseEntity
     private Long inventoryId;
     private Long skuId;
 
-    /** CUT 裁片 / LINE 产线 / FINISH 成品 */
-    private String stockType;
-
     @Excel(name = "款号")
     private String styleNo;
 
-    @Excel(name = "父体款号")
     private String parentStyleNo;
 
-    @Excel(name = "中文品名")
+    @Excel(name = "品名")
     private String cnName;
 
     @Excel(name = "颜色")
@@ -41,20 +37,26 @@ public class BizInventory extends BaseEntity
     @Excel(name = "条码")
     private String barcode;
 
+    /** CUT 裁片 / LINE 产线 / FINISH 成品 */
+    @Excel(name = "库存类型", readConverterExp = "CUT=裁片,LINE=产线,FINISH=成品")
+    private String stockType;
+
     @Excel(name = "数量", isStatistics = true)
     private Integer qty;
 
+    @Excel(name = "成本价", cellType = Excel.ColumnType.NUMERIC)
     private BigDecimal costPrice;
     private BigDecimal salePrice;
     private Integer minStock;
 
-    @Excel(name = "库存货值", cellType = Excel.ColumnType.NUMERIC, isStatistics = true)
+    @Excel(name = "货值", cellType = Excel.ColumnType.NUMERIC, isStatistics = true)
     private BigDecimal stockValue;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date updateTime;
 
     /** 库龄(天) */
     @Excel(name = "库龄(天)")
     private Integer ageDays;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 }

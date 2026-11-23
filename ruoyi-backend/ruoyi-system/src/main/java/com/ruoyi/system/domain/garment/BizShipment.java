@@ -26,7 +26,7 @@ public class BizShipment extends BaseEntity
     @Excel(name = "客户")
     private String customer;
 
-    @Excel(name = "款式")
+    @Excel(name = "款号")
     private String styleNo;
 
     @Excel(name = "颜色")
@@ -50,5 +50,6 @@ public class BizShipment extends BaseEntity
     /** 关联的成品出库单ID（出货保存时自动生成） */
     private Long outboundId;
 
+    @Excel(name = "自动出库单")
     private String outboundNo;
 }
