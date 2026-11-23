@@ -9,7 +9,7 @@
         <el-form-item>
           <el-button type="primary" icon="Upload" v-hasPermi="['garment:bundle:edit']" @click="doStockIn">裁片入库</el-button>
           <GarmentScan v-hasPermi="['garment:bundle:edit']" @scan="onScanStockIn" @error="m => proxy.$modal.msgWarning(m)" />
-          <el-button icon="MagicStick" v-hasPermi="['garment:bundle:add']" @click="autoOpen = true">自动分扎</el-button>
+          <el-button icon="MagicStick" v-hasPermi="['garment:bundle:add']" @click="openAuto">自动分扎</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -81,7 +81,7 @@
           <template #default="s">
             <el-button link type="primary" v-hasPermi="['garment:bundle:edit']" :disabled="s.row.status !== '0'" @click="stockInRow(s.row)">入库</el-button>
             <el-button link type="warning" v-hasPermi="['garment:bundle:patch']" @click="openPatch(s.row)">补片/报废</el-button>
-            <el-button link type="danger" v-hasPermi="['garment:bundle:remove']" @click="handleDelete(s.row)">删除</el-button>
+            <el-button link type="danger" v-hasPermi="['garment:bundle:remove']" :disabled="s.row.status !== '0'" @click="handleDelete(s.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -280,7 +280,21 @@ function getList() {
   }).catch(() => { loading.value = false })
 }
 function loadCuts() {
-  return listCutOrder({ pageNum: 1, pageSize: 100 }).then(res => { cutOrders.value = res.rows || [] })
+  return listCutOrder({ pageNum: 1, pageSize: 100 }).then(res => {
+    // 自动分扎下拉只保留尚未分完的裁货单：已分合计数量 < 总件数，且排除已作废
+    cutOrders.value = (res.rows || []).filter(r =>
+      r.status !== '9' && Number(r.bundleQty || 0) < Number(r.totalQty || 0)
+    )
+  })
+}
+// 打开自动分扎窗口前先刷新可选的裁货单，确保不出现已分完的单
+function openAuto() {
+  loadCuts().then(() => {
+    if (autoForm.value.cutId && !cutOrders.value.some(c => Number(c.cutId) === Number(autoForm.value.cutId))) {
+      autoForm.value.cutId = undefined
+    }
+    autoOpen.value = true
+  })
 }
 function handleQuery() { queryParams.value.pageNum = 1; getList() }
 function resetQuery() { proxy.resetForm('queryRef'); handleQuery() }
@@ -335,6 +349,7 @@ function submitAuto() {
   autoBundle(autoForm.value).then(() => {
     proxy.$modal.msgSuccess('分扎完成')
     autoOpen.value = false
+    autoForm.value.cutId = undefined
     getList()
     loadCuts()
   })
@@ -362,8 +377,10 @@ function handleDelete(row) {
 }
 
 loadCuts().then(() => {
-  if (route.query.cutId) {
-    autoForm.value.cutId = Number(route.query.cutId)
+  // 从裁货单「去分扎」跳转过来时，仅当该单仍可继续分扎才自动弹窗
+  const cutId = route.query.cutId ? Number(route.query.cutId) : null
+  if (cutId && cutOrders.value.some(c => Number(c.cutId) === cutId)) {
+    autoForm.value.cutId = cutId
     autoOpen.value = true
   }
 })

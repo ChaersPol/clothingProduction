@@ -57,6 +57,9 @@ public class BizCutOrder extends BaseEntity
     @Excel(name = "扎数")
     private Integer bundleCount;
 
+    /** 已分扎合计数量，用于判断裁货单是否已分完 */
+    private Integer bundleQty;
+
     /** 0待分扎 1已入库 2已完成 9已作废 */
     @Excel(name = "状态", readConverterExp = "0=待分扎,1=已入库,2=已完成,9=已作废")
     private String status;

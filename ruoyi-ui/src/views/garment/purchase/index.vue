@@ -36,7 +36,7 @@
         <el-button plain icon="Download" v-hasPermi="['garment:purchase:export']" @click="handleExport">导出</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['garment:purchase:remove']">删除</el-button>
+        <el-button type="danger" plain icon="Delete" :disabled="multiple || hasReceived" @click="handleDelete" v-hasPermi="['garment:purchase:remove']">删除</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -69,9 +69,9 @@
         <el-table-column v-if="checkPermi(['garment:purchase:receive','garment:purchase:edit','garment:purchase:remove'])" label="操作" class-name="op-cell" width="220" align="center" fixed="right">
           <template #default="s">
             <el-button link type="primary" v-hasPermi="['garment:purchase:list']" @click="viewDetail(s.row)">明细</el-button>
-            <el-button link type="success" @click="openReceive(s.row)" v-hasPermi="['garment:purchase:receive']">入库</el-button>
-            <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:purchase:edit']">修改</el-button>
-            <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:purchase:remove']">删除</el-button>
+            <el-button link type="success" v-if="s.row.status !== '2'" @click="openReceive(s.row)" v-hasPermi="['garment:purchase:receive']">入库</el-button>
+            <el-button link type="primary" @click="handleUpdate(s.row)" :disabled="s.row.status !== '0'" v-hasPermi="['garment:purchase:edit']">修改</el-button>
+            <el-button link type="danger" @click="handleDelete(s.row)" :disabled="s.row.status !== '0'" v-hasPermi="['garment:purchase:remove']">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -226,10 +226,13 @@ const showSearch = ref(true)
 
 const ids = ref([])
 const multiple = ref(true)
+// 选中的采购单中只要存在已入库/部分入库的，就禁止批量删除
+const hasReceived = ref(false)
 
 function handleSelectionChange(selection) {
   ids.value = selection.map(item => item.purchaseId)
   multiple.value = !selection.length
+  hasReceived.value = selection.some(item => item.status !== '0')
 }
 
 const { proxy } = getCurrentInstance()

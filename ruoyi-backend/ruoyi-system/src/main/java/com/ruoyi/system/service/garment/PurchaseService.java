@@ -119,6 +119,11 @@ public class PurchaseService
         }
         else
         {
+            BizPurchase old = purchaseMapper.selectPurchaseById(purchase.getPurchaseId());
+            if (old != null && !"0".equals(old.getStatus()))
+            {
+                throw new ServiceException("已入库或部分入库的采购单不能修改");
+            }
             purchaseMapper.deleteItems(purchase.getPurchaseId());
             purchase.setUpdateBy(SecurityUtils.getUsername());
             purchaseMapper.updatePurchase(purchase);
@@ -200,6 +205,11 @@ public class PurchaseService
     @Transactional
     public int delete(Long id)
     {
+        BizPurchase old = purchaseMapper.selectPurchaseById(id);
+        if (old != null && !"0".equals(old.getStatus()))
+        {
+            throw new ServiceException("已入库或部分入库的采购单不能删除");
+        }
         purchaseMapper.deleteItems(id);
         return purchaseMapper.deletePurchase(id);
     }

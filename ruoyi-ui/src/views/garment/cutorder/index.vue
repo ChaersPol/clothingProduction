@@ -63,7 +63,7 @@
         <el-table-column v-if="checkPermi(['garment:cutorder:edit','garment:cutorder:remove'])" label="操作" class-name="op-cell" width="295" align="center" fixed="right">
           <template #default="s">
             <el-button link type="primary" v-hasPermi="['garment:cutorder:list']" @click="viewDetail(s.row)">明细</el-button>
-            <el-button link type="success" v-hasPermi="['garment:bundle:list']" @click="goBundle(s.row)">去分扎</el-button>
+            <el-button link type="success" v-hasPermi="['garment:bundle:list']" v-if="canBundle(s.row)" @click="goBundle(s.row)">去分扎</el-button>
             <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:cutorder:edit']" :disabled="s.row.status !== '0'">修改</el-button>
             <el-button link type="warning" @click="handleVoid(s.row)" v-hasPermi="['garment:cutorder:edit']" v-if="s.row.status === '0'">作废</el-button>
             <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:cutorder:remove']" :disabled="s.row.status !== '0'">删除</el-button>
@@ -265,6 +265,10 @@ const totalQty = computed(() => (form.value.items || []).reduce((s, i) => s + Nu
 watch(totalQty, v => { form.value.totalQty = v })
 
 function statusText(s) { return s === '9' ? '已作废' : s === '2' ? '已完成' : s === '1' ? '已入库' : '待分扎' }
+// 仅当裁货单未作废/未完成、且仍有未分扎数量时才显示「去分扎」
+function canBundle(row) {
+  return row.status !== '9' && row.status !== '2' && Number(row.bundleQty || 0) < Number(row.totalQty || 0)
+}
 function handleVoid(row) {
   proxy.$modal.prompt(`作废原因（${row.cutNo} 作废后原单保留，已领物资按流水退回）：`).then(({ value }) => {
     if (!value || !value.trim()) {

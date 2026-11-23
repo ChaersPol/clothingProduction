@@ -10,7 +10,8 @@ public interface BizCutOrderMapper
 {
     @Select("""
         <script>
-        select c.*, (select count(1) from biz_bundle b where b.cut_id=c.cut_id) as bundle_count
+        select c.*, (select count(1) from biz_bundle b where b.cut_id=c.cut_id) as bundle_count,
+        (select coalesce(sum(b.qty),0) from biz_bundle b where b.cut_id=c.cut_id) as bundle_qty
         from biz_cut_order c
         <where>
         <if test="cutNo != null and cutNo != ''"> and c.cut_no like concat('%',#{cutNo},'%')</if>

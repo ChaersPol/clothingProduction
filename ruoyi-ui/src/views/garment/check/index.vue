@@ -43,7 +43,7 @@
           <template #default="s">
             <el-button link type="primary" v-hasPermi="['garment:check:edit']" @click="openItems(s.row)">{{ s.row.status === '1' ? '查看' : '录入实盘' }}</el-button>
             <el-button link type="success" v-hasPermi="['garment:check:finish']" :disabled="s.row.status === '1'" @click="handleComplete(s.row)">完成盘点</el-button>
-            <el-button link type="danger" v-hasPermi="['garment:check:remove']" @click="handleDelete(s.row)">删除</el-button>
+            <el-button link type="danger" v-hasPermi="['garment:check:remove']" :disabled="s.row.status === '1'" @click="handleDelete(s.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

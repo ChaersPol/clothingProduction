@@ -124,6 +124,7 @@ public class BizPurchaseController extends BaseController
 
     @PreAuthorize("@ss.hasPermi('garment:purchase:remove')")
     @Log(title = "采购登记", businessType = BusinessType.DELETE)
+    @org.springframework.transaction.annotation.Transactional
     @DeleteMapping("/{purchaseIds}")
     public AjaxResult remove(@PathVariable Long[] purchaseIds)
     {

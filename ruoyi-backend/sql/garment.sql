@@ -38,19 +38,19 @@ DROP TABLE IF EXISTS `biz_bom`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_bom` (
   `bom_id` bigint NOT NULL AUTO_INCREMENT COMMENT 'BOM ID',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '款号',
-  `material_type` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '面料' COMMENT '物料类型(面料/里布/辅料/配件)',
-  `material_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT '物料名称',
-  `spec` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '规格',
-  `unit` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '米' COMMENT '单位',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '款号',
+  `material_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '面料' COMMENT '物料类型(面料/里布/辅料/配件)',
+  `material_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '物料名称',
+  `spec` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '规格',
+  `unit` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '米' COMMENT '单位',
   `qty_per_piece` decimal(10,3) DEFAULT '0.000' COMMENT '单件用量',
   `loss_rate` decimal(6,2) DEFAULT '0.00' COMMENT '损耗率(%)',
   `unit_price` decimal(10,2) DEFAULT '0.00' COMMENT '单价',
   `amount` decimal(10,2) DEFAULT '0.00' COMMENT '小计(自动)',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`bom_id`),
   KEY `idx_bom_style` (`style_no`)
@@ -76,35 +76,35 @@ DROP TABLE IF EXISTS `biz_bundle`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_bundle` (
   `bundle_id` bigint NOT NULL AUTO_INCREMENT COMMENT '扎ID',
-  `bundle_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '扎号',
-  `barcode` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '扎卡条码',
+  `bundle_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '扎号',
+  `barcode` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '扎卡条码',
   `cut_id` bigint DEFAULT NULL COMMENT '裁货单ID',
-  `cut_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '裁货单号',
+  `cut_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '裁货单号',
   `sku_id` bigint DEFAULT NULL COMMENT 'SKU ID',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '款号',
-  `cn_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '中文品名',
-  `color` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '颜色',
-  `size` varchar(20) COLLATE utf8mb4_general_ci NOT NULL COMMENT '尺码',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '款号',
+  `cn_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '中文品名',
+  `color` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '颜色',
+  `size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '尺码',
   `qty` int DEFAULT '0' COMMENT '裁货数量',
   `delivered_qty` int DEFAULT '0' COMMENT '已交后道数量',
   `packed_qty` int DEFAULT '0' COMMENT '已包装入库数',
   `defect_qty` int DEFAULT '0' COMMENT '次品数量',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0已开扎 1裁片在库 2产线中 3已完工)',
-  `pickup_user` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '领片人',
-  `pickup_user_id` bigint DEFAULT NULL COMMENT '领片人用户ID',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0已开扎 1裁片在库 2产线中 3已完工)',
+  `pickup_user` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '领片人',
   `pickup_time` datetime DEFAULT NULL COMMENT '领片时间',
-  `pack_code` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '包装袋号',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `pack_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '包装袋号',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `pickup_user_id` bigint DEFAULT NULL COMMENT '领片人用户ID',
   PRIMARY KEY (`bundle_id`),
   UNIQUE KEY `uk_bundle_no` (`bundle_no`),
   UNIQUE KEY `uk_bundle_barcode` (`barcode`),
   KEY `idx_bundle_sku` (`sku_id`),
   KEY `idx_bundle_status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=1035 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='裁片扎包';
+) ENGINE=InnoDB AUTO_INCREMENT=1043 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='裁片扎包';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,7 +113,7 @@ CREATE TABLE `biz_bundle` (
 
 LOCK TABLES `biz_bundle` WRITE;
 /*!40000 ALTER TABLE `biz_bundle` DISABLE KEYS */;
-INSERT INTO `biz_bundle` VALUES (1001,'BN20261113001','JT03-黑色-S-BN20261113001',1001,'CO20261113001',1001,'JT03','卡扣束腰大摆裙','黑色','S',10,10,5,0,'3','赵丽',NULL,'2026-11-14 09:30:00','PK100101','admin','2026-11-13 08:40:00','','2026-11-22 15:36:37',''),(1002,'BN20261113002','JT03-黑色-S-BN20261113002',1001,'CO20261113001',1001,'JT03','卡扣束腰大摆裙','黑色','S',10,10,5,0,'3','赵丽',NULL,'2026-11-14 09:30:00','PK100102','admin','2026-11-13 08:40:00','',NULL,''),(1003,'BN20261113003','JT03-白色-M-BN20261113003',1001,'CO20261113001',1006,'JT03','卡扣束腰大摆裙','白色','M',10,10,5,0,'3','赵丽',NULL,'2026-11-14 09:30:00','PK100101','admin','2026-11-13 08:40:00','','2026-11-22 15:36:27',''),(1004,'BN20261113004','JT03-白色-M-BN20261113004',1001,'CO20261113001',1006,'JT03','卡扣束腰大摆裙','白色','M',10,10,5,0,'3','赵丽',NULL,'2026-11-14 09:30:00','PK100102','admin','2026-11-13 08:40:00','',NULL,''),(1005,'BN20261116005','JT03-黑色-S-BN20261116005',1002,'CO20261116001',1001,'JT03','卡扣束腰大摆裙','黑色','S',10,10,10,0,'3','钱峰',NULL,'2026-11-16 08:40:00','PK100201','admin','2026-11-13 08:40:00','',NULL,''),(1006,'BN20261116006','JT03-黑色-S-BN20261116006',1002,'CO20261116001',1001,'JT03','卡扣束腰大摆裙','黑色','S',10,10,10,0,'3','钱峰',NULL,'2026-11-16 08:40:00','PK100202','admin','2026-11-13 08:40:00','',NULL,''),(1007,'BN20261116007','JT03-黑色-M-BN20261116007',1002,'CO20261116001',1002,'JT03','卡扣束腰大摆裙','黑色','M',10,10,10,0,'3','钱峰',NULL,'2026-11-16 08:40:00','PK100201','admin','2026-11-13 08:40:00','',NULL,''),(1008,'BN20261116008','JT03-黑色-M-BN20261116008',1002,'CO20261116001',1002,'JT03','卡扣束腰大摆裙','黑色','M',10,10,10,0,'3','钱峰',NULL,'2026-11-16 08:40:00','PK100202','admin','2026-11-13 08:40:00','',NULL,''),(1009,'BN20261116009','JT03-白色-M-BN20261116009',1002,'CO20261116001',1006,'JT03','卡扣束腰大摆裙','白色','M',10,10,10,0,'3','钱峰',NULL,'2026-11-16 08:40:00','PK100201','admin','2026-11-13 08:40:00','',NULL,''),(1010,'BN20261116010','JT03-白色-M-BN20261116010',1002,'CO20261116001',1006,'JT03','卡扣束腰大摆裙','白色','M',10,10,10,0,'3','钱峰',NULL,'2026-11-16 08:40:00','PK100202','admin','2026-11-13 08:40:00','',NULL,''),(1011,'BN20261116011','JT03-白色-L-BN20261116011',1002,'CO20261116001',1007,'JT03','卡扣束腰大摆裙','白色','L',10,10,10,0,'3','钱峰',NULL,'2026-11-16 08:40:00','PK100201','admin','2026-11-13 08:40:00','',NULL,''),(1012,'BN20261116012','JT03-白色-L-BN20261116012',1002,'CO20261116001',1007,'JT03','卡扣束腰大摆裙','白色','L',10,10,10,0,'3','钱峰',NULL,'2026-11-16 08:40:00','PK100202','admin','2026-11-13 08:40:00','',NULL,''),(1013,'BN20261116013','JT03-藏青-L-BN20261116013',1002,'CO20261116001',1011,'JT03','卡扣束腰大摆裙','藏青','L',10,10,10,0,'3','钱峰',NULL,'2026-11-16 08:40:00','PK100201','admin','2026-11-13 08:40:00','',NULL,''),(1014,'BN20261116014','JT03-藏青-L-BN20261116014',1002,'CO20261116001',1011,'JT03','卡扣束腰大摆裙','藏青','L',10,10,10,0,'3','钱峰',NULL,'2026-11-16 08:40:00','PK100202','admin','2026-11-13 08:40:00','',NULL,''),(1015,'BN20261116015','JT03-酒红-XL-BN20261116015',1002,'CO20261116001',1016,'JT03','卡扣束腰大摆裙','酒红','XL',10,10,10,0,'3','钱峰',NULL,'2026-11-16 08:40:00','PK100201','admin','2026-11-13 08:40:00','',NULL,''),(1016,'BN20261116016','JT03-酒红-XL-BN20261116016',1002,'CO20261116001',1016,'JT03','卡扣束腰大摆裙','酒红','XL',10,10,10,0,'3','钱峰',NULL,'2026-11-16 08:40:00','PK100202','admin','2026-11-13 08:40:00','',NULL,''),(1017,'BN20261118017','JT04-米杏-S-BN20261118017',1003,'CO20261118001',1101,'JT04','原布连衣裙','米杏','S',10,0,0,0,'1','',NULL,NULL,'','admin','2026-11-13 08:40:00','',NULL,''),(1018,'BN20261118018','JT04-米杏-S-BN20261118018',1003,'CO20261118001',1101,'JT04','原布连衣裙','米杏','S',10,0,0,0,'1','',NULL,NULL,'','admin','2026-11-13 08:40:00','',NULL,''),(1019,'BN20261118019','JT04-米杏-M-BN20261118019',1003,'CO20261118001',1102,'JT04','原布连衣裙','米杏','M',10,0,0,0,'1','',NULL,NULL,'','admin','2026-11-13 08:40:00','',NULL,''),(1020,'BN20261118020','JT04-米杏-M-BN20261118020',1003,'CO20261118001',1102,'JT04','原布连衣裙','米杏','M',10,0,0,0,'1','',NULL,NULL,'','admin','2026-11-13 08:40:00','',NULL,''),(1021,'BN20261118021','JT04-雾霾蓝-M-BN20261118021',1003,'CO20261118001',1105,'JT04','原布连衣裙','雾霾蓝','M',10,0,0,0,'1','',NULL,NULL,'','admin','2026-11-13 08:40:00','',NULL,''),(1022,'BN20261118022','JT04-雾霾蓝-M-BN20261118022',1003,'CO20261118001',1105,'JT04','原布连衣裙','雾霾蓝','M',10,0,0,0,'1','',NULL,NULL,'','admin','2026-11-13 08:40:00','',NULL,''),(1023,'BN20261121023','JT07-米杏-S-BN20261121023',1005,'CO20261121001',1201,'JT07','原布半身裙','米杏','S',10,0,0,0,'1','',NULL,NULL,'','admin','2026-11-13 08:40:00','',NULL,''),(1024,'BN20261121024','JT07-米杏-S-BN20261121024',1005,'CO20261121001',1201,'JT07','原布半身裙','米杏','S',5,0,0,0,'1','',NULL,NULL,'','admin','2026-11-13 08:40:00','',NULL,''),(1025,'BN20261121025','JT07-雾霾蓝-L-BN20261121025',1005,'CO20261121001',1206,'JT07','原布半身裙','雾霾蓝','L',10,0,0,0,'1','',NULL,NULL,'','admin','2026-11-13 08:40:00','',NULL,''),(1026,'BN20261121026','JT07-雾霾蓝-L-BN20261121026',1005,'CO20261121001',1206,'JT07','原布半身裙','雾霾蓝','L',5,0,0,0,'1','',NULL,NULL,'','admin','2026-11-13 08:40:00','',NULL,''),(1027,'Z202611220027','Z202611220027',1010,'CH20261122001',1201,'JT07','原布半身裙','米杏','S',17,0,0,0,'1','',NULL,'2026-11-22 15:45:12','','cutting','2026-11-22 15:43:52','','2026-11-22 15:45:12',NULL),(1028,'Z202611220028','Z202611220028',1010,'CH20261122001',1201,'JT07','原布半身裙','米杏','S',17,0,0,0,'2','李梅',101,'2026-11-22 17:07:22','','cutting','2026-11-22 15:43:52','','2026-11-22 17:07:22',NULL),(1029,'Z202611220029','Z202611220029',1010,'CH20261122001',1201,'JT07','原布半身裙','米杏','S',17,0,0,0,'2','管理员',1,'2026-11-22 16:55:15','','cutting','2026-11-22 15:43:52','','2026-11-22 16:55:15',NULL),(1030,'Z202611220030','Z202611220030',1010,'CH20261122001',1201,'JT07','原布半身裙','米杏','S',17,0,0,0,'2','管理员',1,'2026-11-22 16:46:08','','cutting','2026-11-22 15:43:52','','2026-11-22 16:46:08',NULL),(1031,'Z202611220031','Z202611220031',1010,'CH20261122001',1201,'JT07','原布半身裙','米杏','S',17,0,0,0,'2','管理员',1,'2026-11-22 16:37:08','','cutting','2026-11-22 15:43:52','','2026-11-22 16:37:08',NULL),(1032,'Z202611220032','Z202611220032',1010,'CH20261122001',1201,'JT07','原布半身裙','米杏','S',15,0,0,0,'2','管理员',1,'2026-11-22 16:35:16','','cutting','2026-11-22 15:43:52','','2026-11-22 16:35:16',NULL),(1033,'Z202611230033','Z202611230033',1013,'CH20261122002',1201,'JT07','原布半身裙','米杏','S',17,0,0,0,'0','',NULL,NULL,'','admin','2026-11-23 08:29:27','',NULL,NULL),(1034,'Z202611230034','Z202611230034',1013,'CH20261122002',1201,'JT07','原布半身裙','米杏','S',3,0,0,0,'0','',NULL,NULL,'','admin','2026-11-23 08:29:27','',NULL,NULL);
+INSERT INTO `biz_bundle` VALUES (1001,'BN20261113001','JT03-黑色-S-BN20261113001',1001,'CO20261113001',1001,'JT03','卡扣束腰大摆裙','黑色','S',10,10,5,0,'3','赵丽','2026-11-14 09:30:00','PK100101','admin','2026-11-13 08:40:00','','2026-11-22 15:36:37','',NULL),(1002,'BN20261113002','JT03-黑色-S-BN20261113002',1001,'CO20261113001',1001,'JT03','卡扣束腰大摆裙','黑色','S',10,10,5,0,'3','赵丽','2026-11-14 09:30:00','PK100102','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1003,'BN20261113003','JT03-白色-M-BN20261113003',1001,'CO20261113001',1006,'JT03','卡扣束腰大摆裙','白色','M',10,10,5,0,'3','赵丽','2026-11-14 09:30:00','PK100101','admin','2026-11-13 08:40:00','','2026-11-22 15:36:27','',NULL),(1004,'BN20261113004','JT03-白色-M-BN20261113004',1001,'CO20261113001',1006,'JT03','卡扣束腰大摆裙','白色','M',10,10,5,0,'3','赵丽','2026-11-14 09:30:00','PK100102','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1005,'BN20261116005','JT03-黑色-S-BN20261116005',1002,'CO20261116001',1001,'JT03','卡扣束腰大摆裙','黑色','S',10,10,10,0,'3','钱峰','2026-11-16 08:40:00','PK100201','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1006,'BN20261116006','JT03-黑色-S-BN20261116006',1002,'CO20261116001',1001,'JT03','卡扣束腰大摆裙','黑色','S',10,10,10,0,'3','钱峰','2026-11-16 08:40:00','PK100202','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1007,'BN20261116007','JT03-黑色-M-BN20261116007',1002,'CO20261116001',1002,'JT03','卡扣束腰大摆裙','黑色','M',10,10,10,0,'3','钱峰','2026-11-16 08:40:00','PK100201','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1008,'BN20261116008','JT03-黑色-M-BN20261116008',1002,'CO20261116001',1002,'JT03','卡扣束腰大摆裙','黑色','M',10,10,10,0,'3','钱峰','2026-11-16 08:40:00','PK100202','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1009,'BN20261116009','JT03-白色-M-BN20261116009',1002,'CO20261116001',1006,'JT03','卡扣束腰大摆裙','白色','M',10,10,10,0,'3','钱峰','2026-11-16 08:40:00','PK100201','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1010,'BN20261116010','JT03-白色-M-BN20261116010',1002,'CO20261116001',1006,'JT03','卡扣束腰大摆裙','白色','M',10,10,10,0,'3','钱峰','2026-11-16 08:40:00','PK100202','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1011,'BN20261116011','JT03-白色-L-BN20261116011',1002,'CO20261116001',1007,'JT03','卡扣束腰大摆裙','白色','L',10,10,10,0,'3','钱峰','2026-11-16 08:40:00','PK100201','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1012,'BN20261116012','JT03-白色-L-BN20261116012',1002,'CO20261116001',1007,'JT03','卡扣束腰大摆裙','白色','L',10,10,10,0,'3','钱峰','2026-11-16 08:40:00','PK100202','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1013,'BN20261116013','JT03-藏青-L-BN20261116013',1002,'CO20261116001',1011,'JT03','卡扣束腰大摆裙','藏青','L',10,10,10,0,'3','钱峰','2026-11-16 08:40:00','PK100201','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1014,'BN20261116014','JT03-藏青-L-BN20261116014',1002,'CO20261116001',1011,'JT03','卡扣束腰大摆裙','藏青','L',10,10,10,0,'3','钱峰','2026-11-16 08:40:00','PK100202','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1015,'BN20261116015','JT03-酒红-XL-BN20261116015',1002,'CO20261116001',1016,'JT03','卡扣束腰大摆裙','酒红','XL',10,10,10,0,'3','钱峰','2026-11-16 08:40:00','PK100201','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1016,'BN20261116016','JT03-酒红-XL-BN20261116016',1002,'CO20261116001',1016,'JT03','卡扣束腰大摆裙','酒红','XL',10,10,10,0,'3','钱峰','2026-11-16 08:40:00','PK100202','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1017,'BN20261118017','JT04-米杏-S-BN20261118017',1003,'CO20261118001',1101,'JT04','原布连衣裙','米杏','S',10,0,0,0,'1','',NULL,'','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1018,'BN20261118018','JT04-米杏-S-BN20261118018',1003,'CO20261118001',1101,'JT04','原布连衣裙','米杏','S',10,0,0,0,'1','',NULL,'','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1019,'BN20261118019','JT04-米杏-M-BN20261118019',1003,'CO20261118001',1102,'JT04','原布连衣裙','米杏','M',10,0,0,0,'1','',NULL,'','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1020,'BN20261118020','JT04-米杏-M-BN20261118020',1003,'CO20261118001',1102,'JT04','原布连衣裙','米杏','M',10,0,0,0,'1','',NULL,'','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1021,'BN20261118021','JT04-雾霾蓝-M-BN20261118021',1003,'CO20261118001',1105,'JT04','原布连衣裙','雾霾蓝','M',10,0,0,0,'1','',NULL,'','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1022,'BN20261118022','JT04-雾霾蓝-M-BN20261118022',1003,'CO20261118001',1105,'JT04','原布连衣裙','雾霾蓝','M',10,0,0,0,'1','',NULL,'','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1023,'BN20261121023','JT07-米杏-S-BN20261121023',1005,'CO20261121001',1201,'JT07','原布半身裙','米杏','S',10,0,0,0,'1','',NULL,'','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1024,'BN20261121024','JT07-米杏-S-BN20261121024',1005,'CO20261121001',1201,'JT07','原布半身裙','米杏','S',5,0,0,0,'1','',NULL,'','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1025,'BN20261121025','JT07-雾霾蓝-L-BN20261121025',1005,'CO20261121001',1206,'JT07','原布半身裙','雾霾蓝','L',10,0,0,0,'1','',NULL,'','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1026,'BN20261121026','JT07-雾霾蓝-L-BN20261121026',1005,'CO20261121001',1206,'JT07','原布半身裙','雾霾蓝','L',5,0,0,0,'1','',NULL,'','admin','2026-11-13 08:40:00','',NULL,'',NULL),(1027,'Z202611220027','Z202611220027',1010,'CH20261122001',1201,'JT07','原布半身裙','米杏','S',17,0,0,0,'1','','2026-11-22 15:45:12','','cutting','2026-11-22 15:43:52','','2026-11-22 15:45:12',NULL,NULL),(1028,'Z202611220028','Z202611220028',1010,'CH20261122001',1201,'JT07','原布半身裙','米杏','S',17,0,0,0,'2','李梅','2026-11-22 17:07:22','','cutting','2026-11-22 15:43:52','','2026-11-22 17:07:22',NULL,101),(1029,'Z202611220029','Z202611220029',1010,'CH20261122001',1201,'JT07','原布半身裙','米杏','S',17,0,0,0,'2','管理员','2026-11-22 16:55:15','','cutting','2026-11-22 15:43:52','','2026-11-22 16:55:15',NULL,1),(1030,'Z202611220030','Z202611220030',1010,'CH20261122001',1201,'JT07','原布半身裙','米杏','S',17,0,0,0,'2','管理员','2026-11-22 16:46:08','','cutting','2026-11-22 15:43:52','','2026-11-22 16:46:08',NULL,1),(1031,'Z202611220031','Z202611220031',1010,'CH20261122001',1201,'JT07','原布半身裙','米杏','S',17,0,0,0,'2','管理员','2026-11-22 16:37:08','','cutting','2026-11-22 15:43:52','','2026-11-22 16:37:08',NULL,1),(1032,'Z202611220032','Z202611220032',1010,'CH20261122001',1201,'JT07','原布半身裙','米杏','S',15,0,0,0,'2','管理员','2026-11-22 16:35:16','','cutting','2026-11-22 15:43:52','','2026-11-22 16:35:16',NULL,1),(1033,'Z202611230033','Z202611230033',1013,'CH20261122002',1201,'JT07','原布半身裙','米杏','S',17,0,0,0,'1',NULL,'2026-11-23 16:37:40','','admin','2026-11-23 08:29:27','','2026-11-23 16:37:40',NULL,NULL),(1034,'Z202611230034','Z202611230034',1013,'CH20261122002',1201,'JT07','原布半身裙','米杏','S',3,0,0,0,'1',NULL,'2026-11-23 16:37:38','','admin','2026-11-23 08:29:27','','2026-11-23 16:37:38',NULL,NULL),(1035,'Z202611230035','Z202611230035',1004,'CO20261120001',1311,'MQ3001','法式泡泡袖上衣','浅灰','L',17,0,0,0,'0','',NULL,'','cutting','2026-11-23 16:39:32','',NULL,NULL,NULL),(1036,'Z202611230036','Z202611230036',1004,'CO20261120001',1311,'MQ3001','法式泡泡袖上衣','浅灰','L',3,0,0,0,'0','',NULL,'','cutting','2026-11-23 16:39:32','',NULL,NULL,NULL),(1037,'Z202611230037','Z202611230037',1004,'CO20261120001',1301,'MQ3001','法式泡泡袖上衣','白色','S',17,0,0,0,'0','',NULL,'','cutting','2026-11-23 16:39:32','',NULL,NULL,NULL),(1038,'Z202611230038','Z202611230038',1004,'CO20261120001',1301,'MQ3001','法式泡泡袖上衣','白色','S',3,0,0,0,'0','',NULL,'','cutting','2026-11-23 16:39:32','',NULL,NULL,NULL),(1039,'Z202611230039','Z202611230039',1004,'CO20261120001',1304,'MQ3001','法式泡泡袖上衣','白色','XL',17,0,0,0,'0','',NULL,'','cutting','2026-11-23 16:39:32','',NULL,NULL,NULL),(1040,'Z202611230040','Z202611230040',1004,'CO20261120001',1304,'MQ3001','法式泡泡袖上衣','白色','XL',3,0,0,0,'0','',NULL,'','cutting','2026-11-23 16:39:32','',NULL,NULL,NULL),(1041,'Z202611230041','Z202611230041',1004,'CO20261120001',1306,'MQ3001','法式泡泡袖上衣','黑色','M',17,0,0,0,'0','',NULL,'','cutting','2026-11-23 16:39:32','',NULL,NULL,NULL),(1042,'Z202611230042','Z202611230042',1004,'CO20261120001',1306,'MQ3001','法式泡泡袖上衣','黑色','M',3,0,0,0,'0','',NULL,'','cutting','2026-11-23 16:39:32','',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `biz_bundle` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -126,13 +126,13 @@ DROP TABLE IF EXISTS `biz_check`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_check` (
   `check_id` bigint NOT NULL AUTO_INCREMENT COMMENT '盘点ID',
-  `check_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '盘点单号',
+  `check_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '盘点单号',
   `check_date` date DEFAULT NULL COMMENT '盘点日期',
-  `checker` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '盘点人',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0进行中 1已完成)',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `checker` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '盘点人',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0进行中 1已完成)',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`check_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1003 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='盘点单';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -158,7 +158,7 @@ CREATE TABLE `biz_check_item` (
   `item_id` bigint NOT NULL AUTO_INCREMENT COMMENT '明细ID',
   `check_id` bigint NOT NULL COMMENT '盘点ID',
   `sku_id` bigint NOT NULL COMMENT 'SKU ID',
-  `stock_type` varchar(10) COLLATE utf8mb4_general_ci NOT NULL COMMENT '库存类型',
+  `stock_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '库存类型',
   `book_qty` int DEFAULT '0' COMMENT '账面数量',
   `actual_qty` int DEFAULT '0' COMMENT '实盘数量',
   `diff_qty` int DEFAULT '0' COMMENT '差异',
@@ -186,16 +186,16 @@ DROP TABLE IF EXISTS `biz_color`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_color` (
   `color_id` bigint NOT NULL AUTO_INCREMENT COMMENT '颜色ID',
-  `cn_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '中文名',
-  `en_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '英文名',
-  `color_code` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '#000000' COMMENT '色卡/色值',
+  `cn_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '中文名',
+  `en_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '英文名',
+  `color_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '#000000' COMMENT '色卡/色值',
   `sort` int DEFAULT '0' COMMENT '排序',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 1停用)',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 1停用)',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`color_id`),
   UNIQUE KEY `uk_color_cn` (`cn_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='颜色管理';
@@ -220,7 +220,7 @@ DROP TABLE IF EXISTS `biz_cost`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_cost` (
   `cost_id` bigint NOT NULL AUTO_INCREMENT COMMENT '成本ID',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '款号',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '款号',
   `fabric_cost` decimal(10,2) DEFAULT '0.00' COMMENT '面料成本',
   `lining_cost` decimal(10,2) DEFAULT '0.00' COMMENT '里布成本',
   `accessory_cost` decimal(10,2) DEFAULT '0.00' COMMENT '辅料成本',
@@ -236,11 +236,11 @@ CREATE TABLE `biz_cost` (
   `total_cost` decimal(10,2) DEFAULT '0.00' COMMENT '合计成本',
   `ex_factory_price` decimal(10,2) DEFAULT '0.00' COMMENT '出厂价',
   `suggest_price` decimal(10,2) DEFAULT '0.00' COMMENT '建议售价',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`cost_id`),
   UNIQUE KEY `uk_cost_style` (`style_no`)
 ) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='成本核算';
@@ -299,25 +299,25 @@ DROP TABLE IF EXISTS `biz_cut_order`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_cut_order` (
   `cut_id` bigint NOT NULL AUTO_INCREMENT COMMENT '裁货ID',
-  `cut_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '裁货单号',
+  `cut_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '裁货单号',
   `style_id` bigint DEFAULT NULL COMMENT '款号ID',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '货号',
-  `cn_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '品名',
-  `customer` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '客户',
-  `fabric` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '面料',
-  `lining` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '里布',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '货号',
+  `cn_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '品名',
+  `customer` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '客户',
+  `fabric` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '面料',
+  `lining` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '里布',
   `total_qty` int DEFAULT '0' COMMENT '总件数',
   `layer_count` int DEFAULT '0' COMMENT '层数',
-  `cutter` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '裁工',
-  `cutter_id` bigint DEFAULT NULL COMMENT '裁工用户ID',
+  `cutter` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '裁工',
   `cut_date` date DEFAULT NULL COMMENT '裁货日期',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0待分扎 1已入库 2已完成)',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0待分扎 1已入库 2已完成)',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
-  `cancel_reason` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '作废原因',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `cutter_id` bigint DEFAULT NULL COMMENT '裁工用户ID',
+  `cancel_reason` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '作废原因',
   PRIMARY KEY (`cut_id`),
   KEY `idx_cut_no` (`cut_no`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1014 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='裁货开单';
@@ -329,7 +329,7 @@ CREATE TABLE `biz_cut_order` (
 
 LOCK TABLES `biz_cut_order` WRITE;
 /*!40000 ALTER TABLE `biz_cut_order` DISABLE KEYS */;
-INSERT INTO `biz_cut_order` VALUES (1001,'CO20261113001',100,'JT03','卡扣束腰大摆裙','杭州四季青','雪纺印花','涤纶里布',40,20,'王芳',NULL,'2026-11-13','2','admin','2026-11-13 08:30:00','',NULL,'',''),(1002,'CO20261116001',100,'JT03','卡扣束腰大摆裙','杭州四季青','雪纺印花','涤纶里布',120,40,'李强',NULL,'2026-11-16','2','admin','2026-11-13 08:30:00','',NULL,'',''),(1003,'CO20261118001',101,'JT04','原布连衣裙','上海衣品','真丝雪纺','涤纶里布',60,20,'王芳',NULL,'2026-11-18','1','admin','2026-11-13 08:30:00','',NULL,'',''),(1004,'CO20261120001',103,'MQ3001','法式泡泡袖上衣','北京尚品','真丝雪纺','',80,20,'李强',NULL,'2026-11-20','0','admin','2026-11-13 08:30:00','',NULL,'',''),(1005,'CO20261121001',102,'JT07','原布半身裙','上海衣品','雪纺印花','',30,15,'李强',NULL,'2026-11-21','1','admin','2026-11-13 08:30:00','',NULL,'',''),(1006,'CO20261121002',100,'JT03','卡扣束腰大摆裙','杭州四季青','雪纺印花','涤纶里布',20,10,'王芳',NULL,'2026-11-21','0','admin','2026-11-13 08:30:00','',NULL,'',''),(1010,'CH20261122001',NULL,'JT07','原布半身裙','','','',100,1,'',NULL,'2026-11-22','1','warehouse','2026-11-22 10:00:59','','2026-11-22 15:45:13',NULL,''),(1013,'CH20261122002',NULL,'JT07','原布半身裙','','','',20,1,'',NULL,'2026-11-22','0','warehouse','2026-11-22 15:50:43','',NULL,NULL,'');
+INSERT INTO `biz_cut_order` VALUES (1001,'CO20261113001',100,'JT03','卡扣束腰大摆裙','杭州四季青','雪纺印花','涤纶里布',40,20,'王芳','2026-11-13','2','admin','2026-11-13 08:30:00','',NULL,'',NULL,''),(1002,'CO20261116001',100,'JT03','卡扣束腰大摆裙','杭州四季青','雪纺印花','涤纶里布',120,40,'李强','2026-11-16','2','admin','2026-11-13 08:30:00','',NULL,'',NULL,''),(1003,'CO20261118001',101,'JT04','原布连衣裙','上海衣品','真丝雪纺','涤纶里布',60,20,'王芳','2026-11-18','1','admin','2026-11-13 08:30:00','',NULL,'',NULL,''),(1004,'CO20261120001',103,'MQ3001','法式泡泡袖上衣','北京尚品','真丝雪纺','',80,20,'李强','2026-11-20','0','admin','2026-11-13 08:30:00','',NULL,'',NULL,''),(1005,'CO20261121001',102,'JT07','原布半身裙','上海衣品','雪纺印花','',30,15,'李强','2026-11-21','1','admin','2026-11-13 08:30:00','',NULL,'',NULL,''),(1006,'CO20261121002',100,'JT03','卡扣束腰大摆裙','杭州四季青','雪纺印花','涤纶里布',20,10,'王芳','2026-11-21','0','admin','2026-11-13 08:30:00','',NULL,'',NULL,''),(1010,'CH20261122001',NULL,'JT07','原布半身裙','','','',100,1,'','2026-11-22','1','warehouse','2026-11-22 10:00:59','','2026-11-22 15:45:13',NULL,NULL,''),(1013,'CH20261122002',NULL,'JT07','原布半身裙','','','',20,1,'','2026-11-22','1','warehouse','2026-11-22 15:50:43','','2026-11-23 16:37:40',NULL,NULL,'');
 /*!40000 ALTER TABLE `biz_cut_order` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -344,8 +344,8 @@ CREATE TABLE `biz_cut_order_item` (
   `item_id` bigint NOT NULL AUTO_INCREMENT COMMENT '明细ID',
   `cut_id` bigint NOT NULL COMMENT '裁货ID',
   `layer_no` int DEFAULT '1' COMMENT '层次(铺布层)',
-  `color` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '颜色',
-  `size` varchar(20) COLLATE utf8mb4_general_ci NOT NULL COMMENT '尺码',
+  `color` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '颜色',
+  `size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '尺码',
   `qty` int DEFAULT '0' COMMENT '数量',
   PRIMARY KEY (`item_id`),
   KEY `idx_coi_cut` (`cut_id`)
@@ -372,17 +372,17 @@ DROP TABLE IF EXISTS `biz_defect`;
 CREATE TABLE `biz_defect` (
   `defect_id` bigint NOT NULL AUTO_INCREMENT COMMENT '次品ID',
   `bundle_id` bigint DEFAULT NULL COMMENT '扎ID',
-  `bundle_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '扎号',
+  `bundle_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '扎号',
   `sku_id` bigint DEFAULT NULL COMMENT 'SKU ID',
   `qty` int DEFAULT '0' COMMENT '数量',
-  `defect_type` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '修理' COMMENT '类型(补片/报废/返修)',
-  `handler` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '处理人',
-  `user_id` bigint DEFAULT NULL COMMENT '处理人用户ID',
+  `defect_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '修理' COMMENT '类型(补片/报废/返修)',
+  `handler` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '处理人',
   `handle_time` datetime DEFAULT NULL COMMENT '处理时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `user_id` bigint DEFAULT NULL COMMENT '处理人用户ID',
   PRIMARY KEY (`defect_id`),
   KEY `idx_defect_time` (`handle_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=1005 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='次品处理';
+) ENGINE=InnoDB AUTO_INCREMENT=1006 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='次品处理';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -391,7 +391,7 @@ CREATE TABLE `biz_defect` (
 
 LOCK TABLES `biz_defect` WRITE;
 /*!40000 ALTER TABLE `biz_defect` DISABLE KEYS */;
-INSERT INTO `biz_defect` VALUES (1001,1009,'BN20261116009',1006,1,'报废','王检',102,'2026-11-18 18:20:00','检验判定报废'),(1003,1004,'BN20261113004',1006,2,'补片','王检',102,'2026-11-19 11:00:00','裁片破损补片'),(1004,1006,'BN20261116006',1001,1,'返修','赵丽',NULL,'2026-11-19 16:30:00','袖口返修');
+INSERT INTO `biz_defect` VALUES (1001,1009,'BN20261116009',1006,1,'报废','王检','2026-11-18 18:20:00','检验判定报废',102),(1003,1004,'BN20261113004',1006,2,'补片','王检','2026-11-19 11:00:00','裁片破损补片',102),(1004,1006,'BN20261116006',1001,1,'返修','赵丽','2026-11-19 16:30:00','袖口返修',NULL);
 /*!40000 ALTER TABLE `biz_defect` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -405,14 +405,14 @@ DROP TABLE IF EXISTS `biz_delivery`;
 CREATE TABLE `biz_delivery` (
   `delivery_id` bigint NOT NULL AUTO_INCREMENT COMMENT '交单ID',
   `bundle_id` bigint NOT NULL COMMENT '扎ID',
-  `bundle_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '扎号',
+  `bundle_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '扎号',
   `sku_id` bigint DEFAULT NULL COMMENT 'SKU ID',
   `qty` int DEFAULT '0' COMMENT '本次完工数',
   `defect_qty` int DEFAULT '0' COMMENT '次品数',
-  `employee` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '员工',
-  `user_id` bigint DEFAULT NULL COMMENT '交后道人用户ID',
+  `employee` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '员工',
   `delivery_time` datetime DEFAULT NULL COMMENT '交货时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `user_id` bigint DEFAULT NULL COMMENT '交后道人用户ID',
   PRIMARY KEY (`delivery_id`),
   KEY `idx_delivery_bundle` (`bundle_id`),
   KEY `idx_delivery_time` (`delivery_time`)
@@ -425,7 +425,7 @@ CREATE TABLE `biz_delivery` (
 
 LOCK TABLES `biz_delivery` WRITE;
 /*!40000 ALTER TABLE `biz_delivery` DISABLE KEYS */;
-INSERT INTO `biz_delivery` VALUES (1001,1001,'BN20261113001',1001,6,0,'赵丽',NULL,'2026-11-14 18:20:00',''),(1002,1002,'BN20261113002',1001,10,0,'赵丽',NULL,'2026-11-14 18:20:00',''),(1003,1003,'BN20261113003',1006,6,0,'赵丽',NULL,'2026-11-14 18:20:00',''),(1004,1004,'BN20261113004',1006,10,0,'赵丽',NULL,'2026-11-14 18:20:00',''),(1005,1005,'BN20261116005',1001,10,0,'钱峰',NULL,'2026-11-18 18:20:00',''),(1006,1006,'BN20261116006',1001,10,0,'钱峰',NULL,'2026-11-18 18:20:00',''),(1007,1007,'BN20261116007',1002,10,0,'钱峰',NULL,'2026-11-18 18:20:00',''),(1008,1008,'BN20261116008',1002,10,0,'钱峰',NULL,'2026-11-18 18:20:00',''),(1009,1009,'BN20261116009',1006,10,1,'钱峰',NULL,'2026-11-18 18:20:00',''),(1010,1010,'BN20261116010',1006,10,0,'钱峰',NULL,'2026-11-18 18:20:00',''),(1011,1011,'BN20261116011',1007,10,0,'钱峰',NULL,'2026-11-18 18:20:00',''),(1012,1012,'BN20261116012',1007,10,0,'钱峰',NULL,'2026-11-18 18:20:00',''),(1013,1013,'BN20261116013',1011,10,0,'钱峰',NULL,'2026-11-18 18:20:00',''),(1014,1014,'BN20261116014',1011,10,0,'钱峰',NULL,'2026-11-18 18:20:00',''),(1015,1015,'BN20261116015',1016,10,0,'钱峰',NULL,'2026-11-18 18:20:00',''),(1016,1016,'BN20261116016',1016,10,0,'钱峰',NULL,'2026-11-18 18:20:00',''),(1017,1003,'BN20261113003',1006,4,0,'赵丽',NULL,'2026-11-22 15:36:27',NULL),(1018,1001,'BN20261113001',1001,4,0,'赵丽',NULL,'2026-11-22 15:36:37',NULL);
+INSERT INTO `biz_delivery` VALUES (1001,1001,'BN20261113001',1001,6,0,'赵丽','2026-11-14 18:20:00','',NULL),(1002,1002,'BN20261113002',1001,10,0,'赵丽','2026-11-14 18:20:00','',NULL),(1003,1003,'BN20261113003',1006,6,0,'赵丽','2026-11-14 18:20:00','',NULL),(1004,1004,'BN20261113004',1006,10,0,'赵丽','2026-11-14 18:20:00','',NULL),(1005,1005,'BN20261116005',1001,10,0,'钱峰','2026-11-18 18:20:00','',NULL),(1006,1006,'BN20261116006',1001,10,0,'钱峰','2026-11-18 18:20:00','',NULL),(1007,1007,'BN20261116007',1002,10,0,'钱峰','2026-11-18 18:20:00','',NULL),(1008,1008,'BN20261116008',1002,10,0,'钱峰','2026-11-18 18:20:00','',NULL),(1009,1009,'BN20261116009',1006,10,1,'钱峰','2026-11-18 18:20:00','',NULL),(1010,1010,'BN20261116010',1006,10,0,'钱峰','2026-11-18 18:20:00','',NULL),(1011,1011,'BN20261116011',1007,10,0,'钱峰','2026-11-18 18:20:00','',NULL),(1012,1012,'BN20261116012',1007,10,0,'钱峰','2026-11-18 18:20:00','',NULL),(1013,1013,'BN20261116013',1011,10,0,'钱峰','2026-11-18 18:20:00','',NULL),(1014,1014,'BN20261116014',1011,10,0,'钱峰','2026-11-18 18:20:00','',NULL),(1015,1015,'BN20261116015',1016,10,0,'钱峰','2026-11-18 18:20:00','',NULL),(1016,1016,'BN20261116016',1016,10,0,'钱峰','2026-11-18 18:20:00','',NULL),(1017,1003,'BN20261113003',1006,4,0,'赵丽','2026-11-22 15:36:27',NULL,NULL),(1018,1001,'BN20261113001',1001,4,0,'赵丽','2026-11-22 15:36:37',NULL,NULL);
 /*!40000 ALTER TABLE `biz_delivery` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -470,18 +470,18 @@ DROP TABLE IF EXISTS `biz_expense`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_expense` (
   `expense_id` bigint NOT NULL AUTO_INCREMENT COMMENT '费用ID',
-  `expense_type` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '费用类型(海运费/头程/尾程/拍摄/运营/其他)',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款号',
+  `expense_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '费用类型(海运费/头程/尾程/拍摄/运营/其他)',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款号',
   `amount` decimal(12,2) DEFAULT '0.00' COMMENT '金额',
   `expense_date` date DEFAULT NULL COMMENT '费用日期',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 9已作废)',
-  `cancel_reason` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '作废原因',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 9已作废)',
+  `cancel_reason` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '作废原因',
   PRIMARY KEY (`expense_id`),
   KEY `idx_expense_date` (`expense_date`)
-) ENGINE=InnoDB AUTO_INCREMENT=1008 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='费用登记';
+) ENGINE=InnoDB AUTO_INCREMENT=1009 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='费用登记';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -504,7 +504,7 @@ DROP TABLE IF EXISTS `biz_inventory`;
 CREATE TABLE `biz_inventory` (
   `inventory_id` bigint NOT NULL AUTO_INCREMENT COMMENT '库存ID',
   `sku_id` bigint NOT NULL COMMENT 'SKU ID',
-  `stock_type` varchar(10) COLLATE utf8mb4_general_ci NOT NULL COMMENT '库存类型(CUT裁片/LINE产线/FINISH成品)',
+  `stock_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '库存类型(CUT裁片/LINE产线/FINISH成品)',
   `qty` int DEFAULT '0' COMMENT '数量',
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`inventory_id`),
@@ -518,7 +518,7 @@ CREATE TABLE `biz_inventory` (
 
 LOCK TABLES `biz_inventory` WRITE;
 /*!40000 ALTER TABLE `biz_inventory` DISABLE KEYS */;
-INSERT INTO `biz_inventory` VALUES (1001,1001,'LINE',10,'2026-11-21 08:00:00'),(1002,1001,'FINISH',30,'2026-11-21 10:56:39'),(1003,1002,'FINISH',29,'2026-11-21 11:34:32'),(1004,1006,'LINE',10,'2026-11-21 08:00:00'),(1005,1006,'FINISH',26,'2026-11-21 08:00:00'),(1006,1007,'FINISH',20,'2026-11-21 08:00:00'),(1007,1011,'FINISH',20,'2026-11-21 08:00:00'),(1008,1016,'FINISH',18,'2026-11-21 08:00:00'),(1009,1101,'CUT',20,'2026-11-21 08:00:00'),(1010,1101,'FINISH',-2,'2026-11-21 08:00:00'),(1011,1102,'CUT',20,'2026-11-21 08:00:00'),(1012,1105,'CUT',20,'2026-11-21 08:00:00'),(1013,1201,'CUT',32,'2026-11-22 17:07:22'),(1014,1206,'CUT',15,'2026-11-21 08:00:00'),(1015,1206,'FINISH',-6,'2026-11-21 08:00:00'),(1016,1302,'FINISH',-6,'2026-11-21 08:00:00'),(1017,1312,'FINISH',8,'2026-11-21 08:00:00'),(1018,1201,'LINE',83,'2026-11-22 17:07:22');
+INSERT INTO `biz_inventory` VALUES (1001,1001,'LINE',10,'2026-11-21 08:00:00'),(1002,1001,'FINISH',30,'2026-11-21 10:56:39'),(1003,1002,'FINISH',29,'2026-11-21 11:34:32'),(1004,1006,'LINE',10,'2026-11-21 08:00:00'),(1005,1006,'FINISH',26,'2026-11-21 08:00:00'),(1006,1007,'FINISH',20,'2026-11-21 08:00:00'),(1007,1011,'FINISH',20,'2026-11-21 08:00:00'),(1008,1016,'FINISH',18,'2026-11-21 08:00:00'),(1009,1101,'CUT',20,'2026-11-21 08:00:00'),(1010,1101,'FINISH',-2,'2026-11-21 08:00:00'),(1011,1102,'CUT',20,'2026-11-21 08:00:00'),(1012,1105,'CUT',20,'2026-11-21 08:00:00'),(1013,1201,'CUT',52,'2026-11-23 16:37:40'),(1014,1206,'CUT',15,'2026-11-21 08:00:00'),(1015,1206,'FINISH',-6,'2026-11-21 08:00:00'),(1016,1302,'FINISH',-6,'2026-11-21 08:00:00'),(1017,1312,'FINISH',8,'2026-11-21 08:00:00'),(1018,1201,'LINE',83,'2026-11-22 17:07:22');
 /*!40000 ALTER TABLE `biz_inventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -531,20 +531,20 @@ DROP TABLE IF EXISTS `biz_material`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_material` (
   `material_id` bigint NOT NULL AUTO_INCREMENT COMMENT '物资ID',
-  `material_code` varchar(32) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '物资编码',
-  `material_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT '物资名称',
-  `spec` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '规格',
-  `unit` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '单位',
-  `material_type` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '辅料' COMMENT '物资类型',
+  `material_code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '物资编码',
+  `material_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '物资名称',
+  `spec` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '规格',
+  `unit` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '单位',
+  `material_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '辅料' COMMENT '物资类型',
   `stock_qty` decimal(14,2) DEFAULT '0.00' COMMENT '当前库存',
   `min_stock` decimal(14,2) DEFAULT '0.00' COMMENT '安全库存',
   `price` decimal(12,2) DEFAULT '0.00' COMMENT '单价',
   `supplier_id` bigint DEFAULT NULL COMMENT '常用供应商',
-  `supplier_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '供应商名称',
-  `del_flag` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `supplier_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '供应商名称',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`material_id`),
   KEY `idx_name_spec` (`material_name`,`spec`)
@@ -557,7 +557,7 @@ CREATE TABLE `biz_material` (
 
 LOCK TABLES `biz_material` WRITE;
 /*!40000 ALTER TABLE `biz_material` DISABLE KEYS */;
-INSERT INTO `biz_material` VALUES (101,'WL101','雪纺印花','150D','米','面料',-11.40,100.00,18.00,101,'杭州四季青面料商行','0','admin','2026-10-01 09:00:00','','2026-11-22 15:50:43'),(102,'WL102','真丝雪纺','16姆米','米','面料',12.88,60.00,52.00,101,'杭州四季青面料商行','0','admin','2026-10-01 09:00:00','',NULL),(103,'WL103','涤纶里布','210T','米','里布',57.18,80.00,6.00,101,'杭州四季青面料商行','0','admin','2026-10-01 09:00:00','',NULL),(104,'WL104','隐形拉链','25cm黑色','条','配件',190.00,200.00,3.50,103,'东莞恒信拉链厂','0','admin','2026-10-01 09:00:00','','2026-11-22 15:50:43'),(105,'WL105','树脂纽扣','12mm米白','颗','辅料',372.00,300.00,0.30,102,'义乌华美辅料有限公司','0','admin','2026-10-01 09:00:00','',NULL),(106,'WL106','松紧带','3cm','米','辅料',71.04,30.00,2.20,102,'义乌华美辅料有限公司','0','admin','2026-10-01 09:00:00','',NULL),(107,'WL107','纸箱','60x40x30','个','耗材',120.00,50.00,5.00,104,'苏州锦程包装材料厂','0','admin','2026-10-01 09:00:00','',NULL),(108,'WL108','裁床刀片','10片/盒','盒','耗材',12.00,5.00,12.00,105,'广州华兴制衣设备','0','admin','2026-10-01 09:00:00','',NULL),(109,'WL109','缝纫线','402涤纶线','卷','辅料',70.00,40.00,4.50,102,'义乌华美辅料有限公司','0','admin','2026-10-01 09:00:00','',NULL),(110,'WL110','包装袋','30x40cm','个','耗材',5800.00,200.00,0.15,104,'苏州锦程包装材料厂','0','admin','2026-10-01 09:00:00','',NULL),(111,'WL111','打印纸','A4 500张/包','箱','耗材',15.00,5.00,30.00,104,'苏州锦程包装材料厂','0','admin','2026-10-01 09:00:00','',NULL),(112,'WL112','裁床画粉','白色 20片/盒','盒','耗材',30.00,10.00,4.00,105,'广州华兴制衣设备','0','sysadmin','2026-11-21 15:06:39','',NULL),(113,'WL113','隔色纸','80g 100张/包','包','耗材',40.00,15.00,8.00,105,'广州华兴制衣设备','0','sysadmin','2026-11-21 15:06:39','',NULL),(114,'WL114','平缝机针','DB*1 11# 100支/盒','盒','耗材',30.00,20.00,25.00,105,'广州华兴制衣设备','0','sysadmin','2026-11-21 15:06:39','','2026-11-21 15:30:47'),(115,'WL115','吊牌','主吊牌 5x9cm','张','辅料',1000.00,500.00,0.20,104,'苏州锦程包装材料厂','0','sysadmin','2026-11-21 15:06:39','','2026-11-22 10:08:06'),(116,'WL116','洗水标','缎面 3x5cm','张','辅料',1000.00,500.00,0.15,104,'苏州锦程包装材料厂','0','sysadmin','2026-11-21 15:06:39','','2026-11-22 15:28:01');
+INSERT INTO `biz_material` VALUES (101,'WL101','雪纺印花','150D','米','面料',-11.40,100.00,18.00,101,'杭州四季青面料商行','0','admin','2026-10-01 09:00:00','','2026-11-22 15:50:43'),(102,'WL102','真丝雪纺','16姆米','米','面料',12.88,60.00,52.00,101,'杭州四季青面料商行','0','admin','2026-10-01 09:00:00','',NULL),(103,'WL103','涤纶里布','210T','米','里布',57.18,80.00,6.00,101,'杭州四季青面料商行','0','admin','2026-10-01 09:00:00','',NULL),(104,'WL104','隐形拉链','25cm黑色','条','配件',190.00,200.00,3.50,103,'东莞恒信拉链厂','0','admin','2026-10-01 09:00:00','','2026-11-22 15:50:43'),(105,'WL105','树脂纽扣','12mm米白','颗','辅料',378.00,300.00,0.30,102,'义乌华美辅料有限公司','0','admin','2026-10-01 09:00:00','','2026-11-23 14:36:11'),(106,'WL106','松紧带','3cm','米','辅料',71.04,30.00,2.20,102,'义乌华美辅料有限公司','0','admin','2026-10-01 09:00:00','',NULL),(107,'WL107','纸箱','60x40x30','个','耗材',120.00,50.00,5.00,104,'苏州锦程包装材料厂','0','admin','2026-10-01 09:00:00','',NULL),(108,'WL108','裁床刀片','10片/盒','盒','耗材',12.00,5.00,12.00,105,'广州华兴制衣设备','0','admin','2026-10-01 09:00:00','',NULL),(109,'WL109','缝纫线','402涤纶线','卷','辅料',70.00,40.00,4.50,102,'义乌华美辅料有限公司','0','admin','2026-10-01 09:00:00','',NULL),(110,'WL110','包装袋','30x40cm','个','耗材',5800.00,200.00,0.15,104,'苏州锦程包装材料厂','0','admin','2026-10-01 09:00:00','',NULL),(111,'WL111','打印纸','A4 500张/包','箱','耗材',15.00,5.00,30.00,104,'苏州锦程包装材料厂','0','admin','2026-10-01 09:00:00','',NULL),(112,'WL112','裁床画粉','白色 20片/盒','盒','耗材',30.00,10.00,4.00,105,'广州华兴制衣设备','0','sysadmin','2026-11-21 15:06:39','',NULL),(113,'WL113','隔色纸','80g 100张/包','包','耗材',40.00,15.00,8.00,105,'广州华兴制衣设备','0','sysadmin','2026-11-21 15:06:39','',NULL),(114,'WL114','平缝机针','DB*1 11# 100支/盒','盒','耗材',30.00,20.00,25.00,105,'广州华兴制衣设备','0','sysadmin','2026-11-21 15:06:39','','2026-11-21 15:30:47'),(115,'WL115','吊牌','主吊牌 5x9cm','张','辅料',1000.00,500.00,0.20,104,'苏州锦程包装材料厂','0','sysadmin','2026-11-21 15:06:39','','2026-11-22 10:08:06'),(116,'WL116','洗水标','缎面 3x5cm','张','辅料',1000.00,500.00,0.15,104,'苏州锦程包装材料厂','0','sysadmin','2026-11-21 15:06:39','','2026-11-22 15:28:01');
 /*!40000 ALTER TABLE `biz_material` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -571,21 +571,21 @@ DROP TABLE IF EXISTS `biz_material_log`;
 CREATE TABLE `biz_material_log` (
   `log_id` bigint NOT NULL AUTO_INCREMENT,
   `material_id` bigint NOT NULL,
-  `material_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '',
-  `spec` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '',
-  `unit` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '',
+  `material_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `spec` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `unit` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `change_qty` decimal(14,2) DEFAULT '0.00' COMMENT '变动数量，正入负出',
   `before_qty` decimal(14,2) DEFAULT '0.00',
   `after_qty` decimal(14,2) DEFAULT '0.00',
-  `biz_type` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '采购入库/生产领料/领料退回/盘点调整',
-  `biz_no` varchar(40) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '关联单号',
-  `operator` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `biz_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '采购入库/生产领料/领料退回/盘点调整',
+  `biz_no` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '关联单号',
+  `operator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `operate_time` datetime DEFAULT NULL,
-  `remark` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`log_id`),
   KEY `idx_material` (`material_id`),
   KEY `idx_biz_no` (`biz_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=1057 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物资出入库流水';
+) ENGINE=InnoDB AUTO_INCREMENT=1058 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物资出入库流水';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -594,7 +594,7 @@ CREATE TABLE `biz_material_log` (
 
 LOCK TABLES `biz_material_log` WRITE;
 /*!40000 ALTER TABLE `biz_material_log` DISABLE KEYS */;
-INSERT INTO `biz_material_log` VALUES (1001,101,'雪纺印花','150D','米',360.00,0.00,360.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1002,101,'雪纺印花','150D','米',-67.20,360.00,292.80,'生产领料','CO20261113001','system','2026-11-13 08:20:00','按BOM扣减 JT03'),(1003,101,'雪纺印花','150D','米',120.00,292.80,412.80,'采购入库','CG20261115001','admin','2026-11-15 10:00:00','供应商：杭州四季青面料商行'),(1004,101,'雪纺印花','150D','米',-201.60,412.80,211.20,'生产领料','CO20261116001','system','2026-11-16 08:20:00','按BOM扣减 JT03'),(1005,101,'雪纺印花','150D','米',-37.80,211.20,173.40,'生产领料','CO20261121001','system','2026-11-21 08:20:00','按BOM扣减 JT07'),(1006,101,'雪纺印花','150D','米',-33.60,173.40,139.80,'生产领料','CO20261121002','system','2026-11-21 08:20:00','按BOM扣减 JT03'),(1007,102,'真丝雪纺','16姆米','米',100.00,0.00,100.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1008,102,'真丝雪纺','16姆米','米',150.00,100.00,250.00,'采购入库','CG20261115001','admin','2026-11-15 10:00:00','供应商：杭州四季青面料商行'),(1009,102,'真丝雪纺','16姆米','米',-112.32,250.00,137.68,'生产领料','CO20261118001','system','2026-11-18 08:20:00','按BOM扣减 JT04'),(1010,102,'真丝雪纺','16姆米','米',-124.80,137.68,12.88,'生产领料','CO20261120001','system','2026-11-20 08:20:00','按BOM扣减 MQ3001'),(1011,103,'涤纶里布','210T','米',260.00,0.00,260.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1012,103,'涤纶里布','210T','米',-49.44,260.00,210.56,'生产领料','CO20261113001','system','2026-11-13 08:20:00','按BOM扣减 JT03'),(1013,103,'涤纶里布','210T','米',100.00,210.56,310.56,'采购入库','CG20261115001','admin','2026-11-15 10:00:00','供应商：杭州四季青面料商行'),(1014,103,'涤纶里布','210T','米',-148.32,310.56,162.24,'生产领料','CO20261116001','system','2026-11-16 08:20:00','按BOM扣减 JT03'),(1015,103,'涤纶里布','210T','米',-80.34,162.24,81.90,'生产领料','CO20261118001','system','2026-11-18 08:20:00','按BOM扣减 JT04'),(1016,103,'涤纶里布','210T','米',-24.72,81.90,57.18,'生产领料','CO20261121002','system','2026-11-21 08:20:00','按BOM扣减 JT03'),(1017,104,'隐形拉链','25cm黑色','条',400.00,0.00,400.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1018,104,'隐形拉链','25cm黑色','条',-40.00,400.00,360.00,'生产领料','CO20261113001','system','2026-11-13 08:20:00','按BOM扣减 JT03'),(1019,104,'隐形拉链','25cm黑色','条',-120.00,360.00,240.00,'生产领料','CO20261116001','system','2026-11-16 08:20:00','按BOM扣减 JT03'),(1020,104,'隐形拉链','25cm黑色','条',-30.00,240.00,210.00,'生产领料','CO20261121001','system','2026-11-21 08:20:00','按BOM扣减 JT07'),(1021,104,'隐形拉链','25cm黑色','条',-20.00,210.00,190.00,'生产领料','CO20261121002','system','2026-11-21 08:20:00','按BOM扣减 JT03'),(1022,105,'树脂纽扣','12mm米白','颗',1800.00,0.00,1800.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1023,105,'树脂纽扣','12mm米白','颗',-244.80,1800.00,1555.20,'生产领料','CO20261113001','system','2026-11-13 08:20:00','按BOM扣减 JT03'),(1024,105,'树脂纽扣','12mm米白','颗',-734.40,1555.20,820.80,'生产领料','CO20261116001','system','2026-11-16 08:20:00','按BOM扣减 JT03'),(1025,105,'树脂纽扣','12mm米白','颗',-326.40,820.80,494.40,'生产领料','CO20261120001','system','2026-11-20 08:20:00','按BOM扣减 MQ3001'),(1026,105,'树脂纽扣','12mm米白','颗',-122.40,494.40,372.00,'生产领料','CO20261121002','system','2026-11-21 08:20:00','按BOM扣减 JT03'),(1027,106,'松紧带','3cm','米',120.00,0.00,120.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1028,106,'松紧带','3cm','米',-48.96,120.00,71.04,'生产领料','CO20261118001','system','2026-11-18 08:20:00','按BOM扣减 JT04'),(1029,107,'纸箱','60x40x30','个',20.00,0.00,20.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1030,107,'纸箱','60x40x30','个',100.00,20.00,120.00,'采购入库','CG20261112001','admin','2026-11-12 10:00:00','供应商：苏州锦程包装材料厂'),(1031,108,'裁床刀片','10片/盒','盒',0.00,0.00,0.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1032,108,'裁床刀片','10片/盒','盒',10.00,0.00,10.00,'采购入库','CG20261112001','admin','2026-11-12 10:00:00','供应商：苏州锦程包装材料厂'),(1033,108,'裁床刀片','10片/盒','盒',-12.00,10.00,-2.00,'生产领料','LL20261120001','老周','2026-11-20 08:00:00','裁床日常领用；超领原因：采购在途，紧急插单'),(1034,109,'缝纫线','402涤纶线','卷',80.00,0.00,80.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1035,109,'缝纫线','402涤纶线','卷',-16.16,80.00,63.84,'生产领料','CO20261120001','system','2026-11-20 08:20:00','按BOM扣减 MQ3001'),(1036,110,'包装袋','30x40cm','个',800.00,0.00,800.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1037,110,'包装袋','30x40cm','个',5000.00,800.00,5800.00,'采购入库','CG20261112001','admin','2026-11-12 10:00:00','供应商：苏州锦程包装材料厂'),(1038,111,'打印纸','A4 500张/包','箱',5.00,0.00,5.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1039,111,'打印纸','A4 500张/包','箱',10.00,5.00,15.00,'采购入库','CG20261110001','admin','2026-11-10 10:00:00','供应商：苏州锦程包装材料厂'),(1040,112,'裁床画粉','白色 20片/盒','盒',30.00,0.00,30.00,'采购入库','CG20261106001','吴磊','2026-11-06 10:05:00','裁床画粉入库'),(1041,113,'隔色纸','80g 100张/包','包',40.00,0.00,40.00,'采购入库','CG20261106001','吴磊','2026-11-06 10:08:00','隔色纸入库'),(1042,114,'平缝机针','DB*1 11# 100支/盒','盒',5.00,0.00,5.00,'采购入库','CG20261114001','吴磊','2026-11-16 09:30:00','机针首批到货入库'),(1043,109,'缝纫线','402涤纶线','卷',6.16,63.84,70.00,'领料退回','LLT20261120001','李梅','2026-11-20 17:20:00','车间未用完缝纫线退回仓库'),(1045,114,'平缝机针','DB*1 11# 100支/盒','盒',25.00,5.00,30.00,'手工调整','ADJ20261121153047','warehouse','2026-11-21 15:30:47','线下补货入库'),(1046,108,'裁床刀片','10片/盒','盒',14.00,-2.00,12.00,'采购入库','CG20261121001','admin','2026-11-21 09:30:00','供应商：苏州锦程包装材料厂'),(1049,104,'隐形拉链','25cm黑色','条',-100.00,190.00,90.00,'生产领料','CH20261122001','warehouse','2026-11-22 10:00:59','裁货单 CH20261122001（JT07 100件）'),(1050,101,'雪纺印花','150D','米',-126.00,139.80,13.80,'生产领料','CH20261122001','warehouse','2026-11-22 10:00:59','裁货单 CH20261122001（JT07 100件）'),(1051,115,'吊牌','主吊牌 5x9cm','张',1000.00,0.00,1000.00,'采购入库','CG20261119001','sysadmin','2026-11-22 10:08:06','供应商：苏州锦程包装材料厂'),(1052,116,'洗水标','缎面 3x5cm','张',1000.00,0.00,1000.00,'手工调整','ADJ20261122152801','sysadmin','2026-11-22 15:28:01','实物盘点调整'),(1053,104,'隐形拉链','25cm黑色','条',100.00,90.00,190.00,'手工调整','ADJ20261122152807','sysadmin','2026-11-22 15:28:07','实物盘点调整'),(1054,104,'隐形拉链','25cm黑色','条',20.00,190.00,210.00,'手工调整','ADJ20261122152815','sysadmin','2026-11-22 15:28:15','实物盘点调整'),(1055,104,'隐形拉链','25cm黑色','条',-20.00,210.00,190.00,'生产领料','CH20261122002','warehouse','2026-11-22 15:50:43','裁货单 CH20261122002（JT07 20件）；超领原因：插单'),(1056,101,'雪纺印花','150D','米',-25.20,13.80,-11.40,'生产领料','CH20261122002','warehouse','2026-11-22 15:50:43','裁货单 CH20261122002（JT07 20件）；超领原因：插单');
+INSERT INTO `biz_material_log` VALUES (1001,101,'雪纺印花','150D','米',360.00,0.00,360.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1002,101,'雪纺印花','150D','米',-67.20,360.00,292.80,'生产领料','CO20261113001','system','2026-11-13 08:20:00','按BOM扣减 JT03'),(1003,101,'雪纺印花','150D','米',120.00,292.80,412.80,'采购入库','CG20261115001','admin','2026-11-15 10:00:00','供应商：杭州四季青面料商行'),(1004,101,'雪纺印花','150D','米',-201.60,412.80,211.20,'生产领料','CO20261116001','system','2026-11-16 08:20:00','按BOM扣减 JT03'),(1005,101,'雪纺印花','150D','米',-37.80,211.20,173.40,'生产领料','CO20261121001','system','2026-11-21 08:20:00','按BOM扣减 JT07'),(1006,101,'雪纺印花','150D','米',-33.60,173.40,139.80,'生产领料','CO20261121002','system','2026-11-21 08:20:00','按BOM扣减 JT03'),(1007,102,'真丝雪纺','16姆米','米',100.00,0.00,100.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1008,102,'真丝雪纺','16姆米','米',150.00,100.00,250.00,'采购入库','CG20261115001','admin','2026-11-15 10:00:00','供应商：杭州四季青面料商行'),(1009,102,'真丝雪纺','16姆米','米',-112.32,250.00,137.68,'生产领料','CO20261118001','system','2026-11-18 08:20:00','按BOM扣减 JT04'),(1010,102,'真丝雪纺','16姆米','米',-124.80,137.68,12.88,'生产领料','CO20261120001','system','2026-11-20 08:20:00','按BOM扣减 MQ3001'),(1011,103,'涤纶里布','210T','米',260.00,0.00,260.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1012,103,'涤纶里布','210T','米',-49.44,260.00,210.56,'生产领料','CO20261113001','system','2026-11-13 08:20:00','按BOM扣减 JT03'),(1013,103,'涤纶里布','210T','米',100.00,210.56,310.56,'采购入库','CG20261115001','admin','2026-11-15 10:00:00','供应商：杭州四季青面料商行'),(1014,103,'涤纶里布','210T','米',-148.32,310.56,162.24,'生产领料','CO20261116001','system','2026-11-16 08:20:00','按BOM扣减 JT03'),(1015,103,'涤纶里布','210T','米',-80.34,162.24,81.90,'生产领料','CO20261118001','system','2026-11-18 08:20:00','按BOM扣减 JT04'),(1016,103,'涤纶里布','210T','米',-24.72,81.90,57.18,'生产领料','CO20261121002','system','2026-11-21 08:20:00','按BOM扣减 JT03'),(1017,104,'隐形拉链','25cm黑色','条',400.00,0.00,400.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1018,104,'隐形拉链','25cm黑色','条',-40.00,400.00,360.00,'生产领料','CO20261113001','system','2026-11-13 08:20:00','按BOM扣减 JT03'),(1019,104,'隐形拉链','25cm黑色','条',-120.00,360.00,240.00,'生产领料','CO20261116001','system','2026-11-16 08:20:00','按BOM扣减 JT03'),(1020,104,'隐形拉链','25cm黑色','条',-30.00,240.00,210.00,'生产领料','CO20261121001','system','2026-11-21 08:20:00','按BOM扣减 JT07'),(1021,104,'隐形拉链','25cm黑色','条',-20.00,210.00,190.00,'生产领料','CO20261121002','system','2026-11-21 08:20:00','按BOM扣减 JT03'),(1022,105,'树脂纽扣','12mm米白','颗',1800.00,0.00,1800.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1023,105,'树脂纽扣','12mm米白','颗',-244.80,1800.00,1555.20,'生产领料','CO20261113001','system','2026-11-13 08:20:00','按BOM扣减 JT03'),(1024,105,'树脂纽扣','12mm米白','颗',-734.40,1555.20,820.80,'生产领料','CO20261116001','system','2026-11-16 08:20:00','按BOM扣减 JT03'),(1025,105,'树脂纽扣','12mm米白','颗',-326.40,820.80,494.40,'生产领料','CO20261120001','system','2026-11-20 08:20:00','按BOM扣减 MQ3001'),(1026,105,'树脂纽扣','12mm米白','颗',-122.40,494.40,372.00,'生产领料','CO20261121002','system','2026-11-21 08:20:00','按BOM扣减 JT03'),(1027,106,'松紧带','3cm','米',120.00,0.00,120.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1028,106,'松紧带','3cm','米',-48.96,120.00,71.04,'生产领料','CO20261118001','system','2026-11-18 08:20:00','按BOM扣减 JT04'),(1029,107,'纸箱','60x40x30','个',20.00,0.00,20.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1030,107,'纸箱','60x40x30','个',100.00,20.00,120.00,'采购入库','CG20261112001','admin','2026-11-12 10:00:00','供应商：苏州锦程包装材料厂'),(1031,108,'裁床刀片','10片/盒','盒',0.00,0.00,0.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1032,108,'裁床刀片','10片/盒','盒',10.00,0.00,10.00,'采购入库','CG20261112001','admin','2026-11-12 10:00:00','供应商：苏州锦程包装材料厂'),(1033,108,'裁床刀片','10片/盒','盒',-12.00,10.00,-2.00,'生产领料','LL20261120001','老周','2026-11-20 08:00:00','裁床日常领用；超领原因：采购在途，紧急插单'),(1034,109,'缝纫线','402涤纶线','卷',80.00,0.00,80.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1035,109,'缝纫线','402涤纶线','卷',-16.16,80.00,63.84,'生产领料','CO20261120001','system','2026-11-20 08:20:00','按BOM扣减 MQ3001'),(1036,110,'包装袋','30x40cm','个',800.00,0.00,800.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1037,110,'包装袋','30x40cm','个',5000.00,800.00,5800.00,'采购入库','CG20261112001','admin','2026-11-12 10:00:00','供应商：苏州锦程包装材料厂'),(1038,111,'打印纸','A4 500张/包','箱',5.00,0.00,5.00,'采购入库','OPEN20261001','admin','2026-10-01 09:00:00','期初建账'),(1039,111,'打印纸','A4 500张/包','箱',10.00,5.00,15.00,'采购入库','CG20261110001','admin','2026-11-10 10:00:00','供应商：苏州锦程包装材料厂'),(1040,112,'裁床画粉','白色 20片/盒','盒',30.00,0.00,30.00,'采购入库','CG20261106001','吴磊','2026-11-06 10:05:00','裁床画粉入库'),(1041,113,'隔色纸','80g 100张/包','包',40.00,0.00,40.00,'采购入库','CG20261106001','吴磊','2026-11-06 10:08:00','隔色纸入库'),(1042,114,'平缝机针','DB*1 11# 100支/盒','盒',5.00,0.00,5.00,'采购入库','CG20261114001','吴磊','2026-11-16 09:30:00','机针首批到货入库'),(1043,109,'缝纫线','402涤纶线','卷',6.16,63.84,70.00,'领料退回','LLT20261120001','李梅','2026-11-20 17:20:00','车间未用完缝纫线退回仓库'),(1045,114,'平缝机针','DB*1 11# 100支/盒','盒',25.00,5.00,30.00,'手工调整','ADJ20261121153047','warehouse','2026-11-21 15:30:47','线下补货入库'),(1046,108,'裁床刀片','10片/盒','盒',14.00,-2.00,12.00,'采购入库','CG20261121001','admin','2026-11-21 09:30:00','供应商：苏州锦程包装材料厂'),(1049,104,'隐形拉链','25cm黑色','条',-100.00,190.00,90.00,'生产领料','CH20261122001','warehouse','2026-11-22 10:00:59','裁货单 CH20261122001（JT07 100件）'),(1050,101,'雪纺印花','150D','米',-126.00,139.80,13.80,'生产领料','CH20261122001','warehouse','2026-11-22 10:00:59','裁货单 CH20261122001（JT07 100件）'),(1051,115,'吊牌','主吊牌 5x9cm','张',1000.00,0.00,1000.00,'采购入库','CG20261119001','sysadmin','2026-11-22 10:08:06','供应商：苏州锦程包装材料厂'),(1052,116,'洗水标','缎面 3x5cm','张',1000.00,0.00,1000.00,'手工调整','ADJ20261122152801','sysadmin','2026-11-22 15:28:01','实物盘点调整'),(1053,104,'隐形拉链','25cm黑色','条',100.00,90.00,190.00,'手工调整','ADJ20261122152807','sysadmin','2026-11-22 15:28:07','实物盘点调整'),(1054,104,'隐形拉链','25cm黑色','条',20.00,190.00,210.00,'手工调整','ADJ20261122152815','sysadmin','2026-11-22 15:28:15','实物盘点调整'),(1055,104,'隐形拉链','25cm黑色','条',-20.00,210.00,190.00,'生产领料','CH20261122002','warehouse','2026-11-22 15:50:43','裁货单 CH20261122002（JT07 20件）；超领原因：插单'),(1056,101,'雪纺印花','150D','米',-25.20,13.80,-11.40,'生产领料','CH20261122002','warehouse','2026-11-22 15:50:43','裁货单 CH20261122002（JT07 20件）；超领原因：插单'),(1057,105,'树脂纽扣','12mm米白','颗',6.00,372.00,378.00,'采购入库','CG20261123001','admin','2026-11-23 14:36:11','供应商：东莞恒信拉链厂');
 /*!40000 ALTER TABLE `biz_material_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -607,18 +607,18 @@ DROP TABLE IF EXISTS `biz_outbound`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_outbound` (
   `outbound_id` bigint NOT NULL AUTO_INCREMENT COMMENT '出库ID',
-  `outbound_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '出库单号',
-  `customer` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '客户',
+  `outbound_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '出库单号',
+  `customer` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '客户',
   `outbound_date` date DEFAULT NULL COMMENT '出库日期',
   `total_qty` int DEFAULT '0' COMMENT '总数量',
   `total_amount` decimal(12,2) DEFAULT '0.00' COMMENT '总金额',
-  `operator` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作人',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 1已作废)',
-  `cancel_reason` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '作废原因',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `operator` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作人',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 1已作废)',
+  `cancel_reason` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '作废原因',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`outbound_id`),
   KEY `idx_outbound_date` (`outbound_date`)
@@ -646,13 +646,13 @@ CREATE TABLE `biz_outbound_item` (
   `item_id` bigint NOT NULL AUTO_INCREMENT COMMENT '明细ID',
   `outbound_id` bigint NOT NULL COMMENT '出库ID',
   `sku_id` bigint DEFAULT NULL COMMENT 'SKU ID',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款号',
-  `color` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '颜色',
-  `size` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '尺码',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款号',
+  `color` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '颜色',
+  `size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '尺码',
   `qty` int DEFAULT '0' COMMENT '数量',
   `price` decimal(10,2) DEFAULT '0.00' COMMENT '单价',
   `amount` decimal(12,2) DEFAULT '0.00' COMMENT '金额',
-  `box_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '箱号',
+  `box_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '箱号',
   PRIMARY KEY (`item_id`),
   KEY `idx_oi_outbound` (`outbound_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1008 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='出库明细';
@@ -678,15 +678,15 @@ DROP TABLE IF EXISTS `biz_pack`;
 CREATE TABLE `biz_pack` (
   `pack_id` bigint NOT NULL AUTO_INCREMENT COMMENT '包装ID',
   `bundle_id` bigint DEFAULT NULL COMMENT '扎ID',
-  `bundle_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '扎号',
+  `bundle_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '扎号',
   `sku_id` bigint DEFAULT NULL COMMENT 'SKU ID',
   `qty` int DEFAULT '0' COMMENT '包装数量',
-  `pack_method` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '袋装' COMMENT '包装方式',
+  `pack_method` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '袋装' COMMENT '包装方式',
   `per_bag` int DEFAULT '1' COMMENT '每袋件数',
-  `packer` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '包装人',
-  `user_id` bigint DEFAULT NULL COMMENT '包装人用户ID',
+  `packer` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '包装人',
   `pack_time` datetime DEFAULT NULL COMMENT '包装时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `user_id` bigint DEFAULT NULL COMMENT '包装人用户ID',
   PRIMARY KEY (`pack_id`),
   KEY `idx_pack_time` (`pack_time`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1017 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='包装登记';
@@ -698,7 +698,7 @@ CREATE TABLE `biz_pack` (
 
 LOCK TABLES `biz_pack` WRITE;
 /*!40000 ALTER TABLE `biz_pack` DISABLE KEYS */;
-INSERT INTO `biz_pack` VALUES (1001,1001,'BN20261113001',1001,5,'袋装',10,'孙梅',NULL,'2026-11-19 10:30:00',''),(1002,1002,'BN20261113002',1001,5,'袋装',10,'孙梅',NULL,'2026-11-19 10:30:00',''),(1003,1003,'BN20261113003',1006,5,'袋装',10,'孙梅',NULL,'2026-11-19 10:30:00',''),(1004,1004,'BN20261113004',1006,5,'袋装',10,'孙梅',NULL,'2026-11-19 10:30:00',''),(1005,1005,'BN20261116005',1001,10,'袋装',10,'孙梅',NULL,'2026-11-19 15:00:00',''),(1006,1006,'BN20261116006',1001,10,'袋装',10,'孙梅',NULL,'2026-11-19 15:00:00',''),(1007,1007,'BN20261116007',1002,10,'袋装',10,'孙梅',NULL,'2026-11-19 15:00:00',''),(1008,1008,'BN20261116008',1002,10,'袋装',10,'孙梅',NULL,'2026-11-19 15:00:00',''),(1009,1009,'BN20261116009',1006,10,'袋装',10,'孙梅',NULL,'2026-11-19 15:00:00',''),(1010,1010,'BN20261116010',1006,10,'袋装',10,'孙梅',NULL,'2026-11-19 15:00:00',''),(1011,1011,'BN20261116011',1007,10,'袋装',10,'孙梅',NULL,'2026-11-19 15:00:00',''),(1012,1012,'BN20261116012',1007,10,'袋装',10,'孙梅',NULL,'2026-11-19 15:00:00',''),(1013,1013,'BN20261116013',1011,10,'袋装',10,'孙梅',NULL,'2026-11-19 15:00:00',''),(1014,1014,'BN20261116014',1011,10,'袋装',10,'孙梅',NULL,'2026-11-19 15:00:00',''),(1015,1015,'BN20261116015',1016,10,'袋装',10,'孙梅',NULL,'2026-11-19 15:00:00',''),(1016,1016,'BN20261116016',1016,10,'袋装',10,'孙梅',NULL,'2026-11-19 15:00:00','');
+INSERT INTO `biz_pack` VALUES (1001,1001,'BN20261113001',1001,5,'袋装',10,'孙梅','2026-11-19 10:30:00','',NULL),(1002,1002,'BN20261113002',1001,5,'袋装',10,'孙梅','2026-11-19 10:30:00','',NULL),(1003,1003,'BN20261113003',1006,5,'袋装',10,'孙梅','2026-11-19 10:30:00','',NULL),(1004,1004,'BN20261113004',1006,5,'袋装',10,'孙梅','2026-11-19 10:30:00','',NULL),(1005,1005,'BN20261116005',1001,10,'袋装',10,'孙梅','2026-11-19 15:00:00','',NULL),(1006,1006,'BN20261116006',1001,10,'袋装',10,'孙梅','2026-11-19 15:00:00','',NULL),(1007,1007,'BN20261116007',1002,10,'袋装',10,'孙梅','2026-11-19 15:00:00','',NULL),(1008,1008,'BN20261116008',1002,10,'袋装',10,'孙梅','2026-11-19 15:00:00','',NULL),(1009,1009,'BN20261116009',1006,10,'袋装',10,'孙梅','2026-11-19 15:00:00','',NULL),(1010,1010,'BN20261116010',1006,10,'袋装',10,'孙梅','2026-11-19 15:00:00','',NULL),(1011,1011,'BN20261116011',1007,10,'袋装',10,'孙梅','2026-11-19 15:00:00','',NULL),(1012,1012,'BN20261116012',1007,10,'袋装',10,'孙梅','2026-11-19 15:00:00','',NULL),(1013,1013,'BN20261116013',1011,10,'袋装',10,'孙梅','2026-11-19 15:00:00','',NULL),(1014,1014,'BN20261116014',1011,10,'袋装',10,'孙梅','2026-11-19 15:00:00','',NULL),(1015,1015,'BN20261116015',1016,10,'袋装',10,'孙梅','2026-11-19 15:00:00','',NULL),(1016,1016,'BN20261116016',1016,10,'袋装',10,'孙梅','2026-11-19 15:00:00','',NULL);
 /*!40000 ALTER TABLE `biz_pack` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -712,16 +712,16 @@ DROP TABLE IF EXISTS `biz_pick`;
 CREATE TABLE `biz_pick` (
   `pick_id` bigint NOT NULL AUTO_INCREMENT COMMENT '领片ID',
   `bundle_id` bigint NOT NULL COMMENT '扎ID',
-  `bundle_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '扎号',
+  `bundle_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '扎号',
   `sku_id` bigint DEFAULT NULL COMMENT 'SKU ID',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款号',
-  `color` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '颜色',
-  `size` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '尺码',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款号',
+  `color` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '颜色',
+  `size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '尺码',
   `qty` int DEFAULT '0' COMMENT '数量',
-  `employee` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '员工',
-  `user_id` bigint DEFAULT NULL COMMENT '领片人用户ID',
+  `employee` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '员工',
   `pick_time` datetime DEFAULT NULL COMMENT '领片时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `user_id` bigint DEFAULT NULL COMMENT '领片人用户ID',
   PRIMARY KEY (`pick_id`),
   KEY `idx_pick_bundle` (`bundle_id`),
   KEY `idx_pick_time` (`pick_time`)
@@ -734,7 +734,7 @@ CREATE TABLE `biz_pick` (
 
 LOCK TABLES `biz_pick` WRITE;
 /*!40000 ALTER TABLE `biz_pick` DISABLE KEYS */;
-INSERT INTO `biz_pick` VALUES (1001,1001,'BN20261113001',1001,'JT03','黑色','S',10,'赵丽',NULL,'2026-11-14 09:30:00',''),(1002,1002,'BN20261113002',1001,'JT03','黑色','S',10,'赵丽',NULL,'2026-11-14 09:30:00',''),(1003,1003,'BN20261113003',1006,'JT03','白色','M',10,'赵丽',NULL,'2026-11-14 09:30:00',''),(1004,1004,'BN20261113004',1006,'JT03','白色','M',10,'赵丽',NULL,'2026-11-14 09:30:00',''),(1005,1005,'BN20261116005',1001,'JT03','黑色','S',10,'钱峰',NULL,'2026-11-16 08:40:00',''),(1006,1006,'BN20261116006',1001,'JT03','黑色','S',10,'钱峰',NULL,'2026-11-16 08:40:00',''),(1007,1007,'BN20261116007',1002,'JT03','黑色','M',10,'钱峰',NULL,'2026-11-16 08:40:00',''),(1008,1008,'BN20261116008',1002,'JT03','黑色','M',10,'钱峰',NULL,'2026-11-16 08:40:00',''),(1009,1009,'BN20261116009',1006,'JT03','白色','M',10,'钱峰',NULL,'2026-11-16 08:40:00',''),(1010,1010,'BN20261116010',1006,'JT03','白色','M',10,'钱峰',NULL,'2026-11-16 08:40:00',''),(1011,1011,'BN20261116011',1007,'JT03','白色','L',10,'钱峰',NULL,'2026-11-16 08:40:00',''),(1012,1012,'BN20261116012',1007,'JT03','白色','L',10,'钱峰',NULL,'2026-11-16 08:40:00',''),(1013,1013,'BN20261116013',1011,'JT03','藏青','L',10,'钱峰',NULL,'2026-11-16 08:40:00',''),(1014,1014,'BN20261116014',1011,'JT03','藏青','L',10,'钱峰',NULL,'2026-11-16 08:40:00',''),(1015,1015,'BN20261116015',1016,'JT03','酒红','XL',10,'钱峰',NULL,'2026-11-16 08:40:00',''),(1016,1016,'BN20261116016',1016,'JT03','酒红','XL',10,'钱峰',NULL,'2026-11-16 08:40:00',''),(1017,1032,'Z202611220032',1201,'JT07','米杏','S',15,'管理员',1,'2026-11-22 16:35:16',NULL),(1018,1031,'Z202611220031',1201,'JT07','米杏','S',17,'管理员',1,'2026-11-22 16:37:08',NULL),(1019,1030,'Z202611220030',1201,'JT07','米杏','S',17,'管理员',1,'2026-11-22 16:46:08',NULL),(1020,1029,'Z202611220029',1201,'JT07','米杏','S',17,'管理员',1,'2026-11-22 16:55:15',NULL),(1021,1028,'Z202611220028',1201,'JT07','米杏','S',17,'李梅',101,'2026-11-22 17:07:22',NULL);
+INSERT INTO `biz_pick` VALUES (1001,1001,'BN20261113001',1001,'JT03','黑色','S',10,'赵丽','2026-11-14 09:30:00','',NULL),(1002,1002,'BN20261113002',1001,'JT03','黑色','S',10,'赵丽','2026-11-14 09:30:00','',NULL),(1003,1003,'BN20261113003',1006,'JT03','白色','M',10,'赵丽','2026-11-14 09:30:00','',NULL),(1004,1004,'BN20261113004',1006,'JT03','白色','M',10,'赵丽','2026-11-14 09:30:00','',NULL),(1005,1005,'BN20261116005',1001,'JT03','黑色','S',10,'钱峰','2026-11-16 08:40:00','',NULL),(1006,1006,'BN20261116006',1001,'JT03','黑色','S',10,'钱峰','2026-11-16 08:40:00','',NULL),(1007,1007,'BN20261116007',1002,'JT03','黑色','M',10,'钱峰','2026-11-16 08:40:00','',NULL),(1008,1008,'BN20261116008',1002,'JT03','黑色','M',10,'钱峰','2026-11-16 08:40:00','',NULL),(1009,1009,'BN20261116009',1006,'JT03','白色','M',10,'钱峰','2026-11-16 08:40:00','',NULL),(1010,1010,'BN20261116010',1006,'JT03','白色','M',10,'钱峰','2026-11-16 08:40:00','',NULL),(1011,1011,'BN20261116011',1007,'JT03','白色','L',10,'钱峰','2026-11-16 08:40:00','',NULL),(1012,1012,'BN20261116012',1007,'JT03','白色','L',10,'钱峰','2026-11-16 08:40:00','',NULL),(1013,1013,'BN20261116013',1011,'JT03','藏青','L',10,'钱峰','2026-11-16 08:40:00','',NULL),(1014,1014,'BN20261116014',1011,'JT03','藏青','L',10,'钱峰','2026-11-16 08:40:00','',NULL),(1015,1015,'BN20261116015',1016,'JT03','酒红','XL',10,'钱峰','2026-11-16 08:40:00','',NULL),(1016,1016,'BN20261116016',1016,'JT03','酒红','XL',10,'钱峰','2026-11-16 08:40:00','',NULL),(1017,1032,'Z202611220032',1201,'JT07','米杏','S',15,'管理员','2026-11-22 16:35:16',NULL,1),(1018,1031,'Z202611220031',1201,'JT07','米杏','S',17,'管理员','2026-11-22 16:37:08',NULL,1),(1019,1030,'Z202611220030',1201,'JT07','米杏','S',17,'管理员','2026-11-22 16:46:08',NULL,1),(1020,1029,'Z202611220029',1201,'JT07','米杏','S',17,'管理员','2026-11-22 16:55:15',NULL,1),(1021,1028,'Z202611220028',1201,'JT07','米杏','S',17,'李梅','2026-11-22 17:07:22',NULL,101);
 /*!40000 ALTER TABLE `biz_pick` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -747,25 +747,25 @@ DROP TABLE IF EXISTS `biz_purchase`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_purchase` (
   `purchase_id` bigint NOT NULL AUTO_INCREMENT COMMENT '采购ID',
-  `purchase_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '采购单号',
-  `purchase_type` varchar(20) COLLATE utf8mb4_general_ci DEFAULT 'COMMON' COMMENT '类型(COMMON公用耗材/MATERIAL按款物料)',
-  `category` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '类别(办公室/裁床/仓库/车间/后道)',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款号',
+  `purchase_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '采购单号',
+  `purchase_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'COMMON' COMMENT '类型(COMMON公用耗材/MATERIAL按款物料)',
+  `category` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '类别(办公室/裁床/仓库/车间/后道)',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款号',
   `supplier_id` bigint DEFAULT NULL COMMENT '供应商ID',
-  `supplier_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '供应商名称',
+  `supplier_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '供应商名称',
   `purchase_date` date DEFAULT NULL COMMENT '采购日期',
   `total_amount` decimal(12,2) DEFAULT '0.00' COMMENT '采购金额',
   `paid_amount` decimal(12,2) DEFAULT '0.00' COMMENT '已付金额',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0待入库 1部分入库 2已入库)',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0待入库 1部分入库 2已入库)',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`purchase_id`),
   KEY `idx_purchase_date` (`purchase_date`),
   KEY `idx_purchase_style` (`style_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=1008 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='采购单';
+) ENGINE=InnoDB AUTO_INCREMENT=1009 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='采购单';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -774,7 +774,7 @@ CREATE TABLE `biz_purchase` (
 
 LOCK TABLES `biz_purchase` WRITE;
 /*!40000 ALTER TABLE `biz_purchase` DISABLE KEYS */;
-INSERT INTO `biz_purchase` VALUES (1001,'CG20261110001','COMMON','办公室','',104,'苏州锦程包装材料厂','2026-11-10',300.00,300.00,'2','admin','2026-11-10 09:00:00','',NULL,''),(1002,'CG20261112001','COMMON','仓库','',104,'苏州锦程包装材料厂','2026-11-12',1370.00,1370.00,'2','admin','2026-11-10 09:00:00','',NULL,''),(1003,'CG20261115001','MATERIAL','','JT03',101,'杭州四季青面料商行','2026-11-15',12000.00,6000.00,'1','admin','2026-11-10 09:00:00','',NULL,''),(1004,'CG20261118001','MATERIAL','','MQ3001',102,'义乌华美辅料有限公司','2026-11-18',1150.00,0.00,'0','admin','2026-11-10 09:00:00','',NULL,''),(1005,'CG20261106001','COMMON','裁床',NULL,105,'广州华兴制衣设备','2026-11-06',440.00,440.00,'2','purchaser01','2026-11-06 09:20:00','',NULL,'裁床用画粉、隔色纸，已全部入库'),(1006,'CG20261114001','COMMON','车间',NULL,105,'广州华兴制衣设备','2026-11-14',500.00,200.00,'1','purchaser01','2026-11-14 10:10:00','',NULL,'车间机针分批到货，余量待入库'),(1007,'CG20261119001','COMMON','后道',NULL,104,'苏州锦程包装材料厂','2026-11-19',275.00,0.00,'1','purchaser01','2026-11-19 15:40:00','','2026-11-22 10:08:06','后道吊牌、洗水标待收货');
+INSERT INTO `biz_purchase` VALUES (1001,'CG20261110001','COMMON','办公室','',104,'苏州锦程包装材料厂','2026-11-10',300.00,300.00,'2','admin','2026-11-10 09:00:00','',NULL,''),(1002,'CG20261112001','COMMON','仓库','',104,'苏州锦程包装材料厂','2026-11-12',1370.00,1370.00,'2','admin','2026-11-10 09:00:00','',NULL,''),(1003,'CG20261115001','MATERIAL','','JT03',101,'杭州四季青面料商行','2026-11-15',12000.00,6000.00,'1','admin','2026-11-10 09:00:00','',NULL,''),(1004,'CG20261118001','MATERIAL','','MQ3001',102,'义乌华美辅料有限公司','2026-11-18',1150.00,0.00,'0','admin','2026-11-10 09:00:00','',NULL,''),(1005,'CG20261106001','COMMON','裁床',NULL,105,'广州华兴制衣设备','2026-11-06',440.00,440.00,'2','purchaser01','2026-11-06 09:20:00','',NULL,'裁床用画粉、隔色纸，已全部入库'),(1006,'CG20261114001','COMMON','车间',NULL,105,'广州华兴制衣设备','2026-11-14',500.00,200.00,'1','purchaser01','2026-11-14 10:10:00','',NULL,'车间机针分批到货，余量待入库'),(1007,'CG20261119001','COMMON','后道',NULL,104,'苏州锦程包装材料厂','2026-11-19',275.00,0.00,'1','purchaser01','2026-11-19 15:40:00','','2026-11-22 10:08:06','后道吊牌、洗水标待收货'),(1008,'CG20261123001','MATERIAL','裁床','JT03',103,'东莞恒信拉链厂','2026-11-23',41.30,0.00,'1','admin','2026-11-23 14:35:42','','2026-11-23 14:36:11',NULL);
 /*!40000 ALTER TABLE `biz_purchase` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -788,18 +788,18 @@ DROP TABLE IF EXISTS `biz_purchase_item`;
 CREATE TABLE `biz_purchase_item` (
   `item_id` bigint NOT NULL AUTO_INCREMENT COMMENT '明细ID',
   `purchase_id` bigint NOT NULL COMMENT '采购ID',
-  `material_type` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '物料类型',
-  `material_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
-  `spec` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '规格',
-  `unit` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '件' COMMENT '单位',
+  `material_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '物料类型',
+  `material_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `spec` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '规格',
+  `unit` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '件' COMMENT '单位',
   `price` decimal(10,2) DEFAULT '0.00' COMMENT '单价',
   `qty` decimal(12,2) DEFAULT '0.00' COMMENT '数量',
   `received_qty` decimal(12,2) DEFAULT '0.00' COMMENT '已入库数量',
   `amount` decimal(12,2) DEFAULT '0.00' COMMENT '金额',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`item_id`),
   KEY `idx_pi_purchase` (`purchase_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1016 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='采购明细';
+) ENGINE=InnoDB AUTO_INCREMENT=1020 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='采购明细';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -808,7 +808,7 @@ CREATE TABLE `biz_purchase_item` (
 
 LOCK TABLES `biz_purchase_item` WRITE;
 /*!40000 ALTER TABLE `biz_purchase_item` DISABLE KEYS */;
-INSERT INTO `biz_purchase_item` VALUES (1001,1001,'耗材','打印纸','A4 500张/包','箱',30.00,10.00,10.00,300.00,''),(1002,1002,'耗材','纸箱','60x40x30','个',5.00,100.00,100.00,500.00,''),(1003,1002,'耗材','包装袋','30x40cm','个',0.15,5000.00,5000.00,750.00,''),(1004,1002,'耗材','裁床刀片','10片/盒','盒',12.00,10.00,10.00,120.00,''),(1005,1003,'面料','雪纺印花','150D','米',18.00,200.00,120.00,3600.00,''),(1006,1003,'里布','涤纶里布','210T','米',6.00,100.00,100.00,600.00,''),(1007,1003,'面料','真丝雪纺','16姆米','米',52.00,150.00,150.00,7800.00,''),(1008,1004,'辅料','树脂纽扣','12mm米白','颗',0.30,1000.00,0.00,300.00,''),(1009,1004,'辅料','松紧带','3cm','米',2.20,100.00,0.00,220.00,''),(1010,1004,'辅料','缝纫线','402涤纶线','卷',4.50,140.00,0.00,630.00,''),(1011,1005,'耗材','裁床画粉','白色 20片/盒','盒',4.00,30.00,30.00,120.00,NULL),(1012,1005,'耗材','隔色纸','80g 100张/包','包',8.00,40.00,40.00,320.00,NULL),(1013,1006,'耗材','平缝机针','DB*1 11# 100支/盒','盒',25.00,20.00,5.00,500.00,'首批到货 5 盒'),(1014,1007,'辅料','吊牌','主吊牌 5x9cm','张',0.20,1000.00,1000.00,200.00,NULL),(1015,1007,'辅料','洗水标','缎面 3x5cm','张',0.15,500.00,0.00,75.00,NULL);
+INSERT INTO `biz_purchase_item` VALUES (1001,1001,'耗材','打印纸','A4 500张/包','箱',30.00,10.00,10.00,300.00,''),(1002,1002,'耗材','纸箱','60x40x30','个',5.00,100.00,100.00,500.00,''),(1003,1002,'耗材','包装袋','30x40cm','个',0.15,5000.00,5000.00,750.00,''),(1004,1002,'耗材','裁床刀片','10片/盒','盒',12.00,10.00,10.00,120.00,''),(1005,1003,'面料','雪纺印花','150D','米',18.00,200.00,120.00,3600.00,''),(1006,1003,'里布','涤纶里布','210T','米',6.00,100.00,100.00,600.00,''),(1007,1003,'面料','真丝雪纺','16姆米','米',52.00,150.00,150.00,7800.00,''),(1008,1004,'辅料','树脂纽扣','12mm米白','颗',0.30,1000.00,0.00,300.00,''),(1009,1004,'辅料','松紧带','3cm','米',2.20,100.00,0.00,220.00,''),(1010,1004,'辅料','缝纫线','402涤纶线','卷',4.50,140.00,0.00,630.00,''),(1011,1005,'耗材','裁床画粉','白色 20片/盒','盒',4.00,30.00,30.00,120.00,NULL),(1012,1005,'耗材','隔色纸','80g 100张/包','包',8.00,40.00,40.00,320.00,NULL),(1013,1006,'耗材','平缝机针','DB*1 11# 100支/盒','盒',25.00,20.00,5.00,500.00,'首批到货 5 盒'),(1014,1007,'辅料','吊牌','主吊牌 5x9cm','张',0.20,1000.00,1000.00,200.00,NULL),(1015,1007,'辅料','洗水标','缎面 3x5cm','张',0.15,500.00,0.00,75.00,NULL),(1016,1008,'辅料','树脂纽扣','12mm米白','颗',0.30,6.00,6.00,1.80,NULL),(1017,1008,'配件','隐形拉链','25cm黑色','条',3.50,1.00,0.00,3.50,NULL),(1018,1008,'里布','涤纶里布','210T','米',6.00,1.20,0.00,7.20,NULL),(1019,1008,'面料','雪纺印花','150D','米',18.00,1.60,0.00,28.80,NULL);
 /*!40000 ALTER TABLE `biz_purchase_item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -822,16 +822,16 @@ DROP TABLE IF EXISTS `biz_qc`;
 CREATE TABLE `biz_qc` (
   `qc_id` bigint NOT NULL AUTO_INCREMENT COMMENT '检验ID',
   `bundle_id` bigint DEFAULT NULL COMMENT '扎ID',
-  `bundle_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '扎号',
+  `bundle_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '扎号',
   `sku_id` bigint DEFAULT NULL COMMENT 'SKU ID',
   `check_qty` int DEFAULT '0' COMMENT '检验数',
   `qualified_qty` int DEFAULT '0' COMMENT '合格数',
   `defect_qty` int DEFAULT '0' COMMENT '次品数',
-  `defect_reason` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '次品原因',
-  `inspector` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '检验人',
-  `user_id` bigint DEFAULT NULL COMMENT '检验人用户ID',
+  `defect_reason` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '次品原因',
+  `inspector` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '检验人',
   `check_time` datetime DEFAULT NULL COMMENT '检验时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `user_id` bigint DEFAULT NULL COMMENT '检验人用户ID',
   PRIMARY KEY (`qc_id`),
   KEY `idx_qc_time` (`check_time`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1017 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='后道检验';
@@ -843,7 +843,7 @@ CREATE TABLE `biz_qc` (
 
 LOCK TABLES `biz_qc` WRITE;
 /*!40000 ALTER TABLE `biz_qc` DISABLE KEYS */;
-INSERT INTO `biz_qc` VALUES (1001,1001,'BN20261113001',1001,6,6,0,'','王检',102,'2026-11-14 18:20:00',''),(1002,1002,'BN20261113002',1001,10,10,0,'','王检',102,'2026-11-14 18:20:00',''),(1003,1003,'BN20261113003',1006,6,6,0,'','王检',102,'2026-11-14 18:20:00',''),(1004,1004,'BN20261113004',1006,10,10,0,'','王检',102,'2026-11-14 18:20:00',''),(1005,1005,'BN20261116005',1001,10,10,0,'','王检',102,'2026-11-18 18:20:00',''),(1006,1006,'BN20261116006',1001,10,10,0,'','王检',102,'2026-11-18 18:20:00',''),(1007,1007,'BN20261116007',1002,10,10,0,'','王检',102,'2026-11-18 18:20:00',''),(1008,1008,'BN20261116008',1002,10,10,0,'','王检',102,'2026-11-18 18:20:00',''),(1009,1009,'BN20261116009',1006,10,9,1,'线头/跳线','王检',102,'2026-11-18 18:20:00',''),(1010,1010,'BN20261116010',1006,10,10,0,'','王检',102,'2026-11-18 18:20:00',''),(1011,1011,'BN20261116011',1007,10,10,0,'','王检',102,'2026-11-18 18:20:00',''),(1012,1012,'BN20261116012',1007,10,10,0,'','王检',102,'2026-11-18 18:20:00',''),(1013,1013,'BN20261116013',1011,10,10,0,'','王检',102,'2026-11-18 18:20:00',''),(1014,1014,'BN20261116014',1011,10,10,0,'','王检',102,'2026-11-18 18:20:00',''),(1015,1015,'BN20261116015',1016,10,10,0,'','王检',102,'2026-11-18 18:20:00',''),(1016,1016,'BN20261116016',1016,10,10,0,'','王检',102,'2026-11-18 18:20:00','');
+INSERT INTO `biz_qc` VALUES (1001,1001,'BN20261113001',1001,6,6,0,'','王检','2026-11-14 18:20:00','',102),(1002,1002,'BN20261113002',1001,10,10,0,'','王检','2026-11-14 18:20:00','',102),(1003,1003,'BN20261113003',1006,6,6,0,'','王检','2026-11-14 18:20:00','',102),(1004,1004,'BN20261113004',1006,10,10,0,'','王检','2026-11-14 18:20:00','',102),(1005,1005,'BN20261116005',1001,10,10,0,'','王检','2026-11-18 18:20:00','',102),(1006,1006,'BN20261116006',1001,10,10,0,'','王检','2026-11-18 18:20:00','',102),(1007,1007,'BN20261116007',1002,10,10,0,'','王检','2026-11-18 18:20:00','',102),(1008,1008,'BN20261116008',1002,10,10,0,'','王检','2026-11-18 18:20:00','',102),(1009,1009,'BN20261116009',1006,10,9,1,'线头/跳线','王检','2026-11-18 18:20:00','',102),(1010,1010,'BN20261116010',1006,10,10,0,'','王检','2026-11-18 18:20:00','',102),(1011,1011,'BN20261116011',1007,10,10,0,'','王检','2026-11-18 18:20:00','',102),(1012,1012,'BN20261116012',1007,10,10,0,'','王检','2026-11-18 18:20:00','',102),(1013,1013,'BN20261116013',1011,10,10,0,'','王检','2026-11-18 18:20:00','',102),(1014,1014,'BN20261116014',1011,10,10,0,'','王检','2026-11-18 18:20:00','',102),(1015,1015,'BN20261116015',1016,10,10,0,'','王检','2026-11-18 18:20:00','',102),(1016,1016,'BN20261116016',1016,10,10,0,'','王检','2026-11-18 18:20:00','',102);
 /*!40000 ALTER TABLE `biz_qc` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -856,23 +856,23 @@ DROP TABLE IF EXISTS `biz_return`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_return` (
   `return_id` bigint NOT NULL AUTO_INCREMENT COMMENT '退货ID',
-  `return_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '退货单号',
-  `customer` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '客户',
+  `return_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '退货单号',
+  `customer` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '客户',
   `sku_id` bigint DEFAULT NULL COMMENT 'SKU ID',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款号',
-  `color` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '颜色',
-  `size` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '尺码',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款号',
+  `color` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '颜色',
+  `size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '尺码',
   `qty` int DEFAULT '0' COMMENT '退货数量',
   `good_qty` int DEFAULT '0' COMMENT '好货数量',
   `bad_qty` int DEFAULT '0' COMMENT '次品数量',
-  `reason` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '退货原因',
+  `reason` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '退货原因',
   `return_date` date DEFAULT NULL COMMENT '退货日期',
-  `operator` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作人',
+  `operator` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作人',
   `create_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`return_id`),
   KEY `idx_return_date` (`return_date`)
-) ENGINE=InnoDB AUTO_INCREMENT=1003 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='退货入库';
+) ENGINE=InnoDB AUTO_INCREMENT=1004 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='退货入库';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -895,22 +895,22 @@ DROP TABLE IF EXISTS `biz_shipment`;
 CREATE TABLE `biz_shipment` (
   `ship_id` bigint NOT NULL AUTO_INCREMENT COMMENT '出货ID',
   `ship_date` date DEFAULT NULL COMMENT '出货日期',
-  `customer` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '客户',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款式',
-  `color` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '颜色',
-  `size` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '尺码',
+  `customer` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '客户',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款式',
+  `color` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '颜色',
+  `size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '尺码',
   `qty` int DEFAULT '0' COMMENT '数量',
   `price` decimal(10,2) DEFAULT '0.00' COMMENT '单价',
   `amount` decimal(12,2) DEFAULT '0.00' COMMENT '金额',
   `sea_freight` decimal(12,2) DEFAULT '0.00' COMMENT '海运费',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `outbound_id` bigint DEFAULT NULL COMMENT '关联成品出库单ID',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 9已作废)',
-  `cancel_reason` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '作废原因',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 9已作废)',
+  `cancel_reason` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '作废原因',
   PRIMARY KEY (`ship_id`),
   KEY `idx_ship_date` (`ship_date`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1007 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='出货表';
@@ -935,14 +935,14 @@ DROP TABLE IF EXISTS `biz_size`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_size` (
   `size_id` bigint NOT NULL AUTO_INCREMENT COMMENT '尺码ID',
-  `size_name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL COMMENT '尺码',
+  `size_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '尺码',
   `sort` int DEFAULT '0' COMMENT '排序',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 1停用)',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 1停用)',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`size_id`),
   UNIQUE KEY `uk_size_name` (`size_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='尺码表';
@@ -968,21 +968,21 @@ DROP TABLE IF EXISTS `biz_sku`;
 CREATE TABLE `biz_sku` (
   `sku_id` bigint NOT NULL AUTO_INCREMENT COMMENT 'SKU ID',
   `style_id` bigint DEFAULT NULL COMMENT '款号ID',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '款号',
-  `parent_style_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '父体款号',
-  `cn_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '中文品名',
-  `color` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '颜色',
-  `size` varchar(20) COLLATE utf8mb4_general_ci NOT NULL COMMENT '尺码',
-  `barcode` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '商品条码(款号-颜色-尺码)',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '款号',
+  `parent_style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '父体款号',
+  `cn_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '中文品名',
+  `color` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '颜色',
+  `size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '尺码',
+  `barcode` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '商品条码(款号-颜色-尺码)',
   `cost_price` decimal(10,2) DEFAULT '0.00' COMMENT '成本价',
   `sale_price` decimal(10,2) DEFAULT '0.00' COMMENT '销售价',
   `min_stock` int DEFAULT '0' COMMENT '最低库存预警',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 1停用)',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 1停用)',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`sku_id`),
   UNIQUE KEY `uk_sku` (`style_no`,`color`,`size`),
   UNIQUE KEY `uk_barcode` (`barcode`)
@@ -1009,24 +1009,24 @@ DROP TABLE IF EXISTS `biz_stock_log`;
 CREATE TABLE `biz_stock_log` (
   `log_id` bigint NOT NULL AUTO_INCREMENT COMMENT '流水ID',
   `sku_id` bigint DEFAULT NULL COMMENT 'SKU ID',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款号',
-  `cn_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '中文品名',
-  `color` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '颜色',
-  `size` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '尺码',
-  `stock_type` varchar(10) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '库存类型(CUT/LINE/FINISH)',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款号',
+  `cn_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '中文品名',
+  `color` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '颜色',
+  `size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '尺码',
+  `stock_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '库存类型(CUT/LINE/FINISH)',
   `change_qty` int DEFAULT '0' COMMENT '变动数量(正入负出)',
   `before_qty` int DEFAULT '0' COMMENT '变动前',
   `after_qty` int DEFAULT '0' COMMENT '变动后',
-  `biz_type` varchar(30) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '业务类型',
-  `biz_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '业务单号',
-  `bundle_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '扎号',
-  `operator` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作人',
+  `biz_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '业务类型',
+  `biz_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '业务单号',
+  `bundle_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '扎号',
+  `operator` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作人',
   `operate_time` datetime DEFAULT NULL COMMENT '操作时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`log_id`),
   KEY `idx_log_sku` (`sku_id`),
   KEY `idx_log_time` (`operate_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=1119 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='库存流水';
+) ENGINE=InnoDB AUTO_INCREMENT=1121 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='库存流水';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1035,7 +1035,7 @@ CREATE TABLE `biz_stock_log` (
 
 LOCK TABLES `biz_stock_log` WRITE;
 /*!40000 ALTER TABLE `biz_stock_log` DISABLE KEYS */;
-INSERT INTO `biz_stock_log` VALUES (1001,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',10,0,10,'裁片入库','CO20261113001','BN20261113001','system','2026-11-13 09:00:00','分扎入库'),(1002,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',10,10,20,'裁片入库','CO20261113001','BN20261113002','system','2026-11-13 09:00:00','分扎入库'),(1003,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',-10,20,10,'车间领片','CO20261113001','BN20261113001','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1004,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',10,0,10,'车间领片','CO20261113001','BN20261113001','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1005,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',-10,10,0,'车间领片','CO20261113001','BN20261113002','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1006,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',10,10,20,'车间领片','CO20261113001','BN20261113002','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1007,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',-10,0,-10,'车间领片','CO20261116001','BN20261116005','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1008,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',10,20,30,'车间领片','CO20261116001','BN20261116005','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1009,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',-10,-10,-20,'车间领片','CO20261116001','BN20261116006','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1010,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',10,30,40,'车间领片','CO20261116001','BN20261116006','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1011,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',10,-20,-10,'裁片入库','CO20261116001','BN20261116005','system','2026-11-16 09:00:00','分扎入库'),(1012,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',10,-10,0,'裁片入库','CO20261116001','BN20261116006','system','2026-11-16 09:00:00','分扎入库'),(1013,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',-5,40,35,'包装出产线','PK100101','BN20261113001','孙梅','2026-11-19 10:30:00','包装入库'),(1014,1001,'JT03','卡扣束腰大摆裙','黑色','S','FINISH',5,0,5,'成品入库','PK100101','BN20261113001','孙梅','2026-11-19 10:30:00','包装入库'),(1015,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',-5,35,30,'包装出产线','PK100102','BN20261113002','孙梅','2026-11-19 10:30:00','包装入库'),(1016,1001,'JT03','卡扣束腰大摆裙','黑色','S','FINISH',5,5,10,'成品入库','PK100102','BN20261113002','孙梅','2026-11-19 10:30:00','包装入库'),(1017,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',-10,30,20,'包装出产线','PK100201','BN20261116005','孙梅','2026-11-19 15:00:00','包装入库'),(1018,1001,'JT03','卡扣束腰大摆裙','黑色','S','FINISH',10,10,20,'成品入库','PK100201','BN20261116005','孙梅','2026-11-19 15:00:00','包装入库'),(1019,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',-10,20,10,'包装出产线','PK100202','BN20261116006','孙梅','2026-11-19 15:00:00','包装入库'),(1020,1001,'JT03','卡扣束腰大摆裙','黑色','S','FINISH',10,20,30,'成品入库','PK100202','BN20261116006','孙梅','2026-11-19 15:00:00','包装入库'),(1021,1002,'JT03','卡扣束腰大摆裙','黑色','M','FINISH',-4,0,-4,'成品出库','CK20261114001','','王芳','2026-11-14 11:00:00','客户：杭州四季青'),(1022,1002,'JT03','卡扣束腰大摆裙','黑色','M','CUT',-10,0,-10,'车间领片','CO20261116001','BN20261116007','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1023,1002,'JT03','卡扣束腰大摆裙','黑色','M','LINE',10,0,10,'车间领片','CO20261116001','BN20261116007','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1024,1002,'JT03','卡扣束腰大摆裙','黑色','M','CUT',-10,-10,-20,'车间领片','CO20261116001','BN20261116008','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1025,1002,'JT03','卡扣束腰大摆裙','黑色','M','LINE',10,10,20,'车间领片','CO20261116001','BN20261116008','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1026,1002,'JT03','卡扣束腰大摆裙','黑色','M','CUT',10,-20,-10,'裁片入库','CO20261116001','BN20261116007','system','2026-11-16 09:00:00','分扎入库'),(1027,1002,'JT03','卡扣束腰大摆裙','黑色','M','CUT',10,-10,0,'裁片入库','CO20261116001','BN20261116008','system','2026-11-16 09:00:00','分扎入库'),(1028,1002,'JT03','卡扣束腰大摆裙','黑色','M','FINISH',3,-4,-1,'退货入库','TH20261118001','','陈静','2026-11-18 14:00:00','退货原因：尺码偏小'),(1029,1002,'JT03','卡扣束腰大摆裙','黑色','M','LINE',-10,20,10,'包装出产线','PK100201','BN20261116007','孙梅','2026-11-19 15:00:00','包装入库'),(1030,1002,'JT03','卡扣束腰大摆裙','黑色','M','FINISH',10,-1,9,'成品入库','PK100201','BN20261116007','孙梅','2026-11-19 15:00:00','包装入库'),(1031,1002,'JT03','卡扣束腰大摆裙','黑色','M','LINE',-10,10,0,'包装出产线','PK100202','BN20261116008','孙梅','2026-11-19 15:00:00','包装入库'),(1032,1002,'JT03','卡扣束腰大摆裙','黑色','M','FINISH',10,9,19,'成品入库','PK100202','BN20261116008','孙梅','2026-11-19 15:00:00','包装入库'),(1033,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',10,0,10,'裁片入库','CO20261113001','BN20261113003','system','2026-11-13 09:00:00','分扎入库'),(1034,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',10,10,20,'裁片入库','CO20261113001','BN20261113004','system','2026-11-13 09:00:00','分扎入库'),(1035,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',-10,20,10,'车间领片','CO20261113001','BN20261113003','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1036,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',10,0,10,'车间领片','CO20261113001','BN20261113003','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1037,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',-10,10,0,'车间领片','CO20261113001','BN20261113004','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1038,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',10,10,20,'车间领片','CO20261113001','BN20261113004','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1039,1006,'JT03','卡扣束腰大摆裙','白色','M','FINISH',-4,0,-4,'成品出库','CK20261114001','','王芳','2026-11-14 11:00:00','客户：杭州四季青'),(1040,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',-10,0,-10,'车间领片','CO20261116001','BN20261116009','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1041,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',10,20,30,'车间领片','CO20261116001','BN20261116009','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1042,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',-10,-10,-20,'车间领片','CO20261116001','BN20261116010','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1043,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',10,30,40,'车间领片','CO20261116001','BN20261116010','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1044,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',10,-20,-10,'裁片入库','CO20261116001','BN20261116009','system','2026-11-16 09:00:00','分扎入库'),(1045,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',10,-10,0,'裁片入库','CO20261116001','BN20261116010','system','2026-11-16 09:00:00','分扎入库'),(1046,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',-5,40,35,'包装出产线','PK100101','BN20261113003','孙梅','2026-11-19 10:30:00','包装入库'),(1047,1006,'JT03','卡扣束腰大摆裙','白色','M','FINISH',5,-4,1,'成品入库','PK100101','BN20261113003','孙梅','2026-11-19 10:30:00','包装入库'),(1048,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',-5,35,30,'包装出产线','PK100102','BN20261113004','孙梅','2026-11-19 10:30:00','包装入库'),(1049,1006,'JT03','卡扣束腰大摆裙','白色','M','FINISH',5,1,6,'成品入库','PK100102','BN20261113004','孙梅','2026-11-19 10:30:00','包装入库'),(1050,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',-10,30,20,'包装出产线','PK100201','BN20261116009','孙梅','2026-11-19 15:00:00','包装入库'),(1051,1006,'JT03','卡扣束腰大摆裙','白色','M','FINISH',10,6,16,'成品入库','PK100201','BN20261116009','孙梅','2026-11-19 15:00:00','包装入库'),(1052,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',-10,20,10,'包装出产线','PK100202','BN20261116010','孙梅','2026-11-19 15:00:00','包装入库'),(1053,1006,'JT03','卡扣束腰大摆裙','白色','M','FINISH',10,16,26,'成品入库','PK100202','BN20261116010','孙梅','2026-11-19 15:00:00','包装入库'),(1054,1007,'JT03','卡扣束腰大摆裙','白色','L','CUT',-10,0,-10,'车间领片','CO20261116001','BN20261116011','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1055,1007,'JT03','卡扣束腰大摆裙','白色','L','LINE',10,0,10,'车间领片','CO20261116001','BN20261116011','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1056,1007,'JT03','卡扣束腰大摆裙','白色','L','CUT',-10,-10,-20,'车间领片','CO20261116001','BN20261116012','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1057,1007,'JT03','卡扣束腰大摆裙','白色','L','LINE',10,10,20,'车间领片','CO20261116001','BN20261116012','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1058,1007,'JT03','卡扣束腰大摆裙','白色','L','CUT',10,-20,-10,'裁片入库','CO20261116001','BN20261116011','system','2026-11-16 09:00:00','分扎入库'),(1059,1007,'JT03','卡扣束腰大摆裙','白色','L','CUT',10,-10,0,'裁片入库','CO20261116001','BN20261116012','system','2026-11-16 09:00:00','分扎入库'),(1060,1007,'JT03','卡扣束腰大摆裙','白色','L','LINE',-10,20,10,'包装出产线','PK100201','BN20261116011','孙梅','2026-11-19 15:00:00','包装入库'),(1061,1007,'JT03','卡扣束腰大摆裙','白色','L','FINISH',10,0,10,'成品入库','PK100201','BN20261116011','孙梅','2026-11-19 15:00:00','包装入库'),(1062,1007,'JT03','卡扣束腰大摆裙','白色','L','LINE',-10,10,0,'包装出产线','PK100202','BN20261116012','孙梅','2026-11-19 15:00:00','包装入库'),(1063,1007,'JT03','卡扣束腰大摆裙','白色','L','FINISH',10,10,20,'成品入库','PK100202','BN20261116012','孙梅','2026-11-19 15:00:00','包装入库'),(1064,1011,'JT03','卡扣束腰大摆裙','藏青','L','CUT',-10,0,-10,'车间领片','CO20261116001','BN20261116013','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1065,1011,'JT03','卡扣束腰大摆裙','藏青','L','LINE',10,0,10,'车间领片','CO20261116001','BN20261116013','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1066,1011,'JT03','卡扣束腰大摆裙','藏青','L','CUT',-10,-10,-20,'车间领片','CO20261116001','BN20261116014','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1067,1011,'JT03','卡扣束腰大摆裙','藏青','L','LINE',10,10,20,'车间领片','CO20261116001','BN20261116014','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1068,1011,'JT03','卡扣束腰大摆裙','藏青','L','CUT',10,-20,-10,'裁片入库','CO20261116001','BN20261116013','system','2026-11-16 09:00:00','分扎入库'),(1069,1011,'JT03','卡扣束腰大摆裙','藏青','L','CUT',10,-10,0,'裁片入库','CO20261116001','BN20261116014','system','2026-11-16 09:00:00','分扎入库'),(1070,1011,'JT03','卡扣束腰大摆裙','藏青','L','LINE',-10,20,10,'包装出产线','PK100201','BN20261116013','孙梅','2026-11-19 15:00:00','包装入库'),(1071,1011,'JT03','卡扣束腰大摆裙','藏青','L','FINISH',10,0,10,'成品入库','PK100201','BN20261116013','孙梅','2026-11-19 15:00:00','包装入库'),(1072,1011,'JT03','卡扣束腰大摆裙','藏青','L','LINE',-10,10,0,'包装出产线','PK100202','BN20261116014','孙梅','2026-11-19 15:00:00','包装入库'),(1073,1011,'JT03','卡扣束腰大摆裙','藏青','L','FINISH',10,10,20,'成品入库','PK100202','BN20261116014','孙梅','2026-11-19 15:00:00','包装入库'),(1074,1016,'JT03','卡扣束腰大摆裙','酒红','XL','FINISH',-2,0,-2,'成品出库','CK20261114001','','王芳','2026-11-14 11:00:00','客户：杭州四季青'),(1075,1016,'JT03','卡扣束腰大摆裙','酒红','XL','CUT',-10,0,-10,'车间领片','CO20261116001','BN20261116015','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1076,1016,'JT03','卡扣束腰大摆裙','酒红','XL','LINE',10,0,10,'车间领片','CO20261116001','BN20261116015','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1077,1016,'JT03','卡扣束腰大摆裙','酒红','XL','CUT',-10,-10,-20,'车间领片','CO20261116001','BN20261116016','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1078,1016,'JT03','卡扣束腰大摆裙','酒红','XL','LINE',10,10,20,'车间领片','CO20261116001','BN20261116016','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1079,1016,'JT03','卡扣束腰大摆裙','酒红','XL','CUT',10,-20,-10,'裁片入库','CO20261116001','BN20261116015','system','2026-11-16 09:00:00','分扎入库'),(1080,1016,'JT03','卡扣束腰大摆裙','酒红','XL','CUT',10,-10,0,'裁片入库','CO20261116001','BN20261116016','system','2026-11-16 09:00:00','分扎入库'),(1081,1016,'JT03','卡扣束腰大摆裙','酒红','XL','LINE',-10,20,10,'包装出产线','PK100201','BN20261116015','孙梅','2026-11-19 15:00:00','包装入库'),(1082,1016,'JT03','卡扣束腰大摆裙','酒红','XL','FINISH',10,-2,8,'成品入库','PK100201','BN20261116015','孙梅','2026-11-19 15:00:00','包装入库'),(1083,1016,'JT03','卡扣束腰大摆裙','酒红','XL','LINE',-10,10,0,'包装出产线','PK100202','BN20261116016','孙梅','2026-11-19 15:00:00','包装入库'),(1084,1016,'JT03','卡扣束腰大摆裙','酒红','XL','FINISH',10,8,18,'成品入库','PK100202','BN20261116016','孙梅','2026-11-19 15:00:00','包装入库'),(1085,1101,'JT04','原布连衣裙','米杏','S','CUT',10,0,10,'裁片入库','CO20261118001','BN20261118017','system','2026-11-18 09:00:00','分扎入库'),(1086,1101,'JT04','原布连衣裙','米杏','S','CUT',10,10,20,'裁片入库','CO20261118001','BN20261118018','system','2026-11-18 09:00:00','分扎入库'),(1087,1101,'JT04','原布连衣裙','米杏','S','FINISH',-4,0,-4,'成品出库','CK20261119001','','王芳','2026-11-19 11:00:00','客户：上海衣品'),(1088,1101,'JT04','原布连衣裙','米杏','S','FINISH',2,-4,-2,'退货入库','TH20261120001','','陈静','2026-11-20 14:00:00','退货原因：客户取消'),(1089,1102,'JT04','原布连衣裙','米杏','M','CUT',10,0,10,'裁片入库','CO20261118001','BN20261118019','system','2026-11-18 09:00:00','分扎入库'),(1090,1102,'JT04','原布连衣裙','米杏','M','CUT',10,10,20,'裁片入库','CO20261118001','BN20261118020','system','2026-11-18 09:00:00','分扎入库'),(1091,1105,'JT04','原布连衣裙','雾霾蓝','M','CUT',10,0,10,'裁片入库','CO20261118001','BN20261118021','system','2026-11-18 09:00:00','分扎入库'),(1092,1105,'JT04','原布连衣裙','雾霾蓝','M','CUT',10,10,20,'裁片入库','CO20261118001','BN20261118022','system','2026-11-18 09:00:00','分扎入库'),(1093,1201,'JT07','原布半身裙','米杏','S','CUT',10,0,10,'裁片入库','CO20261121001','BN20261121023','system','2026-11-21 09:00:00','分扎入库'),(1094,1201,'JT07','原布半身裙','米杏','S','CUT',5,10,15,'裁片入库','CO20261121001','BN20261121024','system','2026-11-21 09:00:00','分扎入库'),(1095,1206,'JT07','原布半身裙','雾霾蓝','L','FINISH',-6,0,-6,'成品出库','CK20261119001','','王芳','2026-11-19 11:00:00','客户：上海衣品'),(1096,1206,'JT07','原布半身裙','雾霾蓝','L','CUT',10,0,10,'裁片入库','CO20261121001','BN20261121025','system','2026-11-21 09:00:00','分扎入库'),(1097,1206,'JT07','原布半身裙','雾霾蓝','L','CUT',5,10,15,'裁片入库','CO20261121001','BN20261121026','system','2026-11-21 09:00:00','分扎入库'),(1098,1302,'MQ3001','法式泡泡袖上衣','白色','M','FINISH',-6,0,-6,'成品出库','CK20261121001','','小陈','2026-11-21 11:00:00','客户：北京尚品'),(1099,1312,'MQ3001','法式泡泡袖上衣','浅灰','XL','FINISH',8,0,8,'初始库存','INIT','','admin','2026-11-10 09:00:00','Excel导入初始库存'),(1100,1001,'JT03','卡扣束腰大摆裙','黑色','S','FINISH',2,30,32,'退货入库','TH20261121003','','sysadmin','2026-11-21 10:56:24','测试退货'),(1101,1001,'JT03','卡扣束腰大摆裙','黑色','S','FINISH',-2,32,30,'退货作废','TH20261121003','','sysadmin','2026-11-21 10:56:39','删除退货单，回滚库存'),(1102,1002,'JT03','卡扣束腰大摆裙','黑色','M','FINISH',10,19,29,'成品入库','CP20261121002','','王芳','2026-11-21 14:30:00','包装入库'),(1103,1201,'JT07','原布半身裙','米杏','S','CUT',17,15,32,'裁片入库','CH20261122001','Z202611220031','cutting','2026-11-22 15:45:07','裁片扫码入库'),(1104,1201,'JT07','原布半身裙','米杏','S','CUT',17,32,49,'裁片入库','CH20261122001','Z202611220030','cutting','2026-11-22 15:45:10','裁片扫码入库'),(1105,1201,'JT07','原布半身裙','米杏','S','CUT',17,49,66,'裁片入库','CH20261122001','Z202611220029','cutting','2026-11-22 15:45:11','裁片扫码入库'),(1106,1201,'JT07','原布半身裙','米杏','S','CUT',17,66,83,'裁片入库','CH20261122001','Z202611220028','cutting','2026-11-22 15:45:11','裁片扫码入库'),(1107,1201,'JT07','原布半身裙','米杏','S','CUT',17,83,100,'裁片入库','CH20261122001','Z202611220027','cutting','2026-11-22 15:45:12','裁片扫码入库'),(1108,1201,'JT07','原布半身裙','米杏','S','CUT',15,100,115,'裁片入库','CH20261122001','Z202611220032','cutting','2026-11-22 15:45:13','裁片扫码入库'),(1109,1201,'JT07','原布半身裙','米杏','S','CUT',-15,115,100,'车间领片','CH20261122001','Z202611220032','admin','2026-11-22 16:35:15','领片人：管理员'),(1110,1201,'JT07','原布半身裙','米杏','S','LINE',15,0,15,'车间领片','CH20261122001','Z202611220032','admin','2026-11-22 16:35:15','领片人：管理员'),(1111,1201,'JT07','原布半身裙','米杏','S','CUT',-17,100,83,'车间领片','CH20261122001','Z202611220031','admin','2026-11-22 16:37:08','领片人：管理员'),(1112,1201,'JT07','原布半身裙','米杏','S','LINE',17,15,32,'车间领片','CH20261122001','Z202611220031','admin','2026-11-22 16:37:08','领片人：管理员'),(1113,1201,'JT07','原布半身裙','米杏','S','CUT',-17,83,66,'车间领片','CH20261122001','Z202611220030','admin','2026-11-22 16:46:08','领片人：管理员'),(1114,1201,'JT07','原布半身裙','米杏','S','LINE',17,32,49,'车间领片','CH20261122001','Z202611220030','admin','2026-11-22 16:46:08','领片人：管理员'),(1115,1201,'JT07','原布半身裙','米杏','S','CUT',-17,66,49,'车间领片','CH20261122001','Z202611220029','admin','2026-11-22 16:55:15','领片人：管理员'),(1116,1201,'JT07','原布半身裙','米杏','S','LINE',17,49,66,'车间领片','CH20261122001','Z202611220029','admin','2026-11-22 16:55:15','领片人：管理员'),(1117,1201,'JT07','原布半身裙','米杏','S','CUT',-17,49,32,'车间领片','CH20261122001','Z202611220028','workshop','2026-11-22 17:07:22','领片人：李梅'),(1118,1201,'JT07','原布半身裙','米杏','S','LINE',17,66,83,'车间领片','CH20261122001','Z202611220028','workshop','2026-11-22 17:07:22','领片人：李梅');
+INSERT INTO `biz_stock_log` VALUES (1001,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',10,0,10,'裁片入库','CO20261113001','BN20261113001','system','2026-11-13 09:00:00','分扎入库'),(1002,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',10,10,20,'裁片入库','CO20261113001','BN20261113002','system','2026-11-13 09:00:00','分扎入库'),(1003,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',-10,20,10,'车间领片','CO20261113001','BN20261113001','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1004,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',10,0,10,'车间领片','CO20261113001','BN20261113001','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1005,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',-10,10,0,'车间领片','CO20261113001','BN20261113002','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1006,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',10,10,20,'车间领片','CO20261113001','BN20261113002','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1007,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',-10,0,-10,'车间领片','CO20261116001','BN20261116005','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1008,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',10,20,30,'车间领片','CO20261116001','BN20261116005','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1009,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',-10,-10,-20,'车间领片','CO20261116001','BN20261116006','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1010,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',10,30,40,'车间领片','CO20261116001','BN20261116006','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1011,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',10,-20,-10,'裁片入库','CO20261116001','BN20261116005','system','2026-11-16 09:00:00','分扎入库'),(1012,1001,'JT03','卡扣束腰大摆裙','黑色','S','CUT',10,-10,0,'裁片入库','CO20261116001','BN20261116006','system','2026-11-16 09:00:00','分扎入库'),(1013,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',-5,40,35,'包装出产线','PK100101','BN20261113001','孙梅','2026-11-19 10:30:00','包装入库'),(1014,1001,'JT03','卡扣束腰大摆裙','黑色','S','FINISH',5,0,5,'成品入库','PK100101','BN20261113001','孙梅','2026-11-19 10:30:00','包装入库'),(1015,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',-5,35,30,'包装出产线','PK100102','BN20261113002','孙梅','2026-11-19 10:30:00','包装入库'),(1016,1001,'JT03','卡扣束腰大摆裙','黑色','S','FINISH',5,5,10,'成品入库','PK100102','BN20261113002','孙梅','2026-11-19 10:30:00','包装入库'),(1017,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',-10,30,20,'包装出产线','PK100201','BN20261116005','孙梅','2026-11-19 15:00:00','包装入库'),(1018,1001,'JT03','卡扣束腰大摆裙','黑色','S','FINISH',10,10,20,'成品入库','PK100201','BN20261116005','孙梅','2026-11-19 15:00:00','包装入库'),(1019,1001,'JT03','卡扣束腰大摆裙','黑色','S','LINE',-10,20,10,'包装出产线','PK100202','BN20261116006','孙梅','2026-11-19 15:00:00','包装入库'),(1020,1001,'JT03','卡扣束腰大摆裙','黑色','S','FINISH',10,20,30,'成品入库','PK100202','BN20261116006','孙梅','2026-11-19 15:00:00','包装入库'),(1021,1002,'JT03','卡扣束腰大摆裙','黑色','M','FINISH',-4,0,-4,'成品出库','CK20261114001','','王芳','2026-11-14 11:00:00','客户：杭州四季青'),(1022,1002,'JT03','卡扣束腰大摆裙','黑色','M','CUT',-10,0,-10,'车间领片','CO20261116001','BN20261116007','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1023,1002,'JT03','卡扣束腰大摆裙','黑色','M','LINE',10,0,10,'车间领片','CO20261116001','BN20261116007','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1024,1002,'JT03','卡扣束腰大摆裙','黑色','M','CUT',-10,-10,-20,'车间领片','CO20261116001','BN20261116008','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1025,1002,'JT03','卡扣束腰大摆裙','黑色','M','LINE',10,10,20,'车间领片','CO20261116001','BN20261116008','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1026,1002,'JT03','卡扣束腰大摆裙','黑色','M','CUT',10,-20,-10,'裁片入库','CO20261116001','BN20261116007','system','2026-11-16 09:00:00','分扎入库'),(1027,1002,'JT03','卡扣束腰大摆裙','黑色','M','CUT',10,-10,0,'裁片入库','CO20261116001','BN20261116008','system','2026-11-16 09:00:00','分扎入库'),(1028,1002,'JT03','卡扣束腰大摆裙','黑色','M','FINISH',3,-4,-1,'退货入库','TH20261118001','','陈静','2026-11-18 14:00:00','退货原因：尺码偏小'),(1029,1002,'JT03','卡扣束腰大摆裙','黑色','M','LINE',-10,20,10,'包装出产线','PK100201','BN20261116007','孙梅','2026-11-19 15:00:00','包装入库'),(1030,1002,'JT03','卡扣束腰大摆裙','黑色','M','FINISH',10,-1,9,'成品入库','PK100201','BN20261116007','孙梅','2026-11-19 15:00:00','包装入库'),(1031,1002,'JT03','卡扣束腰大摆裙','黑色','M','LINE',-10,10,0,'包装出产线','PK100202','BN20261116008','孙梅','2026-11-19 15:00:00','包装入库'),(1032,1002,'JT03','卡扣束腰大摆裙','黑色','M','FINISH',10,9,19,'成品入库','PK100202','BN20261116008','孙梅','2026-11-19 15:00:00','包装入库'),(1033,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',10,0,10,'裁片入库','CO20261113001','BN20261113003','system','2026-11-13 09:00:00','分扎入库'),(1034,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',10,10,20,'裁片入库','CO20261113001','BN20261113004','system','2026-11-13 09:00:00','分扎入库'),(1035,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',-10,20,10,'车间领片','CO20261113001','BN20261113003','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1036,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',10,0,10,'车间领片','CO20261113001','BN20261113003','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1037,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',-10,10,0,'车间领片','CO20261113001','BN20261113004','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1038,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',10,10,20,'车间领片','CO20261113001','BN20261113004','赵丽','2026-11-14 09:30:00','车间扫码领片'),(1039,1006,'JT03','卡扣束腰大摆裙','白色','M','FINISH',-4,0,-4,'成品出库','CK20261114001','','王芳','2026-11-14 11:00:00','客户：杭州四季青'),(1040,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',-10,0,-10,'车间领片','CO20261116001','BN20261116009','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1041,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',10,20,30,'车间领片','CO20261116001','BN20261116009','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1042,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',-10,-10,-20,'车间领片','CO20261116001','BN20261116010','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1043,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',10,30,40,'车间领片','CO20261116001','BN20261116010','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1044,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',10,-20,-10,'裁片入库','CO20261116001','BN20261116009','system','2026-11-16 09:00:00','分扎入库'),(1045,1006,'JT03','卡扣束腰大摆裙','白色','M','CUT',10,-10,0,'裁片入库','CO20261116001','BN20261116010','system','2026-11-16 09:00:00','分扎入库'),(1046,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',-5,40,35,'包装出产线','PK100101','BN20261113003','孙梅','2026-11-19 10:30:00','包装入库'),(1047,1006,'JT03','卡扣束腰大摆裙','白色','M','FINISH',5,-4,1,'成品入库','PK100101','BN20261113003','孙梅','2026-11-19 10:30:00','包装入库'),(1048,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',-5,35,30,'包装出产线','PK100102','BN20261113004','孙梅','2026-11-19 10:30:00','包装入库'),(1049,1006,'JT03','卡扣束腰大摆裙','白色','M','FINISH',5,1,6,'成品入库','PK100102','BN20261113004','孙梅','2026-11-19 10:30:00','包装入库'),(1050,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',-10,30,20,'包装出产线','PK100201','BN20261116009','孙梅','2026-11-19 15:00:00','包装入库'),(1051,1006,'JT03','卡扣束腰大摆裙','白色','M','FINISH',10,6,16,'成品入库','PK100201','BN20261116009','孙梅','2026-11-19 15:00:00','包装入库'),(1052,1006,'JT03','卡扣束腰大摆裙','白色','M','LINE',-10,20,10,'包装出产线','PK100202','BN20261116010','孙梅','2026-11-19 15:00:00','包装入库'),(1053,1006,'JT03','卡扣束腰大摆裙','白色','M','FINISH',10,16,26,'成品入库','PK100202','BN20261116010','孙梅','2026-11-19 15:00:00','包装入库'),(1054,1007,'JT03','卡扣束腰大摆裙','白色','L','CUT',-10,0,-10,'车间领片','CO20261116001','BN20261116011','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1055,1007,'JT03','卡扣束腰大摆裙','白色','L','LINE',10,0,10,'车间领片','CO20261116001','BN20261116011','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1056,1007,'JT03','卡扣束腰大摆裙','白色','L','CUT',-10,-10,-20,'车间领片','CO20261116001','BN20261116012','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1057,1007,'JT03','卡扣束腰大摆裙','白色','L','LINE',10,10,20,'车间领片','CO20261116001','BN20261116012','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1058,1007,'JT03','卡扣束腰大摆裙','白色','L','CUT',10,-20,-10,'裁片入库','CO20261116001','BN20261116011','system','2026-11-16 09:00:00','分扎入库'),(1059,1007,'JT03','卡扣束腰大摆裙','白色','L','CUT',10,-10,0,'裁片入库','CO20261116001','BN20261116012','system','2026-11-16 09:00:00','分扎入库'),(1060,1007,'JT03','卡扣束腰大摆裙','白色','L','LINE',-10,20,10,'包装出产线','PK100201','BN20261116011','孙梅','2026-11-19 15:00:00','包装入库'),(1061,1007,'JT03','卡扣束腰大摆裙','白色','L','FINISH',10,0,10,'成品入库','PK100201','BN20261116011','孙梅','2026-11-19 15:00:00','包装入库'),(1062,1007,'JT03','卡扣束腰大摆裙','白色','L','LINE',-10,10,0,'包装出产线','PK100202','BN20261116012','孙梅','2026-11-19 15:00:00','包装入库'),(1063,1007,'JT03','卡扣束腰大摆裙','白色','L','FINISH',10,10,20,'成品入库','PK100202','BN20261116012','孙梅','2026-11-19 15:00:00','包装入库'),(1064,1011,'JT03','卡扣束腰大摆裙','藏青','L','CUT',-10,0,-10,'车间领片','CO20261116001','BN20261116013','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1065,1011,'JT03','卡扣束腰大摆裙','藏青','L','LINE',10,0,10,'车间领片','CO20261116001','BN20261116013','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1066,1011,'JT03','卡扣束腰大摆裙','藏青','L','CUT',-10,-10,-20,'车间领片','CO20261116001','BN20261116014','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1067,1011,'JT03','卡扣束腰大摆裙','藏青','L','LINE',10,10,20,'车间领片','CO20261116001','BN20261116014','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1068,1011,'JT03','卡扣束腰大摆裙','藏青','L','CUT',10,-20,-10,'裁片入库','CO20261116001','BN20261116013','system','2026-11-16 09:00:00','分扎入库'),(1069,1011,'JT03','卡扣束腰大摆裙','藏青','L','CUT',10,-10,0,'裁片入库','CO20261116001','BN20261116014','system','2026-11-16 09:00:00','分扎入库'),(1070,1011,'JT03','卡扣束腰大摆裙','藏青','L','LINE',-10,20,10,'包装出产线','PK100201','BN20261116013','孙梅','2026-11-19 15:00:00','包装入库'),(1071,1011,'JT03','卡扣束腰大摆裙','藏青','L','FINISH',10,0,10,'成品入库','PK100201','BN20261116013','孙梅','2026-11-19 15:00:00','包装入库'),(1072,1011,'JT03','卡扣束腰大摆裙','藏青','L','LINE',-10,10,0,'包装出产线','PK100202','BN20261116014','孙梅','2026-11-19 15:00:00','包装入库'),(1073,1011,'JT03','卡扣束腰大摆裙','藏青','L','FINISH',10,10,20,'成品入库','PK100202','BN20261116014','孙梅','2026-11-19 15:00:00','包装入库'),(1074,1016,'JT03','卡扣束腰大摆裙','酒红','XL','FINISH',-2,0,-2,'成品出库','CK20261114001','','王芳','2026-11-14 11:00:00','客户：杭州四季青'),(1075,1016,'JT03','卡扣束腰大摆裙','酒红','XL','CUT',-10,0,-10,'车间领片','CO20261116001','BN20261116015','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1076,1016,'JT03','卡扣束腰大摆裙','酒红','XL','LINE',10,0,10,'车间领片','CO20261116001','BN20261116015','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1077,1016,'JT03','卡扣束腰大摆裙','酒红','XL','CUT',-10,-10,-20,'车间领片','CO20261116001','BN20261116016','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1078,1016,'JT03','卡扣束腰大摆裙','酒红','XL','LINE',10,10,20,'车间领片','CO20261116001','BN20261116016','钱峰','2026-11-16 08:40:00','车间扫码领片'),(1079,1016,'JT03','卡扣束腰大摆裙','酒红','XL','CUT',10,-20,-10,'裁片入库','CO20261116001','BN20261116015','system','2026-11-16 09:00:00','分扎入库'),(1080,1016,'JT03','卡扣束腰大摆裙','酒红','XL','CUT',10,-10,0,'裁片入库','CO20261116001','BN20261116016','system','2026-11-16 09:00:00','分扎入库'),(1081,1016,'JT03','卡扣束腰大摆裙','酒红','XL','LINE',-10,20,10,'包装出产线','PK100201','BN20261116015','孙梅','2026-11-19 15:00:00','包装入库'),(1082,1016,'JT03','卡扣束腰大摆裙','酒红','XL','FINISH',10,-2,8,'成品入库','PK100201','BN20261116015','孙梅','2026-11-19 15:00:00','包装入库'),(1083,1016,'JT03','卡扣束腰大摆裙','酒红','XL','LINE',-10,10,0,'包装出产线','PK100202','BN20261116016','孙梅','2026-11-19 15:00:00','包装入库'),(1084,1016,'JT03','卡扣束腰大摆裙','酒红','XL','FINISH',10,8,18,'成品入库','PK100202','BN20261116016','孙梅','2026-11-19 15:00:00','包装入库'),(1085,1101,'JT04','原布连衣裙','米杏','S','CUT',10,0,10,'裁片入库','CO20261118001','BN20261118017','system','2026-11-18 09:00:00','分扎入库'),(1086,1101,'JT04','原布连衣裙','米杏','S','CUT',10,10,20,'裁片入库','CO20261118001','BN20261118018','system','2026-11-18 09:00:00','分扎入库'),(1087,1101,'JT04','原布连衣裙','米杏','S','FINISH',-4,0,-4,'成品出库','CK20261119001','','王芳','2026-11-19 11:00:00','客户：上海衣品'),(1088,1101,'JT04','原布连衣裙','米杏','S','FINISH',2,-4,-2,'退货入库','TH20261120001','','陈静','2026-11-20 14:00:00','退货原因：客户取消'),(1089,1102,'JT04','原布连衣裙','米杏','M','CUT',10,0,10,'裁片入库','CO20261118001','BN20261118019','system','2026-11-18 09:00:00','分扎入库'),(1090,1102,'JT04','原布连衣裙','米杏','M','CUT',10,10,20,'裁片入库','CO20261118001','BN20261118020','system','2026-11-18 09:00:00','分扎入库'),(1091,1105,'JT04','原布连衣裙','雾霾蓝','M','CUT',10,0,10,'裁片入库','CO20261118001','BN20261118021','system','2026-11-18 09:00:00','分扎入库'),(1092,1105,'JT04','原布连衣裙','雾霾蓝','M','CUT',10,10,20,'裁片入库','CO20261118001','BN20261118022','system','2026-11-18 09:00:00','分扎入库'),(1093,1201,'JT07','原布半身裙','米杏','S','CUT',10,0,10,'裁片入库','CO20261121001','BN20261121023','system','2026-11-21 09:00:00','分扎入库'),(1094,1201,'JT07','原布半身裙','米杏','S','CUT',5,10,15,'裁片入库','CO20261121001','BN20261121024','system','2026-11-21 09:00:00','分扎入库'),(1095,1206,'JT07','原布半身裙','雾霾蓝','L','FINISH',-6,0,-6,'成品出库','CK20261119001','','王芳','2026-11-19 11:00:00','客户：上海衣品'),(1096,1206,'JT07','原布半身裙','雾霾蓝','L','CUT',10,0,10,'裁片入库','CO20261121001','BN20261121025','system','2026-11-21 09:00:00','分扎入库'),(1097,1206,'JT07','原布半身裙','雾霾蓝','L','CUT',5,10,15,'裁片入库','CO20261121001','BN20261121026','system','2026-11-21 09:00:00','分扎入库'),(1098,1302,'MQ3001','法式泡泡袖上衣','白色','M','FINISH',-6,0,-6,'成品出库','CK20261121001','','小陈','2026-11-21 11:00:00','客户：北京尚品'),(1099,1312,'MQ3001','法式泡泡袖上衣','浅灰','XL','FINISH',8,0,8,'初始库存','INIT','','admin','2026-11-10 09:00:00','Excel导入初始库存'),(1100,1001,'JT03','卡扣束腰大摆裙','黑色','S','FINISH',2,30,32,'退货入库','TH20261121003','','sysadmin','2026-11-21 10:56:24','测试退货'),(1101,1001,'JT03','卡扣束腰大摆裙','黑色','S','FINISH',-2,32,30,'退货作废','TH20261121003','','sysadmin','2026-11-21 10:56:39','删除退货单，回滚库存'),(1102,1002,'JT03','卡扣束腰大摆裙','黑色','M','FINISH',10,19,29,'成品入库','CP20261121002','','王芳','2026-11-21 14:30:00','包装入库'),(1103,1201,'JT07','原布半身裙','米杏','S','CUT',17,15,32,'裁片入库','CH20261122001','Z202611220031','cutting','2026-11-22 15:45:07','裁片扫码入库'),(1104,1201,'JT07','原布半身裙','米杏','S','CUT',17,32,49,'裁片入库','CH20261122001','Z202611220030','cutting','2026-11-22 15:45:10','裁片扫码入库'),(1105,1201,'JT07','原布半身裙','米杏','S','CUT',17,49,66,'裁片入库','CH20261122001','Z202611220029','cutting','2026-11-22 15:45:11','裁片扫码入库'),(1106,1201,'JT07','原布半身裙','米杏','S','CUT',17,66,83,'裁片入库','CH20261122001','Z202611220028','cutting','2026-11-22 15:45:11','裁片扫码入库'),(1107,1201,'JT07','原布半身裙','米杏','S','CUT',17,83,100,'裁片入库','CH20261122001','Z202611220027','cutting','2026-11-22 15:45:12','裁片扫码入库'),(1108,1201,'JT07','原布半身裙','米杏','S','CUT',15,100,115,'裁片入库','CH20261122001','Z202611220032','cutting','2026-11-22 15:45:13','裁片扫码入库'),(1109,1201,'JT07','原布半身裙','米杏','S','CUT',-15,115,100,'车间领片','CH20261122001','Z202611220032','admin','2026-11-22 16:35:15','领片人：管理员'),(1110,1201,'JT07','原布半身裙','米杏','S','LINE',15,0,15,'车间领片','CH20261122001','Z202611220032','admin','2026-11-22 16:35:15','领片人：管理员'),(1111,1201,'JT07','原布半身裙','米杏','S','CUT',-17,100,83,'车间领片','CH20261122001','Z202611220031','admin','2026-11-22 16:37:08','领片人：管理员'),(1112,1201,'JT07','原布半身裙','米杏','S','LINE',17,15,32,'车间领片','CH20261122001','Z202611220031','admin','2026-11-22 16:37:08','领片人：管理员'),(1113,1201,'JT07','原布半身裙','米杏','S','CUT',-17,83,66,'车间领片','CH20261122001','Z202611220030','admin','2026-11-22 16:46:08','领片人：管理员'),(1114,1201,'JT07','原布半身裙','米杏','S','LINE',17,32,49,'车间领片','CH20261122001','Z202611220030','admin','2026-11-22 16:46:08','领片人：管理员'),(1115,1201,'JT07','原布半身裙','米杏','S','CUT',-17,66,49,'车间领片','CH20261122001','Z202611220029','admin','2026-11-22 16:55:15','领片人：管理员'),(1116,1201,'JT07','原布半身裙','米杏','S','LINE',17,49,66,'车间领片','CH20261122001','Z202611220029','admin','2026-11-22 16:55:15','领片人：管理员'),(1117,1201,'JT07','原布半身裙','米杏','S','CUT',-17,49,32,'车间领片','CH20261122001','Z202611220028','workshop','2026-11-22 17:07:22','领片人：李梅'),(1118,1201,'JT07','原布半身裙','米杏','S','LINE',17,66,83,'车间领片','CH20261122001','Z202611220028','workshop','2026-11-22 17:07:22','领片人：李梅'),(1119,1201,'JT07','原布半身裙','米杏','S','CUT',3,32,35,'裁片入库','CH20261122002','Z202611230034','cutting','2026-11-23 16:37:38','裁片扫码入库'),(1120,1201,'JT07','原布半身裙','米杏','S','CUT',17,35,52,'裁片入库','CH20261122002','Z202611230033','cutting','2026-11-23 16:37:40','裁片扫码入库');
 /*!40000 ALTER TABLE `biz_stock_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1048,27 +1048,27 @@ DROP TABLE IF EXISTS `biz_style`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_style` (
   `style_id` bigint NOT NULL AUTO_INCREMENT COMMENT '款号ID',
-  `style_no` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '款号',
-  `parent_style_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '父体款号',
-  `cn_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '中文品名',
-  `style_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '名称',
-  `category` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '品类',
-  `season` varchar(30) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '季节',
-  `image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款式图片',
-  `designer` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '设计人',
-  `size_table` varchar(200) COLLATE utf8mb4_general_ci DEFAULT 'S,M,L,XL,XXL' COMMENT '尺码表(逗号分隔)',
-  `ref_image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '参考图片',
+  `style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '款号',
+  `parent_style_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '父体款号',
+  `cn_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '中文品名',
+  `style_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '名称',
+  `category` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '品类',
+  `season` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '季节',
+  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '款式图片',
+  `designer` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '设计人',
+  `size_table` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'S,M,L,XL,XXL' COMMENT '尺码表(逗号分隔)',
+  `ref_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '参考图片',
   `expect_price` decimal(10,2) DEFAULT '0.00' COMMENT '预计卖价',
-  `pattern_file` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '纸样文件',
-  `sample_image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '样衣照片',
-  `design_remark` text COLLATE utf8mb4_general_ci COMMENT '设计/修改记录',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 1停用)',
-  `del_flag` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志(0存在 2删除)',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `pattern_file` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '纸样文件',
+  `sample_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '样衣照片',
+  `design_remark` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '设计/修改记录',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 1停用)',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志(0存在 2删除)',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`style_id`),
   UNIQUE KEY `uk_style_no` (`style_no`)
 ) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='款号档案';
@@ -1093,17 +1093,17 @@ DROP TABLE IF EXISTS `biz_supplier`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `biz_supplier` (
   `supplier_id` bigint NOT NULL AUTO_INCREMENT COMMENT '供应商ID',
-  `supplier_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT '供应商名称',
-  `contact` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '联系人',
-  `phone` varchar(30) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '电话',
-  `supply_content` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '供货内容',
-  `address` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '地址',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 1停用)',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `supplier_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '供应商名称',
+  `contact` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '联系人',
+  `phone` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '电话',
+  `supply_content` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '供货内容',
+  `address` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '地址',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态(0正常 1停用)',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `create_time` datetime DEFAULT NULL,
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `update_time` datetime DEFAULT NULL,
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`supplier_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='供应商';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1127,27 +1127,27 @@ DROP TABLE IF EXISTS `gen_table`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `gen_table` (
   `table_id` bigint NOT NULL AUTO_INCREMENT COMMENT '编号',
-  `table_name` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '表名称',
-  `table_comment` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '表描述',
-  `sub_table_name` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '关联子表的表名',
-  `sub_table_fk_name` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '子表关联的外键名',
-  `class_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '实体类名称',
-  `tpl_category` varchar(200) COLLATE utf8mb4_general_ci DEFAULT 'crud' COMMENT '使用的模板（crud单表操作 tree树表操作）',
-  `tpl_web_type` varchar(30) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '前端模板类型（element-ui模版 element-plus模版）',
-  `package_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '生成包路径',
-  `module_name` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '生成模块名',
-  `business_name` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '生成业务名',
-  `function_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '生成功能名',
-  `function_author` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '生成功能作者',
+  `table_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '表名称',
+  `table_comment` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '表描述',
+  `sub_table_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '关联子表的表名',
+  `sub_table_fk_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '子表关联的外键名',
+  `class_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '实体类名称',
+  `tpl_category` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'crud' COMMENT '使用的模板（crud单表操作 tree树表操作）',
+  `tpl_web_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '前端模板类型（element-ui模版 element-plus模版）',
+  `package_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '生成包路径',
+  `module_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '生成模块名',
+  `business_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '生成业务名',
+  `function_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '生成功能名',
+  `function_author` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '生成功能作者',
   `form_col_num` int DEFAULT '1' COMMENT '表单布局（单列 双列 三列）',
-  `gen_type` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '生成代码方式（0zip压缩包 1自定义路径）',
-  `gen_path` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '/' COMMENT '生成路径（不填默认项目路径）',
-  `options` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其它生成选项',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+  `gen_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '生成代码方式（0zip压缩包 1自定义路径）',
+  `gen_path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '/' COMMENT '生成路径（不填默认项目路径）',
+  `options` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其它生成选项',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`table_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='代码生成业务表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1171,25 +1171,25 @@ DROP TABLE IF EXISTS `gen_table_column`;
 CREATE TABLE `gen_table_column` (
   `column_id` bigint NOT NULL AUTO_INCREMENT COMMENT '编号',
   `table_id` bigint DEFAULT NULL COMMENT '归属表编号',
-  `column_name` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '列名称',
-  `column_comment` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '列描述',
-  `column_type` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '列类型',
-  `java_type` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'JAVA类型',
-  `java_field` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'JAVA字段名',
-  `is_pk` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否主键（1是）',
-  `is_increment` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否自增（1是）',
-  `is_required` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否必填（1是）',
-  `is_insert` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否为插入字段（1是）',
-  `is_edit` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否编辑字段（1是）',
-  `is_list` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否列表字段（1是）',
-  `is_query` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否查询字段（1是）',
-  `query_type` varchar(200) COLLATE utf8mb4_general_ci DEFAULT 'EQ' COMMENT '查询方式（等于、不等于、大于、小于、范围）',
-  `html_type` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）',
-  `dict_type` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '字典类型',
+  `column_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '列名称',
+  `column_comment` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '列描述',
+  `column_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '列类型',
+  `java_type` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'JAVA类型',
+  `java_field` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'JAVA字段名',
+  `is_pk` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否主键（1是）',
+  `is_increment` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否自增（1是）',
+  `is_required` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否必填（1是）',
+  `is_insert` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否为插入字段（1是）',
+  `is_edit` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否编辑字段（1是）',
+  `is_list` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否列表字段（1是）',
+  `is_query` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否查询字段（1是）',
+  `query_type` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'EQ' COMMENT '查询方式（等于、不等于、大于、小于、范围）',
+  `html_type` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）',
+  `dict_type` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '字典类型',
   `sort` int DEFAULT NULL COMMENT '排序',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`column_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='代码生成业务表字段';
@@ -1212,9 +1212,9 @@ DROP TABLE IF EXISTS `QRTZ_BLOB_TRIGGERS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRTZ_BLOB_TRIGGERS` (
-  `sched_name` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
-  `trigger_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_name的外键',
-  `trigger_group` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_group的外键',
+  `sched_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
+  `trigger_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_name的外键',
+  `trigger_group` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_group的外键',
   `blob_data` blob COMMENT '存放持久化Trigger对象',
   PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`),
   CONSTRAINT `qrtz_blob_triggers_ibfk_1` FOREIGN KEY (`sched_name`, `trigger_name`, `trigger_group`) REFERENCES `QRTZ_TRIGGERS` (`sched_name`, `trigger_name`, `trigger_group`)
@@ -1238,8 +1238,8 @@ DROP TABLE IF EXISTS `QRTZ_CALENDARS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRTZ_CALENDARS` (
-  `sched_name` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
-  `calendar_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT '日历名称',
+  `sched_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
+  `calendar_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '日历名称',
   `calendar` blob NOT NULL COMMENT '存放持久化calendar对象',
   PRIMARY KEY (`sched_name`,`calendar_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='日历信息表';
@@ -1262,11 +1262,11 @@ DROP TABLE IF EXISTS `QRTZ_CRON_TRIGGERS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRTZ_CRON_TRIGGERS` (
-  `sched_name` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
-  `trigger_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_name的外键',
-  `trigger_group` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_group的外键',
-  `cron_expression` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'cron表达式',
-  `time_zone_id` varchar(80) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '时区',
+  `sched_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
+  `trigger_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_name的外键',
+  `trigger_group` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_group的外键',
+  `cron_expression` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'cron表达式',
+  `time_zone_id` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '时区',
   PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`),
   CONSTRAINT `qrtz_cron_triggers_ibfk_1` FOREIGN KEY (`sched_name`, `trigger_name`, `trigger_group`) REFERENCES `QRTZ_TRIGGERS` (`sched_name`, `trigger_name`, `trigger_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Cron类型的触发器表';
@@ -1289,19 +1289,19 @@ DROP TABLE IF EXISTS `QRTZ_FIRED_TRIGGERS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRTZ_FIRED_TRIGGERS` (
-  `sched_name` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
-  `entry_id` varchar(95) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度器实例id',
-  `trigger_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_name的外键',
-  `trigger_group` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_group的外键',
-  `instance_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度器实例名',
+  `sched_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
+  `entry_id` varchar(95) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度器实例id',
+  `trigger_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_name的外键',
+  `trigger_group` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_group的外键',
+  `instance_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度器实例名',
   `fired_time` bigint NOT NULL COMMENT '触发的时间',
   `sched_time` bigint NOT NULL COMMENT '定时器制定的时间',
   `priority` int NOT NULL COMMENT '优先级',
-  `state` varchar(16) COLLATE utf8mb4_general_ci NOT NULL COMMENT '状态',
-  `job_name` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '任务名称',
-  `job_group` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '任务组名',
-  `is_nonconcurrent` varchar(1) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否并发',
-  `requests_recovery` varchar(1) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否接受恢复执行',
+  `state` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '状态',
+  `job_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '任务名称',
+  `job_group` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '任务组名',
+  `is_nonconcurrent` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否并发',
+  `requests_recovery` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否接受恢复执行',
   PRIMARY KEY (`sched_name`,`entry_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='已触发的触发器表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1323,15 +1323,15 @@ DROP TABLE IF EXISTS `QRTZ_JOB_DETAILS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRTZ_JOB_DETAILS` (
-  `sched_name` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
-  `job_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务名称',
-  `job_group` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务组名',
-  `description` varchar(250) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '相关介绍',
-  `job_class_name` varchar(250) COLLATE utf8mb4_general_ci NOT NULL COMMENT '执行任务类名称',
-  `is_durable` varchar(1) COLLATE utf8mb4_general_ci NOT NULL COMMENT '是否持久化',
-  `is_nonconcurrent` varchar(1) COLLATE utf8mb4_general_ci NOT NULL COMMENT '是否并发',
-  `is_update_data` varchar(1) COLLATE utf8mb4_general_ci NOT NULL COMMENT '是否更新数据',
-  `requests_recovery` varchar(1) COLLATE utf8mb4_general_ci NOT NULL COMMENT '是否接受恢复执行',
+  `sched_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
+  `job_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务名称',
+  `job_group` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务组名',
+  `description` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '相关介绍',
+  `job_class_name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '执行任务类名称',
+  `is_durable` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '是否持久化',
+  `is_nonconcurrent` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '是否并发',
+  `is_update_data` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '是否更新数据',
+  `requests_recovery` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '是否接受恢复执行',
   `job_data` blob COMMENT '存放持久化job对象',
   PRIMARY KEY (`sched_name`,`job_name`,`job_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='任务详细信息表';
@@ -1354,8 +1354,8 @@ DROP TABLE IF EXISTS `QRTZ_LOCKS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRTZ_LOCKS` (
-  `sched_name` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
-  `lock_name` varchar(40) COLLATE utf8mb4_general_ci NOT NULL COMMENT '悲观锁名称',
+  `sched_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
+  `lock_name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '悲观锁名称',
   PRIMARY KEY (`sched_name`,`lock_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='存储的悲观锁信息表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1377,8 +1377,8 @@ DROP TABLE IF EXISTS `QRTZ_PAUSED_TRIGGER_GRPS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRTZ_PAUSED_TRIGGER_GRPS` (
-  `sched_name` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
-  `trigger_group` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_group的外键',
+  `sched_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
+  `trigger_group` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_group的外键',
   PRIMARY KEY (`sched_name`,`trigger_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='暂停的触发器表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1400,8 +1400,8 @@ DROP TABLE IF EXISTS `QRTZ_SCHEDULER_STATE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRTZ_SCHEDULER_STATE` (
-  `sched_name` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
-  `instance_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT '实例名称',
+  `sched_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
+  `instance_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '实例名称',
   `last_checkin_time` bigint NOT NULL COMMENT '上次检查时间',
   `checkin_interval` bigint NOT NULL COMMENT '检查间隔时间',
   PRIMARY KEY (`sched_name`,`instance_name`)
@@ -1425,9 +1425,9 @@ DROP TABLE IF EXISTS `QRTZ_SIMPLE_TRIGGERS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRTZ_SIMPLE_TRIGGERS` (
-  `sched_name` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
-  `trigger_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_name的外键',
-  `trigger_group` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_group的外键',
+  `sched_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
+  `trigger_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_name的外键',
+  `trigger_group` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_group的外键',
   `repeat_count` bigint NOT NULL COMMENT '重复的次数统计',
   `repeat_interval` bigint NOT NULL COMMENT '重复的间隔时间',
   `times_triggered` bigint NOT NULL COMMENT '已经触发的次数',
@@ -1453,20 +1453,20 @@ DROP TABLE IF EXISTS `QRTZ_SIMPROP_TRIGGERS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRTZ_SIMPROP_TRIGGERS` (
-  `sched_name` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
-  `trigger_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_name的外键',
-  `trigger_group` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_group的外键',
-  `str_prop_1` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'String类型的trigger的第一个参数',
-  `str_prop_2` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'String类型的trigger的第二个参数',
-  `str_prop_3` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'String类型的trigger的第三个参数',
+  `sched_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
+  `trigger_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_name的外键',
+  `trigger_group` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_triggers表trigger_group的外键',
+  `str_prop_1` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'String类型的trigger的第一个参数',
+  `str_prop_2` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'String类型的trigger的第二个参数',
+  `str_prop_3` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'String类型的trigger的第三个参数',
   `int_prop_1` int DEFAULT NULL COMMENT 'int类型的trigger的第一个参数',
   `int_prop_2` int DEFAULT NULL COMMENT 'int类型的trigger的第二个参数',
   `long_prop_1` bigint DEFAULT NULL COMMENT 'long类型的trigger的第一个参数',
   `long_prop_2` bigint DEFAULT NULL COMMENT 'long类型的trigger的第二个参数',
   `dec_prop_1` decimal(13,4) DEFAULT NULL COMMENT 'decimal类型的trigger的第一个参数',
   `dec_prop_2` decimal(13,4) DEFAULT NULL COMMENT 'decimal类型的trigger的第二个参数',
-  `bool_prop_1` varchar(1) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Boolean类型的trigger的第一个参数',
-  `bool_prop_2` varchar(1) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Boolean类型的trigger的第二个参数',
+  `bool_prop_1` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Boolean类型的trigger的第一个参数',
+  `bool_prop_2` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Boolean类型的trigger的第二个参数',
   PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`),
   CONSTRAINT `qrtz_simprop_triggers_ibfk_1` FOREIGN KEY (`sched_name`, `trigger_name`, `trigger_group`) REFERENCES `QRTZ_TRIGGERS` (`sched_name`, `trigger_name`, `trigger_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='同步机制的行锁表';
@@ -1489,20 +1489,20 @@ DROP TABLE IF EXISTS `QRTZ_TRIGGERS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QRTZ_TRIGGERS` (
-  `sched_name` varchar(120) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
-  `trigger_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT '触发器的名字',
-  `trigger_group` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT '触发器所属组的名字',
-  `job_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_job_details表job_name的外键',
-  `job_group` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_job_details表job_group的外键',
-  `description` varchar(250) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '相关介绍',
+  `sched_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
+  `trigger_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '触发器的名字',
+  `trigger_group` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '触发器所属组的名字',
+  `job_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_job_details表job_name的外键',
+  `job_group` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'qrtz_job_details表job_group的外键',
+  `description` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '相关介绍',
   `next_fire_time` bigint DEFAULT NULL COMMENT '上一次触发时间（毫秒）',
   `prev_fire_time` bigint DEFAULT NULL COMMENT '下一次触发时间（默认为-1表示不触发）',
   `priority` int DEFAULT NULL COMMENT '优先级',
-  `trigger_state` varchar(16) COLLATE utf8mb4_general_ci NOT NULL COMMENT '触发器状态',
-  `trigger_type` varchar(8) COLLATE utf8mb4_general_ci NOT NULL COMMENT '触发器的类型',
+  `trigger_state` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '触发器状态',
+  `trigger_type` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '触发器的类型',
   `start_time` bigint NOT NULL COMMENT '开始时间',
   `end_time` bigint DEFAULT NULL COMMENT '结束时间',
-  `calendar_name` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '日程表名称',
+  `calendar_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '日程表名称',
   `misfire_instr` smallint DEFAULT NULL COMMENT '补偿执行的策略',
   `job_data` blob COMMENT '存放持久化job对象',
   PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`),
@@ -1529,15 +1529,15 @@ DROP TABLE IF EXISTS `sys_config`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_config` (
   `config_id` int NOT NULL AUTO_INCREMENT COMMENT '参数主键',
-  `config_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '参数名称',
-  `config_key` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '参数键名',
-  `config_value` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '参数键值',
-  `config_type` char(1) COLLATE utf8mb4_general_ci DEFAULT 'N' COMMENT '系统内置（Y是 N否）',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+  `config_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '参数名称',
+  `config_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '参数键名',
+  `config_value` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '参数键值',
+  `config_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'N' COMMENT '系统内置（Y是 N否）',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='参数配置表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1562,20 +1562,20 @@ DROP TABLE IF EXISTS `sys_dept`;
 CREATE TABLE `sys_dept` (
   `dept_id` bigint NOT NULL AUTO_INCREMENT COMMENT '部门id',
   `parent_id` bigint DEFAULT '0' COMMENT '父部门id',
-  `ancestors` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '祖级列表',
-  `dept_name` varchar(30) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '部门名称',
+  `ancestors` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '祖级列表',
+  `dept_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '部门名称',
   `order_num` int DEFAULT '0' COMMENT '显示顺序',
-  `leader` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '负责人',
-  `phone` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '联系电话',
-  `email` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '邮箱',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '部门状态（0正常 1停用）',
-  `del_flag` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+  `leader` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '负责人',
+  `phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '联系电话',
+  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '邮箱',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '部门状态（0正常 1停用）',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`dept_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='部门表';
+) ENGINE=InnoDB AUTO_INCREMENT=200 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='部门表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1598,18 +1598,18 @@ DROP TABLE IF EXISTS `sys_dict_data`;
 CREATE TABLE `sys_dict_data` (
   `dict_code` bigint NOT NULL AUTO_INCREMENT COMMENT '字典编码',
   `dict_sort` int DEFAULT '0' COMMENT '字典排序',
-  `dict_label` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '字典标签',
-  `dict_value` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '字典键值',
-  `dict_type` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '字典类型',
-  `css_class` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '样式属性（其他样式扩展）',
-  `list_class` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '表格回显样式',
-  `is_default` char(1) COLLATE utf8mb4_general_ci DEFAULT 'N' COMMENT '是否默认（Y是 N否）',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态（0正常 1停用）',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+  `dict_label` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '字典标签',
+  `dict_value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '字典键值',
+  `dict_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '字典类型',
+  `css_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '样式属性（其他样式扩展）',
+  `list_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '表格回显样式',
+  `is_default` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'N' COMMENT '是否默认（Y是 N否）',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`dict_code`),
   UNIQUE KEY `uk_dict_type_value` (`dict_type`,`dict_value`)
 ) ENGINE=InnoDB AUTO_INCREMENT=159 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='字典数据表';
@@ -1634,14 +1634,14 @@ DROP TABLE IF EXISTS `sys_dict_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_dict_type` (
   `dict_id` bigint NOT NULL AUTO_INCREMENT COMMENT '字典主键',
-  `dict_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '字典名称',
-  `dict_type` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '字典类型',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态（0正常 1停用）',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+  `dict_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '字典名称',
+  `dict_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '字典类型',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`dict_id`),
   UNIQUE KEY `dict_type` (`dict_type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='字典类型表';
@@ -1666,20 +1666,20 @@ DROP TABLE IF EXISTS `sys_job`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_job` (
   `job_id` bigint NOT NULL AUTO_INCREMENT COMMENT '任务ID',
-  `job_name` varchar(64) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '任务名称',
-  `job_group` varchar(64) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'DEFAULT' COMMENT '任务组名',
-  `invoke_target` varchar(500) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调用目标字符串',
-  `cron_expression` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'cron执行表达式',
-  `misfire_policy` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '3' COMMENT '计划执行错误策略（1立即执行 2执行一次 3放弃执行）',
-  `concurrent` char(1) COLLATE utf8mb4_general_ci DEFAULT '1' COMMENT '是否并发执行（0允许 1禁止）',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态（0正常 1暂停）',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+  `job_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '任务名称',
+  `job_group` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'DEFAULT' COMMENT '任务组名',
+  `invoke_target` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调用目标字符串',
+  `cron_expression` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'cron执行表达式',
+  `misfire_policy` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '3' COMMENT '计划执行错误策略（1立即执行 2执行一次 3放弃执行）',
+  `concurrent` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '1' COMMENT '是否并发执行（0允许 1禁止）',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '状态（0正常 1暂停）',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '备注信息',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '备注信息',
   PRIMARY KEY (`job_id`,`job_name`,`job_group`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='定时任务调度表';
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='定时任务调度表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1700,12 +1700,12 @@ DROP TABLE IF EXISTS `sys_job_log`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_job_log` (
   `job_log_id` bigint NOT NULL AUTO_INCREMENT COMMENT '任务日志ID',
-  `job_name` varchar(64) COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务名称',
-  `job_group` varchar(64) COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务组名',
-  `invoke_target` varchar(500) COLLATE utf8mb4_general_ci NOT NULL COMMENT '调用目标字符串',
-  `job_message` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '日志信息',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '执行状态（0正常 1失败）',
-  `exception_info` varchar(2000) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '异常信息',
+  `job_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务名称',
+  `job_group` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务组名',
+  `invoke_target` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调用目标字符串',
+  `job_message` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '日志信息',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '执行状态（0正常 1失败）',
+  `exception_info` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '异常信息',
   `start_time` datetime DEFAULT NULL COMMENT '执行开始时间',
   `end_time` datetime DEFAULT NULL COMMENT '执行结束时间',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
@@ -1731,18 +1731,18 @@ DROP TABLE IF EXISTS `sys_logininfor`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_logininfor` (
   `info_id` bigint NOT NULL AUTO_INCREMENT COMMENT '访问ID',
-  `user_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '用户账号',
-  `ipaddr` varchar(128) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '登录IP地址',
-  `login_location` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '登录地点',
-  `browser` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '浏览器类型',
-  `os` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作系统',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '登录状态（0成功 1失败）',
-  `msg` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '提示消息',
+  `user_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '用户账号',
+  `ipaddr` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '登录IP地址',
+  `login_location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '登录地点',
+  `browser` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '浏览器类型',
+  `os` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作系统',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '登录状态（0成功 1失败）',
+  `msg` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '提示消息',
   `login_time` datetime DEFAULT NULL COMMENT '访问时间',
   PRIMARY KEY (`info_id`),
   KEY `idx_sys_logininfor_s` (`status`),
   KEY `idx_sys_logininfor_lt` (`login_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=239 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统访问记录';
+) ENGINE=InnoDB AUTO_INCREMENT=244 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统访问记录';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1751,7 +1751,7 @@ CREATE TABLE `sys_logininfor` (
 
 LOCK TABLES `sys_logininfor` WRITE;
 /*!40000 ALTER TABLE `sys_logininfor` DISABLE KEYS */;
-INSERT INTO `sys_logininfor` VALUES (1,'workshop','127.0.0.1','内网IP','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-21 14:45:54'),(2,'workshop','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:08:03'),(3,'workshop','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:08:09'),(4,'workshop','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:22:21'),(5,'workshop','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:22:24'),(6,'workshop','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:22:29'),(7,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 15:22:36'),(8,'ry','127.0.0.1','内网IP','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 15:22:36'),(9,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:22:36'),(10,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:22:41'),(11,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:24:22'),(12,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:24:26'),(13,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:24:43'),(14,'warehouse','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:25:03'),(15,'warehouse','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-21 15:25:35'),(16,'warehouse','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:29:45'),(17,'warehouse','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:30:47'),(18,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:35:41'),(19,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:35:48'),(23,'warehouse','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 16:00:49'),(24,'warehouse','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 16:00:57'),(25,'warehouse','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 16:01:25'),(26,'workshop','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 16:01:35'),(27,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 16:01:39'),(28,'sysadmin','127.0.0.1','内网IP','Python-urllib 3.9','','0','登录成功','2026-11-21 16:04:29'),(29,'sysadmin','127.0.0.1','内网IP','Python-urllib 3.9','','0','登录成功','2026-11-21 16:05:41'),(30,'sysadmin','127.0.0.1','内网IP','Python-urllib 3.9','','0','登录成功','2026-11-21 16:05:54'),(31,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-21 16:07:13'),(32,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-21 16:07:56'),(33,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-21 16:08:32'),(34,'sysadmin','127.0.0.1','内网IP','Curl 7.81.0','','0','登录成功','2026-11-21 16:13:21'),(35,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-21 16:17:28'),(36,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 16:17:42'),(37,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-21 16:22:02'),(38,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 16:27:55'),(39,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 16:33:55'),(40,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 16:33:58'),(41,'sysadmin','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 19:05:52'),(42,'sysadmin','112.32.247.16','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 19:17:25'),(43,'sysadmin','112.32.247.16','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 19:18:15'),(44,'sysadmin','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:18:26'),(45,'sysadmin','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-21 19:19:46'),(46,'workshop','112.32.247.16','XX XX','WeChat 8.0.80','iOS 27.2.1','0','登录成功','2026-11-21 19:32:00'),(47,'workshop','112.32.247.16','XX XX','WeChat 8.0.80','iOS 27.2.1','0','退出成功','2026-11-21 19:33:43'),(48,'workshop','112.32.247.16','XX XX','WeChat 8.0.80','iOS 27.2.1','0','登录成功','2026-11-21 19:34:14'),(49,'sysadmin','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:35:10'),(50,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 19:39:00'),(51,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-21 19:42:51'),(52,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 19:42:53'),(53,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-21 19:45:32'),(54,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 19:46:34'),(55,'cutting','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:07'),(56,'workshop','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:08'),(57,'finishing','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:08'),(58,'warehouse','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:08'),(59,'finance','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:09'),(60,'design01','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:09'),(61,'design02','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:09'),(62,'design03','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:10'),(63,'purchaser01','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:10'),(64,'sysadmin','112.32.247.16','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 19:47:10'),(65,'sysadmin','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:35'),(66,'design01','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:52:57'),(67,'warehouse','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:52:57'),(68,'workshop','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:52:58'),(69,'finance','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:52:58'),(70,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-21 19:59:34'),(71,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-21 19:59:39'),(72,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 19:59:42'),(73,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-21 19:59:47'),(74,'warehouse','112.32.247.16','XX XX','Safari 27.2','Mac OS >=10.15.7','0','登录成功','2026-11-21 20:00:19'),(75,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-22 09:31:30'),(76,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-22 09:31:34'),(77,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 09:31:47'),(78,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 09:44:59'),(79,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 09:44:59'),(80,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 09:45:02'),(81,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-22 09:45:21'),(82,'workshop','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-22 09:45:27'),(83,'warehouse','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-22 09:45:28'),(84,'design01','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-22 09:45:28'),(85,'finance','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-22 09:45:28'),(86,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 09:52:44'),(87,'design01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 09:52:58'),(88,'design01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 09:55:18'),(89,'purchaser01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 09:55:41'),(90,'purchaser01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 09:57:44'),(91,'finance','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 09:57:53'),(92,'finance','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 10:00:14'),(93,'warehouse','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 10:00:39'),(94,'warehouse','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 10:04:28'),(95,'workshop','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 10:04:30'),(96,'workshop','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 10:06:06'),(97,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 10:06:12'),(98,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 10:07:15'),(99,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-22 10:07:23'),(100,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-22 10:07:26'),(101,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 10:07:33'),(102,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 10:11:59'),(103,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 10:12:03'),(104,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 10:13:24'),(105,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 10:13:47'),(106,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-22 10:14:09'),(107,'cutting','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:13'),(108,'workshop','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:14'),(109,'finishing','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:16'),(110,'warehouse','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:17'),(111,'finance','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:18'),(112,'purchaser01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:20'),(113,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:21'),(114,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:22'),(115,'cutting','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:25'),(116,'workshop','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:26'),(117,'finishing','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:27'),(118,'warehouse','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:28'),(119,'finance','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:30'),(120,'purchaser01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:31'),(121,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:32'),(122,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:33'),(123,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:32:57'),(124,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 10:35:29'),(125,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-22 10:35:31'),(126,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 10:35:45'),(127,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:48:12'),(128,'purchaser01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:48:13'),(129,'warehouse','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:48:14'),(130,'finance','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:48:15'),(131,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 10:48:25'),(132,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 10:48:29'),(133,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 10:48:37'),(134,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 10:48:48'),(135,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 10:48:54'),(136,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:49:00'),(137,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:49:33'),(138,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:50:14'),(139,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:50:26'),(140,'sysadminru\'guo','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 10:50:42'),(141,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:50:55'),(142,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 10:51:16'),(143,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:51:18'),(144,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:51:31'),(145,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:51:48'),(146,'cutting','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:51:48'),(147,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:51:48'),(148,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 11:02:37'),(149,'cutting','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 11:02:41'),(150,'warehouse','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 11:02:41'),(151,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-22 12:10:49'),(152,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 12:10:52'),(153,'sysadmin','112.32.246.167','XX XX','Safari 27.2','Mac OS >=10.15.7','0','登录成功','2026-11-22 12:28:38'),(154,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 14:41:35'),(155,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 15:09:38'),(156,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-22 15:09:48'),(157,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:04'),(158,'purchaser01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:04'),(159,'cutting','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:05'),(160,'warehouse','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:05'),(161,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:06'),(162,'workshop','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:06'),(163,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:07'),(164,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:17'),(165,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:38'),(166,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:19:41'),(167,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:30:22'),(168,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','注册成功','2026-11-22 15:30:33'),(169,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:30:36'),(170,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:30:43'),(171,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:30:47'),(172,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:33:12'),(173,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:33:28'),(174,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:35:44'),(175,'workshop','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:35:47'),(176,'warehouse','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:37:23'),(177,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:37:23'),(178,'cutting','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:37:24'),(179,'purchaser01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:37:24'),(180,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:37:25'),(181,'workshop','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:37:54'),(182,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:38:03'),(183,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:39:07'),(184,'finishing','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:40:05'),(185,'finishing','112.32.246.167','XX XX','Safari 18.5','iOS 18.5','0','退出成功','2026-11-22 15:41:23'),(186,'001','112.32.246.167','XX XX','Chrome 158','Android 14','0','登录成功','2026-11-22 15:41:53'),(187,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:42:29'),(188,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:42:47'),(189,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:45:28'),(190,'finishing','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:45:41'),(191,'finishing','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:45:57'),(192,'warehouse','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:46:07'),(193,'warehouse','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:51:49'),(194,'finance','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:52:00'),(195,'finance','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:56:05'),(196,'design01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:56:20'),(197,'design01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:57:27'),(198,'purchaser01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:57:42'),(199,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:59:21'),(200,'finance','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 16:00:15'),(201,'workshop','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 16:02:31'),(202,'purchaser01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 16:03:44'),(203,'finance','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 16:03:50'),(204,'finance','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 16:04:55'),(205,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 16:05:05'),(206,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 16:11:33'),(207,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 16:11:37'),(208,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 16:27:17'),(209,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 16:27:52'),(210,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 16:28:11'),(211,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 16:28:15'),(212,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 16:29:14'),(213,'workshop','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 16:58:31'),(214,'workshop','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 17:14:45'),(215,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-23 09:16:53'),(216,'sysadmin','112.32.246.167','XX XX','Chrome 158.0.0.0','Mac OS 10.15.7','0','登录成功','2026-11-23 09:33:46'),(217,'sysadmin','112.32.246.167','XX XX','Hacker','Hacker','0','登录成功','2026-11-23 09:33:49'),(218,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 09:44:57'),(219,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 10:18:21'),(220,'warehouse','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 10:41:16'),(221,'design01','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 10:53:13'),(222,'design01','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 10:53:18'),(223,'design01','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 10:58:39'),(224,'design01','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 10:58:45'),(225,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:30:44'),(226,'qianfeng','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:30:46'),(227,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:31:02'),(228,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:42:31'),(229,'design01','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:43:13'),(230,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-23 11:44:35'),(231,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:46:42'),(232,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:48:53'),(233,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-23 12:20:40'),(234,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-23 15:02:45'),(235,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-23 15:16:12'),(236,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-23 15:42:42'),(237,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-23 15:42:46'),(238,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-23 15:42:50');
+INSERT INTO `sys_logininfor` VALUES (1,'workshop','127.0.0.1','内网IP','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-21 14:45:54'),(2,'workshop','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:08:03'),(3,'workshop','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:08:09'),(4,'workshop','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:22:21'),(5,'workshop','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:22:24'),(6,'workshop','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:22:29'),(7,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 15:22:36'),(8,'ry','127.0.0.1','内网IP','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 15:22:36'),(9,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:22:36'),(10,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:22:41'),(11,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:24:22'),(12,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:24:26'),(13,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:24:43'),(14,'warehouse','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:25:03'),(15,'warehouse','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-21 15:25:35'),(16,'warehouse','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:29:45'),(17,'warehouse','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:30:47'),(18,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:35:41'),(19,'cutting','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 15:35:48'),(23,'warehouse','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 16:00:49'),(24,'warehouse','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 16:00:57'),(25,'warehouse','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 16:01:25'),(26,'workshop','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 16:01:35'),(27,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-21 16:01:39'),(28,'sysadmin','127.0.0.1','内网IP','Python-urllib 3.9','','0','登录成功','2026-11-21 16:04:29'),(29,'sysadmin','127.0.0.1','内网IP','Python-urllib 3.9','','0','登录成功','2026-11-21 16:05:41'),(30,'sysadmin','127.0.0.1','内网IP','Python-urllib 3.9','','0','登录成功','2026-11-21 16:05:54'),(31,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-21 16:07:13'),(32,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-21 16:07:56'),(33,'sysadmin','127.0.0.1','内网IP','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-21 16:08:32'),(34,'sysadmin','127.0.0.1','内网IP','Curl 7.81.0','','0','登录成功','2026-11-21 16:13:21'),(35,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-21 16:17:28'),(36,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 16:17:42'),(37,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-21 16:22:02'),(38,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 16:27:55'),(39,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 16:33:55'),(40,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 16:33:58'),(41,'sysadmin','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 19:05:52'),(42,'sysadmin','112.32.247.16','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 19:17:25'),(43,'sysadmin','112.32.247.16','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 19:18:15'),(44,'sysadmin','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:18:26'),(45,'sysadmin','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-21 19:19:46'),(46,'workshop','112.32.247.16','XX XX','WeChat 8.0.80','iOS 27.2.1','0','登录成功','2026-11-21 19:32:00'),(47,'workshop','112.32.247.16','XX XX','WeChat 8.0.80','iOS 27.2.1','0','退出成功','2026-11-21 19:33:43'),(48,'workshop','112.32.247.16','XX XX','WeChat 8.0.80','iOS 27.2.1','0','登录成功','2026-11-21 19:34:14'),(49,'sysadmin','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:35:10'),(50,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 19:39:00'),(51,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-21 19:42:51'),(52,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 19:42:53'),(53,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-21 19:45:32'),(54,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 19:46:34'),(55,'cutting','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:07'),(56,'workshop','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:08'),(57,'finishing','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:08'),(58,'warehouse','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:08'),(59,'finance','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:09'),(60,'design01','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:09'),(61,'design02','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:09'),(62,'design03','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:10'),(63,'purchaser01','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:10'),(64,'sysadmin','112.32.247.16','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-21 19:47:10'),(65,'sysadmin','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:47:35'),(66,'design01','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:52:57'),(67,'warehouse','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:52:57'),(68,'workshop','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:52:58'),(69,'finance','112.32.247.16','XX XX','Curl 8.7.1','','0','登录成功','2026-11-21 19:52:58'),(70,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-21 19:59:34'),(71,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-21 19:59:39'),(72,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-21 19:59:42'),(73,'workshop','112.32.247.16','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-21 19:59:47'),(74,'warehouse','112.32.247.16','XX XX','Safari 27.2','Mac OS >=10.15.7','0','登录成功','2026-11-21 20:00:19'),(75,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-22 09:31:30'),(76,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-22 09:31:34'),(77,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 09:31:47'),(78,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 09:44:59'),(79,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 09:44:59'),(80,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 09:45:02'),(81,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-22 09:45:21'),(82,'workshop','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-22 09:45:27'),(83,'warehouse','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-22 09:45:28'),(84,'design01','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-22 09:45:28'),(85,'finance','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-22 09:45:28'),(86,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 09:52:44'),(87,'design01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 09:52:58'),(88,'design01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 09:55:18'),(89,'purchaser01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 09:55:41'),(90,'purchaser01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 09:57:44'),(91,'finance','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 09:57:53'),(92,'finance','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 10:00:14'),(93,'warehouse','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 10:00:39'),(94,'warehouse','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 10:04:28'),(95,'workshop','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 10:04:30'),(96,'workshop','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 10:06:06'),(97,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 10:06:12'),(98,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 10:07:15'),(99,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-22 10:07:23'),(100,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-22 10:07:26'),(101,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 10:07:33'),(102,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 10:11:59'),(103,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 10:12:03'),(104,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 10:13:24'),(105,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','1','用户不存在/密码错误','2026-11-22 10:13:47'),(106,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-22 10:14:09'),(107,'cutting','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:13'),(108,'workshop','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:14'),(109,'finishing','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:16'),(110,'warehouse','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:17'),(111,'finance','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:18'),(112,'purchaser01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:20'),(113,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:21'),(114,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:22'),(115,'cutting','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:25'),(116,'workshop','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:26'),(117,'finishing','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:27'),(118,'warehouse','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:28'),(119,'finance','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:30'),(120,'purchaser01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:31'),(121,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:32'),(122,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:29:33'),(123,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:32:57'),(124,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 10:35:29'),(125,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-22 10:35:31'),(126,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 10:35:45'),(127,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:48:12'),(128,'purchaser01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:48:13'),(129,'warehouse','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:48:14'),(130,'finance','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:48:15'),(131,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 10:48:25'),(132,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 10:48:29'),(133,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 10:48:37'),(134,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 10:48:48'),(135,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 10:48:54'),(136,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:49:00'),(137,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:49:33'),(138,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:50:14'),(139,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:50:26'),(140,'sysadminru\'guo','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 10:50:42'),(141,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:50:55'),(142,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 10:51:16'),(143,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:51:18'),(144,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','密码输入错误5次，帐户锁定10分钟','2026-11-22 10:51:31'),(145,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:51:48'),(146,'cutting','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:51:48'),(147,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 10:51:48'),(148,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 11:02:37'),(149,'cutting','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 11:02:41'),(150,'warehouse','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 11:02:41'),(151,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','1','用户不存在/密码错误','2026-11-22 12:10:49'),(152,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 12:10:52'),(153,'sysadmin','112.32.246.167','XX XX','Safari 27.2','Mac OS >=10.15.7','0','登录成功','2026-11-22 12:28:38'),(154,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 14:41:35'),(155,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','1','用户不存在/密码错误','2026-11-22 15:09:38'),(156,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-22 15:09:48'),(157,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:04'),(158,'purchaser01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:04'),(159,'cutting','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:05'),(160,'warehouse','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:05'),(161,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:06'),(162,'workshop','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:06'),(163,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:07'),(164,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:17'),(165,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:18:38'),(166,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:19:41'),(167,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:30:22'),(168,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','注册成功','2026-11-22 15:30:33'),(169,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:30:36'),(170,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:30:43'),(171,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:30:47'),(172,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:33:12'),(173,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:33:28'),(174,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:35:44'),(175,'workshop','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:35:47'),(176,'warehouse','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:37:23'),(177,'design01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:37:23'),(178,'cutting','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:37:24'),(179,'purchaser01','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:37:24'),(180,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:37:25'),(181,'workshop','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:37:54'),(182,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:38:03'),(183,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:39:07'),(184,'finishing','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:40:05'),(185,'finishing','112.32.246.167','XX XX','Safari 18.5','iOS 18.5','0','退出成功','2026-11-22 15:41:23'),(186,'001','112.32.246.167','XX XX','Chrome 158','Android 14','0','登录成功','2026-11-22 15:41:53'),(187,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:42:29'),(188,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:42:47'),(189,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:45:28'),(190,'finishing','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:45:41'),(191,'finishing','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:45:57'),(192,'warehouse','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:46:07'),(193,'warehouse','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:51:49'),(194,'finance','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:52:00'),(195,'finance','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:56:05'),(196,'design01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:56:20'),(197,'design01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 15:57:27'),(198,'purchaser01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 15:57:42'),(199,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 15:59:21'),(200,'finance','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 16:00:15'),(201,'workshop','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-22 16:02:31'),(202,'purchaser01','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 16:03:44'),(203,'finance','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 16:03:50'),(204,'finance','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 16:04:55'),(205,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 16:05:05'),(206,'sysadmin','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 16:11:33'),(207,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 16:11:37'),(208,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 16:27:17'),(209,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 16:27:52'),(210,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 16:28:11'),(211,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 16:28:15'),(212,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 16:29:14'),(213,'workshop','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-22 16:58:31'),(214,'workshop','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-22 17:14:45'),(215,'sysadmin','112.32.246.167','XX XX','Python-urllib 3.9','','0','登录成功','2026-11-23 09:16:53'),(216,'sysadmin','112.32.246.167','XX XX','Chrome 158.0.0.0','Mac OS 10.15.7','0','登录成功','2026-11-23 09:33:46'),(217,'sysadmin','112.32.246.167','XX XX','Hacker','Hacker','0','登录成功','2026-11-23 09:33:49'),(218,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 09:44:57'),(219,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 10:18:21'),(220,'warehouse','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 10:41:16'),(221,'design01','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 10:53:13'),(222,'design01','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 10:53:18'),(223,'design01','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 10:58:39'),(224,'design01','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 10:58:45'),(225,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:30:44'),(226,'qianfeng','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:30:46'),(227,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:31:02'),(228,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:42:31'),(229,'design01','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:43:13'),(230,'sysadmin','112.32.246.167','XX XX','TraeCN 1.107.1','Mac OS 10.15.7','0','登录成功','2026-11-23 11:44:35'),(231,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:46:42'),(232,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 11:48:53'),(233,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 15:25:02'),(234,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 15:50:13'),(235,'sysadmin','112.32.246.167','XX XX','Curl 8.7.1','','0','登录成功','2026-11-23 15:50:18'),(236,'sysadmin','127.0.0.1','内网IP','Curl 7.81.0','','1','用户不存在/密码错误','2026-11-23 16:25:20'),(237,'sysadmin','127.0.0.1','内网IP','Curl 7.81.0','','1','用户不存在/密码错误','2026-11-23 16:25:30'),(238,'sysadmin','127.0.0.1','内网IP','Curl 7.81.0','','0','登录成功','2026-11-23 16:25:30'),(239,'sysadmin','127.0.0.1','内网IP','Curl 7.81.0','','0','登录成功','2026-11-23 16:25:37'),(240,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-23 16:33:48'),(241,'001','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','退出成功','2026-11-23 16:34:29'),(242,'cutting','112.32.246.167','XX XX','Chrome 158','Mac OS >=10.15.7','0','登录成功','2026-11-23 16:34:38'),(243,'sysadmin','127.0.0.1','内网IP','Curl 8.7.1','','0','登录成功','2026-11-23 16:54:54');
 /*!40000 ALTER TABLE `sys_logininfor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1764,25 +1764,25 @@ DROP TABLE IF EXISTS `sys_menu`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_menu` (
   `menu_id` bigint NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
-  `menu_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单名称',
+  `menu_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单名称',
   `parent_id` bigint DEFAULT '0' COMMENT '父菜单ID',
   `order_num` int DEFAULT '0' COMMENT '显示顺序',
-  `path` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '路由地址',
-  `component` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '组件路径',
-  `query` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '路由参数',
-  `route_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '路由名称',
+  `path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '路由地址',
+  `component` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '组件路径',
+  `query` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '路由参数',
+  `route_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '路由名称',
   `is_frame` int DEFAULT '1' COMMENT '是否为外链（0是 1否）',
   `is_cache` int DEFAULT '0' COMMENT '是否缓存（0缓存 1不缓存）',
-  `menu_type` char(1) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
-  `visible` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '菜单状态（0显示 1隐藏）',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '菜单状态（0正常 1停用）',
-  `perms` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '权限标识',
-  `icon` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '#' COMMENT '菜单图标',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+  `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
+  `visible` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '菜单状态（0显示 1隐藏）',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '菜单状态（0正常 1停用）',
+  `perms` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '权限标识',
+  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '#' COMMENT '菜单图标',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '备注',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2236 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='菜单权限表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1806,15 +1806,15 @@ DROP TABLE IF EXISTS `sys_notice`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_notice` (
   `notice_id` int NOT NULL AUTO_INCREMENT COMMENT '公告ID',
-  `notice_title` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '公告标题',
-  `notice_type` char(1) COLLATE utf8mb4_general_ci NOT NULL COMMENT '公告类型（1通知 2公告）',
+  `notice_title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '公告标题',
+  `notice_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '公告类型（1通知 2公告）',
   `notice_content` longblob COMMENT '公告内容',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '公告状态（0正常 1关闭）',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '公告状态（0正常 1关闭）',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`notice_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='通知公告表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1865,20 +1865,20 @@ DROP TABLE IF EXISTS `sys_oper_log`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_oper_log` (
   `oper_id` bigint NOT NULL AUTO_INCREMENT COMMENT '日志主键',
-  `title` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '模块标题',
+  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '模块标题',
   `business_type` int DEFAULT '0' COMMENT '业务类型（0其它 1新增 2修改 3删除）',
-  `method` varchar(200) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '方法名称',
-  `request_method` varchar(10) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '请求方式',
+  `method` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '方法名称',
+  `request_method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '请求方式',
   `operator_type` int DEFAULT '0' COMMENT '操作类别（0其它 1后台用户 2手机端用户）',
-  `oper_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作人员',
-  `dept_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '部门名称',
-  `oper_url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '请求URL',
-  `oper_ip` varchar(128) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '主机地址',
-  `oper_location` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作地点',
-  `oper_param` varchar(2000) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '请求参数',
-  `json_result` varchar(2000) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '返回参数',
+  `oper_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作人员',
+  `dept_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '部门名称',
+  `oper_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '请求URL',
+  `oper_ip` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '主机地址',
+  `oper_location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作地点',
+  `oper_param` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '请求参数',
+  `json_result` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '返回参数',
   `status` int DEFAULT '0' COMMENT '操作状态（0正常 1异常）',
-  `error_msg` varchar(2000) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '错误消息',
+  `error_msg` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '错误消息',
   `oper_time` datetime DEFAULT NULL COMMENT '操作时间',
   `cost_time` bigint DEFAULT '0' COMMENT '消耗时间',
   PRIMARY KEY (`oper_id`),
@@ -1894,7 +1894,7 @@ CREATE TABLE `sys_oper_log` (
 
 LOCK TABLES `sys_oper_log` WRITE;
 /*!40000 ALTER TABLE `sys_oper_log` DISABLE KEYS */;
-INSERT INTO `sys_oper_log` VALUES (1,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'cutting','裁床部','/garment/cutorder','127.0.0.1','内网IP','{\"cnName\":\"原布半身裙\",\"createBy\":\"cutting\",\"cutDate\":\"2026-11-21\",\"cutId\":1007,\"cutNo\":\"CH20261121003\",\"items\":[{\"color\":\"米杏\",\"cutId\":1007,\"layerNo\":1,\"qty\":200,\"size\":\"S\"}],\"layerCount\":1,\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":200} ',NULL,1,'物资库存不足：隐形拉链 需 200条，库存 190条；雪纺印花 需 252米，库存 139.8米。如确需先领后补，请填写超领原因后重新保存','2026-11-21 15:35:41',39),(2,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'cutting','裁床部','/garment/cutorder','127.0.0.1','内网IP','{\"allowOverdraft\":true,\"cnName\":\"原布半身裙\",\"createBy\":\"cutting\",\"cutDate\":\"2026-11-21\",\"cutId\":1008,\"cutNo\":\"CH20261121003\",\"items\":[{\"color\":\"米杏\",\"cutId\":1008,\"layerNo\":1,\"qty\":200,\"size\":\"S\"}],\"layerCount\":1,\"overdraftReason\":\"客户催货，采购在途\",\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":200} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-21 15:35:41',25),(3,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'warehouse','仓储部','/garment/cutorder','127.0.0.1','内网IP','{\"cnName\":\"原布半身裙\",\"createBy\":\"warehouse\",\"customer\":\"\",\"cutDate\":\"2026-11-21\",\"cutId\":1009,\"cutNo\":\"CH20261121003\",\"cutter\":\"\",\"fabric\":\"\",\"items\":[{\"color\":\"米杏\",\"cutId\":1009,\"layerNo\":1,\"qty\":200,\"size\":\"S\"}],\"layerCount\":1,\"lining\":\"\",\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":200} ',NULL,1,'物资库存不足：隐形拉链 需 200条，库存 190条；雪纺印花 需 252米，库存 139.8米。如确需先领后补，请填写超领原因后重新保存','2026-11-21 15:48:20',7),(4,'参数管理',2,'com.ruoyi.web.controller.system.SysConfigController.edit()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/config','127.0.0.1','内网IP','{\"configId\":5,\"configKey\":\"sys.account.registerUser\",\"configName\":\"账号自助-是否开启用户注册功能\",\"configType\":\"Y\",\"configValue\":\"false\",\"params\":{},\"remark\":\"是否开启注册用户功能（true开启，false关闭）\",\"updateBy\":\"sysadmin\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-21 16:08:06',15),(5,'参数管理',2,'com.ruoyi.web.controller.system.SysConfigController.edit()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/config','127.0.0.1','内网IP','{\"configId\":5,\"configKey\":\"sys.account.registerUser\",\"configName\":\"账号自助-是否开启用户注册功能\",\"configType\":\"Y\",\"configValue\":\"true\",\"params\":{},\"remark\":\"是否开启注册用户功能（true开启，false关闭）\",\"updateBy\":\"sysadmin\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-21 16:08:41',5),(6,'角色管理',2,'com.ruoyi.web.controller.system.SysRoleController.changeStatus()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/role/changeStatus','112.32.246.167','XX XX','{\"admin\":false,\"deptCheckStrictly\":false,\"flag\":false,\"menuCheckStrictly\":false,\"params\":{},\"roleId\":108,\"status\":\"1\",\"updateBy\":\"sysadmin\"} ',NULL,1,'系统管理员为内置角色，不允许停用','2026-11-22 09:45:24',108),(7,'角色管理',3,'com.ruoyi.web.controller.system.SysRoleController.remove()','DELETE',1,'sysadmin','武汉漫百千服饰有限公司','/system/role/108','112.32.246.167','XX XX','[108] ',NULL,1,'系统管理员为内置角色，不允许删除','2026-11-22 09:45:24',62),(8,'角色管理',2,'com.ruoyi.web.controller.system.SysRoleController.changeStatus()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/role/changeStatus','112.32.246.167','XX XX','{\"admin\":false,\"deptCheckStrictly\":false,\"flag\":false,\"menuCheckStrictly\":false,\"params\":{},\"roleId\":108,\"status\":\"1\",\"updateBy\":\"sysadmin\"} ',NULL,1,'系统管理员为内置角色，不允许停用','2026-11-22 09:47:23',59),(9,'费用登记',2,'com.ruoyi.web.controller.garment.FinanceController.editExpense()','PUT',1,'finance','财务部','/garment/expense','112.32.246.167','XX XX','{\"amount\":701,\"createBy\":\"admin\",\"createTime\":\"2026-11-05 10:00:00\",\"expenseDate\":\"2026-11-20\",\"expenseId\":1007,\"expenseType\":\"海运费\",\"params\":{},\"remark\":\"拼柜海运费\",\"styleNo\":\"JT07\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 09:58:25',47),(10,'费用登记',1,'com.ruoyi.web.controller.garment.FinanceController.addExpense()','POST',1,'finance','财务部','/garment/expense','112.32.246.167','XX XX','{\"amount\":3,\"createBy\":\"finance\",\"expenseDate\":\"2026-11-22\",\"expenseId\":1008,\"expenseType\":\"辅料\",\"params\":{},\"remark\":\"测试\",\"styleNo\":\"\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 09:59:14',43),(11,'费用登记',3,'com.ruoyi.web.controller.garment.FinanceController.removeExpense()','DELETE',1,'finance','财务部','/garment/expense/1008','112.32.246.167','XX XX','[1008] ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 09:59:19',27),(12,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'warehouse','仓储部','/garment/cutorder','112.32.246.167','XX XX','{\"cnName\":\"原布半身裙\",\"createBy\":\"warehouse\",\"customer\":\"\",\"cutDate\":\"2026-11-22\",\"cutId\":1010,\"cutNo\":\"CH20261122001\",\"cutter\":\"\",\"fabric\":\"\",\"items\":[{\"color\":\"米杏\",\"cutId\":1010,\"layerNo\":1,\"qty\":100,\"size\":\"S\"}],\"layerCount\":1,\"lining\":\"\",\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":100} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 10:00:59',207),(13,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'warehouse','仓储部','/garment/cutorder','112.32.246.167','XX XX','{\"cnName\":\"原布半身裙\",\"createBy\":\"warehouse\",\"customer\":\"\",\"cutDate\":\"2026-11-22\",\"cutId\":1011,\"cutNo\":\"CH20261122002\",\"cutter\":\"\",\"fabric\":\"\",\"items\":[{\"color\":\"米杏\",\"cutId\":1011,\"layerNo\":1,\"qty\":1000,\"size\":\"S\"}],\"layerCount\":1,\"lining\":\"\",\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":1000} ',NULL,1,'物资库存不足：隐形拉链 需 1000条，库存 90条；雪纺印花 需 1260米，库存 13.8米。如确需先领后补，请填写超领原因后重新保存','2026-11-22 10:01:28',74),(14,'角色管理',2,'com.ruoyi.web.controller.system.SysRoleController.edit()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/role','112.32.246.167','XX XX','{\"admin\":false,\"createTime\":\"2026-11-21 15:53:49\",\"dataScope\":\"5\",\"delFlag\":\"0\",\"deptCheckStrictly\":true,\"flag\":false,\"menuCheckStrictly\":true,\"menuIds\":[2070,2071,2072,2080],\"params\":{},\"remark\":\"自助注册用户默认角色\",\"roleId\":107,\"roleKey\":\"staff\",\"roleName\":\"普通员工\",\"roleSort\":5,\"status\":\"0\",\"updateBy\":\"sysadmin\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 10:09:54',128),(15,'出货表',3,'com.ruoyi.web.controller.garment.BizShipmentController.remove()','DELETE',1,'warehouse','仓储部','/garment/shipment/99999999','112.32.246.167','XX XX','[99999999] ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 10:48:14',138),(16,'费用登记',3,'com.ruoyi.web.controller.garment.FinanceController.removeExpense()','DELETE',1,'finance','财务部','/garment/expense/99999999','112.32.246.167','XX XX','[99999999] ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 10:48:15',23),(17,'角色管理',2,'com.ruoyi.web.controller.system.SysRoleController.changeStatus()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/role/changeStatus','112.32.246.167','XX XX','{\"admin\":false,\"deptCheckStrictly\":false,\"flag\":false,\"menuCheckStrictly\":false,\"params\":{},\"roleId\":107,\"status\":\"1\",\"updateBy\":\"sysadmin\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 12:12:11',84),(18,'角色管理',2,'com.ruoyi.web.controller.system.SysRoleController.changeStatus()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/role/changeStatus','112.32.246.167','XX XX','{\"admin\":false,\"deptCheckStrictly\":false,\"flag\":false,\"menuCheckStrictly\":false,\"params\":{},\"roleId\":107,\"status\":\"0\",\"updateBy\":\"sysadmin\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 12:12:13',42),(19,'账户解锁',0,'com.ruoyi.web.controller.monitor.SysLogininforController.unlock()','GET',1,'sysadmin','武汉漫百千服饰有限公司','/monitor/logininfor/unlock/sysadmin','112.32.246.167','XX XX','{}','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 14:47:00',4),(20,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'warehouse','仓储部','/garment/cutorder','112.32.246.167','XX XX','{\"cnName\":\"原布半身裙\",\"createBy\":\"warehouse\",\"customer\":\"\",\"cutDate\":\"2026-11-22\",\"cutId\":1012,\"cutNo\":\"CH20261122002\",\"cutter\":\"\",\"fabric\":\"\",\"items\":[{\"color\":\"米杏\",\"cutId\":1012,\"layerNo\":1,\"qty\":20,\"size\":\"S\"}],\"layerCount\":1,\"lining\":\"\",\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":20} ',NULL,1,'物资库存不足：雪纺印花 需 25.2米，库存 13.8米。如确需先领后补，请填写超领原因后重新保存','2026-11-22 15:50:31',235),(21,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'warehouse','仓储部','/garment/cutorder','112.32.246.167','XX XX','{\"allowOverdraft\":true,\"cnName\":\"原布半身裙\",\"createBy\":\"warehouse\",\"customer\":\"\",\"cutDate\":\"2026-11-22\",\"cutId\":1013,\"cutNo\":\"CH20261122002\",\"cutter\":\"\",\"fabric\":\"\",\"items\":[{\"color\":\"米杏\",\"cutId\":1013,\"layerNo\":1,\"qty\":20,\"size\":\"S\"}],\"layerCount\":1,\"lining\":\"\",\"overdraftReason\":\"插单\",\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":20} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 15:50:43',113),(22,'批量生成SKU',1,'com.ruoyi.web.controller.garment.BizSkuController.generate()','POST',1,'design01','设计部','/garment/sku/generate','112.32.246.167','XX XX','{\"styleNo\":\"JT06\",\"colors\":[\"黑色\"],\"sizes\":[\"XS\"]} ','{\"msg\":\"本次生成 1 个商品\",\"code\":200}',0,NULL,'2026-11-22 15:57:22',36),(23,'初始库存导入',6,'com.ruoyi.web.controller.garment.BizSkuController.importStock()','POST',1,'sysadmin','武汉漫百千服饰有限公司','/garment/sku/importStock','112.32.246.167','XX XX','',NULL,1,'导入失败，未导入任何数据：JT03-黑色-S 数量不能为负数','2026-11-23 09:45:01',1997),(24,'款号档案',1,'com.ruoyi.web.controller.garment.BizStyleController.add()','POST',1,'design01','设计部','/garment/style','112.32.246.167','XX XX','{\"cnName\":\"校验\",\"params\":{},\"sizeTable\":\"XXXL\",\"status\":\"0\",\"styleNo\":\"__CHECK__\"} ',NULL,1,'尺码「XXXL」不在基础资料尺码管理中，请先到基础资料新增该尺码','2026-11-23 10:53:18',96),(25,'款号档案',1,'com.ruoyi.web.controller.garment.BizStyleController.add()','POST',1,'design01','设计部','/garment/style','112.32.246.167','XX XX','{\"cnName\":\"校验\",\"params\":{},\"sizeTable\":\"XXXL\",\"status\":\"0\",\"styleNo\":\"__CHECK__\"} ',NULL,1,'尺码「XXXL」不在基础资料尺码管理中，请先到基础资料新增该尺码','2026-11-23 10:58:40',117),(26,'费用作废',2,'com.ruoyi.web.controller.garment.FinanceController.voidExpense()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/garment/expense/void/999999','127.0.0.1','内网IP','{\"reason\":\"test\"}',NULL,1,'费用记录不存在','2026-11-23 15:42:42',7);
+INSERT INTO `sys_oper_log` VALUES (1,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'cutting','裁床部','/garment/cutorder','127.0.0.1','内网IP','{\"cnName\":\"原布半身裙\",\"createBy\":\"cutting\",\"cutDate\":\"2026-11-21\",\"cutId\":1007,\"cutNo\":\"CH20261121003\",\"items\":[{\"color\":\"米杏\",\"cutId\":1007,\"layerNo\":1,\"qty\":200,\"size\":\"S\"}],\"layerCount\":1,\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":200} ',NULL,1,'物资库存不足：隐形拉链 需 200条，库存 190条；雪纺印花 需 252米，库存 139.8米。如确需先领后补，请填写超领原因后重新保存','2026-11-21 15:35:41',39),(2,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'cutting','裁床部','/garment/cutorder','127.0.0.1','内网IP','{\"allowOverdraft\":true,\"cnName\":\"原布半身裙\",\"createBy\":\"cutting\",\"cutDate\":\"2026-11-21\",\"cutId\":1008,\"cutNo\":\"CH20261121003\",\"items\":[{\"color\":\"米杏\",\"cutId\":1008,\"layerNo\":1,\"qty\":200,\"size\":\"S\"}],\"layerCount\":1,\"overdraftReason\":\"客户催货，采购在途\",\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":200} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-21 15:35:41',25),(3,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'warehouse','仓储部','/garment/cutorder','127.0.0.1','内网IP','{\"cnName\":\"原布半身裙\",\"createBy\":\"warehouse\",\"customer\":\"\",\"cutDate\":\"2026-11-21\",\"cutId\":1009,\"cutNo\":\"CH20261121003\",\"cutter\":\"\",\"fabric\":\"\",\"items\":[{\"color\":\"米杏\",\"cutId\":1009,\"layerNo\":1,\"qty\":200,\"size\":\"S\"}],\"layerCount\":1,\"lining\":\"\",\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":200} ',NULL,1,'物资库存不足：隐形拉链 需 200条，库存 190条；雪纺印花 需 252米，库存 139.8米。如确需先领后补，请填写超领原因后重新保存','2026-11-21 15:48:20',7),(4,'参数管理',2,'com.ruoyi.web.controller.system.SysConfigController.edit()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/config','127.0.0.1','内网IP','{\"configId\":5,\"configKey\":\"sys.account.registerUser\",\"configName\":\"账号自助-是否开启用户注册功能\",\"configType\":\"Y\",\"configValue\":\"false\",\"params\":{},\"remark\":\"是否开启注册用户功能（true开启，false关闭）\",\"updateBy\":\"sysadmin\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-21 16:08:06',15),(5,'参数管理',2,'com.ruoyi.web.controller.system.SysConfigController.edit()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/config','127.0.0.1','内网IP','{\"configId\":5,\"configKey\":\"sys.account.registerUser\",\"configName\":\"账号自助-是否开启用户注册功能\",\"configType\":\"Y\",\"configValue\":\"true\",\"params\":{},\"remark\":\"是否开启注册用户功能（true开启，false关闭）\",\"updateBy\":\"sysadmin\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-21 16:08:41',5),(6,'角色管理',2,'com.ruoyi.web.controller.system.SysRoleController.changeStatus()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/role/changeStatus','112.32.246.167','XX XX','{\"admin\":false,\"deptCheckStrictly\":false,\"flag\":false,\"menuCheckStrictly\":false,\"params\":{},\"roleId\":108,\"status\":\"1\",\"updateBy\":\"sysadmin\"} ',NULL,1,'系统管理员为内置角色，不允许停用','2026-11-22 09:45:24',108),(7,'角色管理',3,'com.ruoyi.web.controller.system.SysRoleController.remove()','DELETE',1,'sysadmin','武汉漫百千服饰有限公司','/system/role/108','112.32.246.167','XX XX','[108] ',NULL,1,'系统管理员为内置角色，不允许删除','2026-11-22 09:45:24',62),(8,'角色管理',2,'com.ruoyi.web.controller.system.SysRoleController.changeStatus()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/role/changeStatus','112.32.246.167','XX XX','{\"admin\":false,\"deptCheckStrictly\":false,\"flag\":false,\"menuCheckStrictly\":false,\"params\":{},\"roleId\":108,\"status\":\"1\",\"updateBy\":\"sysadmin\"} ',NULL,1,'系统管理员为内置角色，不允许停用','2026-11-22 09:47:23',59),(9,'费用登记',2,'com.ruoyi.web.controller.garment.FinanceController.editExpense()','PUT',1,'finance','财务部','/garment/expense','112.32.246.167','XX XX','{\"amount\":701,\"createBy\":\"admin\",\"createTime\":\"2026-11-05 10:00:00\",\"expenseDate\":\"2026-11-20\",\"expenseId\":1007,\"expenseType\":\"海运费\",\"params\":{},\"remark\":\"拼柜海运费\",\"styleNo\":\"JT07\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 09:58:25',47),(10,'费用登记',1,'com.ruoyi.web.controller.garment.FinanceController.addExpense()','POST',1,'finance','财务部','/garment/expense','112.32.246.167','XX XX','{\"amount\":3,\"createBy\":\"finance\",\"expenseDate\":\"2026-11-22\",\"expenseId\":1008,\"expenseType\":\"辅料\",\"params\":{},\"remark\":\"测试\",\"styleNo\":\"\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 09:59:14',43),(11,'费用登记',3,'com.ruoyi.web.controller.garment.FinanceController.removeExpense()','DELETE',1,'finance','财务部','/garment/expense/1008','112.32.246.167','XX XX','[1008] ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 09:59:19',27),(12,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'warehouse','仓储部','/garment/cutorder','112.32.246.167','XX XX','{\"cnName\":\"原布半身裙\",\"createBy\":\"warehouse\",\"customer\":\"\",\"cutDate\":\"2026-11-22\",\"cutId\":1010,\"cutNo\":\"CH20261122001\",\"cutter\":\"\",\"fabric\":\"\",\"items\":[{\"color\":\"米杏\",\"cutId\":1010,\"layerNo\":1,\"qty\":100,\"size\":\"S\"}],\"layerCount\":1,\"lining\":\"\",\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":100} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 10:00:59',207),(13,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'warehouse','仓储部','/garment/cutorder','112.32.246.167','XX XX','{\"cnName\":\"原布半身裙\",\"createBy\":\"warehouse\",\"customer\":\"\",\"cutDate\":\"2026-11-22\",\"cutId\":1011,\"cutNo\":\"CH20261122002\",\"cutter\":\"\",\"fabric\":\"\",\"items\":[{\"color\":\"米杏\",\"cutId\":1011,\"layerNo\":1,\"qty\":1000,\"size\":\"S\"}],\"layerCount\":1,\"lining\":\"\",\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":1000} ',NULL,1,'物资库存不足：隐形拉链 需 1000条，库存 90条；雪纺印花 需 1260米，库存 13.8米。如确需先领后补，请填写超领原因后重新保存','2026-11-22 10:01:28',74),(14,'角色管理',2,'com.ruoyi.web.controller.system.SysRoleController.edit()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/role','112.32.246.167','XX XX','{\"admin\":false,\"createTime\":\"2026-11-21 15:53:49\",\"dataScope\":\"5\",\"delFlag\":\"0\",\"deptCheckStrictly\":true,\"flag\":false,\"menuCheckStrictly\":true,\"menuIds\":[2070,2071,2072,2080],\"params\":{},\"remark\":\"自助注册用户默认角色\",\"roleId\":107,\"roleKey\":\"staff\",\"roleName\":\"普通员工\",\"roleSort\":5,\"status\":\"0\",\"updateBy\":\"sysadmin\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 10:09:54',128),(15,'出货表',3,'com.ruoyi.web.controller.garment.BizShipmentController.remove()','DELETE',1,'warehouse','仓储部','/garment/shipment/99999999','112.32.246.167','XX XX','[99999999] ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 10:48:14',138),(16,'费用登记',3,'com.ruoyi.web.controller.garment.FinanceController.removeExpense()','DELETE',1,'finance','财务部','/garment/expense/99999999','112.32.246.167','XX XX','[99999999] ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 10:48:15',23),(17,'角色管理',2,'com.ruoyi.web.controller.system.SysRoleController.changeStatus()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/role/changeStatus','112.32.246.167','XX XX','{\"admin\":false,\"deptCheckStrictly\":false,\"flag\":false,\"menuCheckStrictly\":false,\"params\":{},\"roleId\":107,\"status\":\"1\",\"updateBy\":\"sysadmin\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 12:12:11',84),(18,'角色管理',2,'com.ruoyi.web.controller.system.SysRoleController.changeStatus()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/system/role/changeStatus','112.32.246.167','XX XX','{\"admin\":false,\"deptCheckStrictly\":false,\"flag\":false,\"menuCheckStrictly\":false,\"params\":{},\"roleId\":107,\"status\":\"0\",\"updateBy\":\"sysadmin\"} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 12:12:13',42),(19,'账户解锁',0,'com.ruoyi.web.controller.monitor.SysLogininforController.unlock()','GET',1,'sysadmin','武汉漫百千服饰有限公司','/monitor/logininfor/unlock/sysadmin','112.32.246.167','XX XX','{}','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 14:47:00',4),(20,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'warehouse','仓储部','/garment/cutorder','112.32.246.167','XX XX','{\"cnName\":\"原布半身裙\",\"createBy\":\"warehouse\",\"customer\":\"\",\"cutDate\":\"2026-11-22\",\"cutId\":1012,\"cutNo\":\"CH20261122002\",\"cutter\":\"\",\"fabric\":\"\",\"items\":[{\"color\":\"米杏\",\"cutId\":1012,\"layerNo\":1,\"qty\":20,\"size\":\"S\"}],\"layerCount\":1,\"lining\":\"\",\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":20} ',NULL,1,'物资库存不足：雪纺印花 需 25.2米，库存 13.8米。如确需先领后补，请填写超领原因后重新保存','2026-11-22 15:50:31',235),(21,'裁货开单',1,'com.ruoyi.web.controller.garment.BizCutOrderController.add()','POST',1,'warehouse','仓储部','/garment/cutorder','112.32.246.167','XX XX','{\"allowOverdraft\":true,\"cnName\":\"原布半身裙\",\"createBy\":\"warehouse\",\"customer\":\"\",\"cutDate\":\"2026-11-22\",\"cutId\":1013,\"cutNo\":\"CH20261122002\",\"cutter\":\"\",\"fabric\":\"\",\"items\":[{\"color\":\"米杏\",\"cutId\":1013,\"layerNo\":1,\"qty\":20,\"size\":\"S\"}],\"layerCount\":1,\"lining\":\"\",\"overdraftReason\":\"插单\",\"params\":{},\"status\":\"0\",\"styleNo\":\"JT07\",\"totalQty\":20} ','{\"msg\":\"操作成功\",\"code\":200}',0,NULL,'2026-11-22 15:50:43',113),(22,'批量生成SKU',1,'com.ruoyi.web.controller.garment.BizSkuController.generate()','POST',1,'design01','设计部','/garment/sku/generate','112.32.246.167','XX XX','{\"styleNo\":\"JT06\",\"colors\":[\"黑色\"],\"sizes\":[\"XS\"]} ','{\"msg\":\"本次生成 1 个商品\",\"code\":200}',0,NULL,'2026-11-22 15:57:22',36),(23,'初始库存导入',6,'com.ruoyi.web.controller.garment.BizSkuController.importStock()','POST',1,'sysadmin','武汉漫百千服饰有限公司','/garment/sku/importStock','112.32.246.167','XX XX','',NULL,1,'导入失败，未导入任何数据：JT03-黑色-S 数量不能为负数','2026-11-23 09:45:01',1997),(24,'款号档案',1,'com.ruoyi.web.controller.garment.BizStyleController.add()','POST',1,'design01','设计部','/garment/style','112.32.246.167','XX XX','{\"cnName\":\"校验\",\"params\":{},\"sizeTable\":\"XXXL\",\"status\":\"0\",\"styleNo\":\"__CHECK__\"} ',NULL,1,'尺码「XXXL」不在基础资料尺码管理中，请先到基础资料新增该尺码','2026-11-23 10:53:18',96),(25,'款号档案',1,'com.ruoyi.web.controller.garment.BizStyleController.add()','POST',1,'design01','设计部','/garment/style','112.32.246.167','XX XX','{\"cnName\":\"校验\",\"params\":{},\"sizeTable\":\"XXXL\",\"status\":\"0\",\"styleNo\":\"__CHECK__\"} ',NULL,1,'尺码「XXXL」不在基础资料尺码管理中，请先到基础资料新增该尺码','2026-11-23 10:58:40',117),(26,'出货表作废',2,'com.ruoyi.web.controller.garment.BizShipmentController.voidShipment()','PUT',1,'sysadmin','武汉漫百千服饰有限公司','/garment/shipment/void/999999','112.32.246.167','XX XX','{\"reason\":\"x\"}',NULL,1,'出货单不存在','2026-11-23 15:50:14',101);
 /*!40000 ALTER TABLE `sys_oper_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1907,15 +1907,15 @@ DROP TABLE IF EXISTS `sys_post`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_post` (
   `post_id` bigint NOT NULL AUTO_INCREMENT COMMENT '岗位ID',
-  `post_code` varchar(64) COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位编码',
-  `post_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位名称',
+  `post_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位编码',
+  `post_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位名称',
   `post_sort` int NOT NULL COMMENT '显示顺序',
-  `status` char(1) COLLATE utf8mb4_general_ci NOT NULL COMMENT '状态（0正常 1停用）',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '状态（0正常 1停用）',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`post_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='岗位信息表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1939,19 +1939,19 @@ DROP TABLE IF EXISTS `sys_role`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_role` (
   `role_id` bigint NOT NULL AUTO_INCREMENT COMMENT '角色ID',
-  `role_name` varchar(30) COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
-  `role_key` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色权限字符串',
+  `role_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
+  `role_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色权限字符串',
   `role_sort` int NOT NULL COMMENT '显示顺序',
-  `data_scope` char(1) COLLATE utf8mb4_general_ci DEFAULT '1' COMMENT '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限 5：仅本人数据权限）',
+  `data_scope` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '1' COMMENT '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限 5：仅本人数据权限）',
   `menu_check_strictly` tinyint(1) DEFAULT '1' COMMENT '菜单树选择项是否关联显示',
   `dept_check_strictly` tinyint(1) DEFAULT '1' COMMENT '部门树选择项是否关联显示',
-  `status` char(1) COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色状态（0正常 1停用）',
-  `del_flag` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='角色信息表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1962,7 +1962,7 @@ CREATE TABLE `sys_role` (
 
 LOCK TABLES `sys_role` WRITE;
 /*!40000 ALTER TABLE `sys_role` DISABLE KEYS */;
-INSERT INTO `sys_role` VALUES (1,'超级管理员','admin',1,'1',1,1,'0','0','admin','2026-11-21 08:36:37','',NULL,'超级管理员'),(100,'裁床','cutting',10,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-22 15:35:33','裁床岗位'),(101,'车间','workshop',11,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-22 15:37:57','车间岗位'),(102,'后道','finishing',12,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-22 15:42:33','后道岗位'),(103,'仓库','warehouse',13,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-22 15:51:41','仓库岗位'),(104,'财务','finance',14,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-22 15:56:09','财务岗位'),(105,'采购','purchaser',15,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-22 15:58:14','采购岗位'),(106,'设计','designer',16,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-22 15:57:12','设计岗位'),(107,'普通员工','staff',5,'5',1,0,'0','0','admin','2026-11-21 15:53:49','admin','2026-11-22 16:11:28','自助注册用户默认角色'),(108,'系统管理员','sysadmin',1,'1',1,1,'0','0','admin','2026-11-22 09:42:30','admin','2026-11-22 15:29:52','客户侧管理员，拥有全部菜单权限；内置角色，不可删除/停用');
+INSERT INTO `sys_role` VALUES (1,'超级管理员','admin',1,'1',1,1,'0','0','admin','2026-11-21 08:36:37','',NULL,'超级管理员'),(100,'裁床','cutting',10,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-23 16:32:15','裁床岗位'),(101,'车间','workshop',11,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-23 16:32:18','车间岗位'),(102,'后道','finishing',12,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-23 16:32:21','后道岗位'),(103,'仓库','warehouse',13,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-23 16:32:23','仓库岗位'),(104,'财务','finance',14,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-23 16:32:40','财务岗位'),(105,'采购','purchaser',15,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-23 16:33:05','采购岗位'),(106,'设计','designer',16,'1',1,1,'0','0','admin','2026-11-21 08:36:38','admin','2026-11-23 16:33:15','设计岗位'),(107,'普通员工','staff',5,'5',1,0,'0','0','admin','2026-11-21 15:53:49','admin','2026-11-23 16:32:04','自助注册用户默认角色'),(108,'系统管理员','sysadmin',1,'1',1,1,'0','0','admin','2026-11-22 09:42:30','admin','2026-11-23 16:31:47','客户侧管理员，拥有全部菜单权限；内置角色，不可删除/停用');
 /*!40000 ALTER TABLE `sys_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2010,7 +2010,7 @@ CREATE TABLE `sys_role_menu` (
 
 LOCK TABLES `sys_role_menu` WRITE;
 /*!40000 ALTER TABLE `sys_role_menu` DISABLE KEYS */;
-INSERT INTO `sys_role_menu` VALUES (1,2068),(1,2225),(100,2030),(100,2031),(100,2032),(100,2033),(100,2080),(100,2131),(100,2132),(100,2137),(100,2149),(100,2150),(100,2151),(100,2184),(100,2191),(100,2197),(100,2209),(100,2210),(100,2211),(100,2228),(101,2040),(101,2041),(101,2042),(101,2043),(101,2080),(101,2152),(101,2153),(101,2178),(102,2050),(102,2051),(102,2052),(102,2053),(102,2080),(102,2154),(102,2155),(102,2156),(102,2215),(102,2216),(102,2217),(102,2228),(103,2000),(103,2003),(103,2004),(103,2030),(103,2031),(103,2060),(103,2061),(103,2062),(103,2063),(103,2064),(103,2065),(103,2066),(103,2067),(103,2068),(103,2080),(103,2112),(103,2131),(103,2157),(103,2158),(103,2159),(103,2160),(103,2161),(103,2162),(103,2163),(103,2164),(103,2165),(103,2166),(103,2167),(103,2168),(103,2180),(103,2184),(103,2185),(103,2186),(103,2187),(103,2188),(103,2190),(103,2194),(103,2195),(103,2198),(103,2201),(103,2202),(103,2209),(103,2218),(103,2219),(103,2220),(103,2221),(103,2222),(103,2223),(103,2224),(103,2225),(103,2228),(103,2230),(103,2231),(103,2232),(103,2233),(103,2234),(103,2235),(104,2060),(104,2061),(104,2070),(104,2071),(104,2072),(104,2080),(104,2169),(104,2170),(104,2171),(104,2187),(104,2218),(104,2226),(104,2227),(104,2228),(105,2000),(105,2003),(105,2020),(105,2021),(105,2022),(105,2023),(105,2080),(105,2121),(105,2122),(105,2123),(105,2142),(105,2146),(105,2147),(105,2148),(105,2180),(105,2182),(105,2183),(105,2189),(105,2195),(105,2196),(105,2201),(105,2206),(105,2207),(105,2228),(105,2230),(105,2231),(105,2232),(105,2233),(105,2234),(105,2235),(106,2000),(106,2001),(106,2002),(106,2003),(106,2004),(106,2010),(106,2011),(106,2012),(106,2013),(106,2080),(106,2101),(106,2102),(106,2103),(106,2111),(106,2138),(106,2139),(106,2140),(106,2141),(106,2143),(106,2144),(106,2145),(106,2172),(106,2173),(106,2174),(106,2175),(106,2176),(106,2177),(106,2179),(106,2180),(106,2181),(106,2190),(106,2192),(106,2193),(106,2195),(106,2199),(106,2200),(106,2201),(106,2202),(106,2203),(106,2204),(106,2205),(106,2228),(106,2230),(106,2231),(106,2232),(106,2233),(106,2234),(106,2235),(107,2000),(107,2001),(107,2002),(107,2003),(107,2004),(107,2040),(107,2041),(107,2080),(107,2152),(107,2190),(107,2199),(107,2200),(107,2201),(107,2202),(107,2212),(107,2228),(108,1),(108,100),(108,101),(108,103),(108,104),(108,108),(108,500),(108,501),(108,1000),(108,1001),(108,1002),(108,1003),(108,1004),(108,1006),(108,1007),(108,1011),(108,1016),(108,1017),(108,1018),(108,1019),(108,1020),(108,1021),(108,1022),(108,1023),(108,1024),(108,1039),(108,1040),(108,1041),(108,1042),(108,1043),(108,1044),(108,2000),(108,2001),(108,2002),(108,2003),(108,2004),(108,2010),(108,2011),(108,2012),(108,2013),(108,2020),(108,2021),(108,2022),(108,2023),(108,2030),(108,2031),(108,2032),(108,2033),(108,2040),(108,2041),(108,2042),(108,2043),(108,2050),(108,2051),(108,2052),(108,2053),(108,2060),(108,2061),(108,2062),(108,2063),(108,2064),(108,2065),(108,2066),(108,2067),(108,2068),(108,2070),(108,2071),(108,2072),(108,2080),(108,2101),(108,2102),(108,2103),(108,2111),(108,2112),(108,2113),(108,2121),(108,2122),(108,2123),(108,2131),(108,2132),(108,2137),(108,2138),(108,2139),(108,2140),(108,2141),(108,2142),(108,2143),(108,2144),(108,2145),(108,2146),(108,2147),(108,2148),(108,2149),(108,2150),(108,2151),(108,2152),(108,2153),(108,2154),(108,2155),(108,2156),(108,2157),(108,2158),(108,2159),(108,2160),(108,2161),(108,2162),(108,2163),(108,2164),(108,2165),(108,2166),(108,2167),(108,2168),(108,2169),(108,2170),(108,2171),(108,2172),(108,2173),(108,2174),(108,2175),(108,2176),(108,2177),(108,2178),(108,2179),(108,2180),(108,2181),(108,2182),(108,2183),(108,2184),(108,2185),(108,2186),(108,2187),(108,2188),(108,2189),(108,2190),(108,2191),(108,2192),(108,2193),(108,2194),(108,2195),(108,2196),(108,2197),(108,2198),(108,2199),(108,2200),(108,2201),(108,2202),(108,2203),(108,2204),(108,2205),(108,2206),(108,2207),(108,2209),(108,2210),(108,2211),(108,2212),(108,2213),(108,2214),(108,2215),(108,2216),(108,2217),(108,2218),(108,2219),(108,2220),(108,2221),(108,2222),(108,2223),(108,2224),(108,2225),(108,2226),(108,2227),(108,2228),(108,2230),(108,2231),(108,2232),(108,2233),(108,2234),(108,2235);
+INSERT INTO `sys_role_menu` VALUES (1,2068),(1,2225),(100,2030),(100,2031),(100,2032),(100,2033),(100,2080),(100,2131),(100,2132),(100,2137),(100,2149),(100,2150),(100,2151),(100,2184),(100,2191),(100,2197),(100,2209),(100,2210),(100,2211),(100,2228),(101,2040),(101,2041),(101,2042),(101,2043),(101,2080),(101,2152),(101,2153),(101,2178),(101,2212),(101,2213),(101,2214),(101,2228),(102,2050),(102,2051),(102,2052),(102,2053),(102,2080),(102,2154),(102,2155),(102,2156),(102,2215),(102,2216),(102,2217),(102,2228),(103,2060),(103,2061),(103,2062),(103,2063),(103,2064),(103,2065),(103,2066),(103,2067),(103,2068),(103,2080),(103,2157),(103,2158),(103,2159),(103,2160),(103,2161),(103,2162),(103,2163),(103,2164),(103,2165),(103,2166),(103,2167),(103,2168),(103,2185),(103,2186),(103,2187),(103,2188),(103,2198),(103,2218),(103,2219),(103,2220),(103,2221),(103,2222),(103,2223),(103,2224),(103,2225),(103,2228),(104,2060),(104,2061),(104,2070),(104,2071),(104,2072),(104,2080),(104,2169),(104,2170),(104,2171),(104,2187),(104,2218),(104,2226),(104,2227),(104,2228),(105,2000),(105,2003),(105,2020),(105,2021),(105,2022),(105,2023),(105,2080),(105,2121),(105,2122),(105,2123),(105,2142),(105,2146),(105,2147),(105,2148),(105,2180),(105,2182),(105,2183),(105,2189),(105,2195),(105,2196),(105,2201),(105,2206),(105,2207),(105,2228),(105,2230),(105,2231),(105,2232),(105,2235),(106,2000),(106,2001),(106,2002),(106,2003),(106,2004),(106,2010),(106,2011),(106,2012),(106,2013),(106,2080),(106,2101),(106,2102),(106,2103),(106,2111),(106,2138),(106,2139),(106,2140),(106,2141),(106,2143),(106,2144),(106,2145),(106,2172),(106,2173),(106,2174),(106,2175),(106,2176),(106,2177),(106,2179),(106,2180),(106,2181),(106,2190),(106,2192),(106,2193),(106,2195),(106,2199),(106,2200),(106,2201),(106,2202),(106,2203),(106,2204),(106,2205),(106,2228),(107,2000),(107,2001),(107,2002),(107,2003),(107,2004),(107,2080),(107,2190),(107,2199),(107,2200),(107,2201),(107,2202),(107,2228),(108,1),(108,100),(108,101),(108,103),(108,104),(108,108),(108,500),(108,501),(108,1000),(108,1001),(108,1002),(108,1003),(108,1004),(108,1006),(108,1007),(108,1011),(108,1016),(108,1017),(108,1018),(108,1019),(108,1020),(108,1021),(108,1022),(108,1023),(108,1024),(108,1039),(108,1040),(108,1041),(108,1042),(108,1043),(108,1044),(108,2000),(108,2001),(108,2002),(108,2003),(108,2004),(108,2010),(108,2011),(108,2012),(108,2013),(108,2020),(108,2021),(108,2022),(108,2023),(108,2030),(108,2031),(108,2032),(108,2033),(108,2040),(108,2041),(108,2042),(108,2043),(108,2050),(108,2051),(108,2052),(108,2053),(108,2060),(108,2061),(108,2062),(108,2063),(108,2064),(108,2065),(108,2066),(108,2067),(108,2068),(108,2070),(108,2071),(108,2072),(108,2080),(108,2101),(108,2102),(108,2103),(108,2111),(108,2112),(108,2113),(108,2121),(108,2122),(108,2123),(108,2131),(108,2132),(108,2137),(108,2138),(108,2139),(108,2140),(108,2141),(108,2142),(108,2143),(108,2144),(108,2145),(108,2146),(108,2147),(108,2148),(108,2149),(108,2150),(108,2151),(108,2152),(108,2153),(108,2154),(108,2155),(108,2156),(108,2157),(108,2158),(108,2159),(108,2160),(108,2161),(108,2162),(108,2163),(108,2164),(108,2165),(108,2166),(108,2167),(108,2168),(108,2169),(108,2170),(108,2171),(108,2172),(108,2173),(108,2174),(108,2175),(108,2176),(108,2177),(108,2178),(108,2179),(108,2180),(108,2181),(108,2182),(108,2183),(108,2184),(108,2185),(108,2186),(108,2187),(108,2188),(108,2189),(108,2190),(108,2191),(108,2192),(108,2193),(108,2194),(108,2195),(108,2196),(108,2197),(108,2198),(108,2199),(108,2200),(108,2201),(108,2202),(108,2203),(108,2204),(108,2205),(108,2206),(108,2207),(108,2209),(108,2210),(108,2211),(108,2212),(108,2213),(108,2214),(108,2215),(108,2216),(108,2217),(108,2218),(108,2219),(108,2220),(108,2221),(108,2222),(108,2223),(108,2224),(108,2225),(108,2226),(108,2227),(108,2228),(108,2230),(108,2231),(108,2232),(108,2233),(108,2234),(108,2235);
 /*!40000 ALTER TABLE `sys_role_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2024,24 +2024,24 @@ DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
   `user_id` bigint NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `dept_id` bigint DEFAULT NULL COMMENT '部门ID',
-  `user_name` varchar(30) COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户账号',
-  `nick_name` varchar(30) COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户昵称',
-  `user_type` varchar(2) COLLATE utf8mb4_general_ci DEFAULT '00' COMMENT '用户类型（00系统用户）',
-  `email` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '用户邮箱',
-  `phonenumber` varchar(11) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '手机号码',
-  `sex` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '用户性别（0男 1女 2未知）',
-  `avatar` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '头像地址',
-  `password` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '密码',
-  `status` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '账号状态（0正常 1停用）',
-  `del_flag` char(1) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
-  `login_ip` varchar(128) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '最后登录IP',
+  `user_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户账号',
+  `nick_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户昵称',
+  `user_type` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '00' COMMENT '用户类型（00系统用户）',
+  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '用户邮箱',
+  `phonenumber` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '手机号码',
+  `sex` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '用户性别（0男 1女 2未知）',
+  `avatar` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '头像地址',
+  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '密码',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '账号状态（0正常 1停用）',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `login_ip` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '最后登录IP',
   `login_date` datetime DEFAULT NULL COMMENT '最后登录时间',
   `pwd_update_date` datetime DEFAULT NULL COMMENT '密码最后更新时间',
-  `create_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=118 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户信息表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2052,7 +2052,7 @@ CREATE TABLE `sys_user` (
 
 LOCK TABLES `sys_user` WRITE;
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
-INSERT INTO `sys_user` VALUES (1,100,'admin','管理员','00','admin@hongzuan.com','15888888888','1','','$2a$10$slYHdM/e1hNW65CzwFvbm.jWQsXiMa7WPfgxGrZ1hTbB4dXBcYfKe','0','0','127.0.0.1','2026-11-23 15:04:31','2026-11-22 10:52:53','admin','2026-11-21 08:36:37','','2026-11-22 10:52:53','系统运维保留账号（超级管理员），不对业务开放'),(100,104,'cutting','裁床-老周','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-22 16:28:16','2026-11-21 19:47:03','admin','2026-11-21 08:36:38','',NULL,'裁床演示账号'),(101,105,'workshop','车间-李梅','00','','','1','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-22 16:58:32','2026-11-21 19:47:03','admin','2026-11-21 08:36:38','',NULL,'车间演示账号'),(102,106,'finishing','后道-王检','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-22 15:45:42','2026-11-21 19:47:03','admin','2026-11-21 08:36:38','',NULL,'后道演示账号'),(103,107,'warehouse','仓库-小陈','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-23 10:41:06','2026-11-21 19:47:03','admin','2026-11-21 08:36:38','',NULL,'仓库演示账号'),(104,109,'finance','财务-小刘','00','','','1','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-22 16:03:50','2026-11-21 19:47:03','admin','2026-11-21 08:36:38','',NULL,'财务演示账号'),(105,100,'sysadmin','系统管理员','00','','13900000000','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','127.0.0.1','2026-11-23 15:42:51','2026-11-22 10:51:30','','2026-11-21 10:02:18','','2026-11-22 10:51:30','系统管理员账号'),(106,103,'design01','设计部-张敏','00','design01@garment.local','13800000006','1','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-23 11:43:13','2026-11-21 19:47:03','sysadmin','2026-11-21 15:06:39','',NULL,'主设计师'),(107,103,'design02','设计部-李婷','00','design02@garment.local','13800000007','1','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.247.16','2026-11-21 19:47:10','2026-11-21 19:47:03','sysadmin','2026-11-21 15:06:39','',NULL,'设计师'),(108,103,'design03','设计部-王倩','00','design03@garment.local','13800000008','1','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.247.16','2026-11-21 19:47:10','2026-11-21 19:47:03','sysadmin','2026-11-21 15:06:39','',NULL,'设计师'),(109,108,'purchaser01','采购部-吴磊','00','purchaser01@garment.local','13800000009','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-22 15:57:42','2026-11-21 19:47:03','sysadmin','2026-11-21 15:06:39','',NULL,'采购员'),(111,NULL,'001','001','00','','','0','','$2a$10$J494HhETBYDdQxloVqvYBOfjAptzWFpesfenOSa.p1GUrL4FqR8LW','0','0','112.32.246.167','2026-11-22 16:27:53','2026-11-22 15:30:34','','2026-11-22 15:30:33','',NULL,NULL),(112,105,'qianfeng','车间-钱峰','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-23 11:30:46',NULL,'admin','2026-11-23 11:20:24','',NULL,'由员工档案合并生成'),(113,105,'zhaoli','车间-赵丽','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','',NULL,NULL,'admin','2026-11-23 11:20:24','',NULL,'由员工档案合并生成'),(114,105,'yinjie','车间-殷杰','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','',NULL,NULL,'admin','2026-11-23 11:20:24','',NULL,'由员工档案合并生成'),(115,106,'sunmei','后道-孙梅','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','',NULL,NULL,'admin','2026-11-23 11:20:24','',NULL,'由员工档案合并生成'),(116,107,'wangfang','仓库-王芳','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','',NULL,NULL,'admin','2026-11-23 11:20:24','',NULL,'由员工档案合并生成'),(117,104,'liqiang','裁床-李强','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','',NULL,NULL,'admin','2026-11-23 11:20:24','',NULL,'由员工档案合并生成');
+INSERT INTO `sys_user` VALUES (1,100,'admin','管理员','00','admin@hongzuan.com','15888888888','1','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','127.0.0.1','2026-11-23 16:54:55','2026-11-22 10:52:53','admin','2026-11-21 08:36:37','','2026-11-22 10:52:53','系统运维保留账号（超级管理员），不对业务开放'),(100,104,'cutting','裁床-老周','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-23 16:34:38','2026-11-21 19:47:03','admin','2026-11-21 08:36:38','',NULL,'裁床演示账号'),(101,105,'workshop','车间-李梅','00','','','1','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-22 16:58:32','2026-11-21 19:47:03','admin','2026-11-21 08:36:38','',NULL,'车间演示账号'),(102,106,'finishing','后道-王检','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-22 15:45:42','2026-11-21 19:47:03','admin','2026-11-21 08:36:38','',NULL,'后道演示账号'),(103,107,'warehouse','仓库-小陈','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-23 10:41:06','2026-11-21 19:47:03','admin','2026-11-21 08:36:38','',NULL,'仓库演示账号'),(104,109,'finance','财务-小刘','00','','','1','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-22 16:03:50','2026-11-21 19:47:03','admin','2026-11-21 08:36:38','',NULL,'财务演示账号'),(105,100,'sysadmin','系统管理员','00','','13900000000','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','127.0.0.1','2026-11-23 16:54:55','2026-11-22 10:51:30','','2026-11-21 10:02:18','','2026-11-22 10:51:30','系统管理员账号'),(106,103,'design01','设计部-张敏','00','design01@garment.local','13800000006','1','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-23 11:43:13','2026-11-21 19:47:03','sysadmin','2026-11-21 15:06:39','',NULL,'主设计师'),(107,103,'design02','设计部-李婷','00','design02@garment.local','13800000007','1','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.247.16','2026-11-21 19:47:10','2026-11-21 19:47:03','sysadmin','2026-11-21 15:06:39','',NULL,'设计师'),(108,103,'design03','设计部-王倩','00','design03@garment.local','13800000008','1','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.247.16','2026-11-21 19:47:10','2026-11-21 19:47:03','sysadmin','2026-11-21 15:06:39','',NULL,'设计师'),(109,108,'purchaser01','采购部-吴磊','00','purchaser01@garment.local','13800000009','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-22 15:57:42','2026-11-21 19:47:03','sysadmin','2026-11-21 15:06:39','',NULL,'采购员'),(111,NULL,'001','001','00','','','0','','$2a$10$J494HhETBYDdQxloVqvYBOfjAptzWFpesfenOSa.p1GUrL4FqR8LW','0','0','112.32.246.167','2026-11-23 16:33:49','2026-11-22 15:30:34','','2026-11-22 15:30:33','',NULL,NULL),(112,105,'qianfeng','车间-钱峰','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','112.32.246.167','2026-11-23 11:30:46',NULL,'admin','2026-11-23 11:20:24','',NULL,'由员工档案合并生成'),(113,105,'zhaoli','车间-赵丽','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','',NULL,NULL,'admin','2026-11-23 11:20:24','',NULL,'由员工档案合并生成'),(114,105,'yinjie','车间-殷杰','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','',NULL,NULL,'admin','2026-11-23 11:20:24','',NULL,'由员工档案合并生成'),(115,106,'sunmei','后道-孙梅','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','',NULL,NULL,'admin','2026-11-23 11:20:24','',NULL,'由员工档案合并生成'),(116,107,'wangfang','仓库-王芳','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','',NULL,NULL,'admin','2026-11-23 11:20:24','',NULL,'由员工档案合并生成'),(117,104,'liqiang','裁床-李强','00','','','0','','$2b$10$skjCk/78SlHENipkfGrl6u27QDDdw/HxBWgoX4.P2HKakurAMlWK6','0','0','',NULL,NULL,'admin','2026-11-23 11:20:24','',NULL,'由员工档案合并生成');
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2113,4 +2113,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-23 15:44:41
+-- Dump completed on 2026-11-23 16:54:58

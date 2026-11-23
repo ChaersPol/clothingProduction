@@ -44,7 +44,7 @@
           <template #default="s">
             <el-button link type="primary" @click="openDesign(s.row)" v-hasPermi="['garment:style:design']">设计资料</el-button>
             <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:style:edit']">编辑</el-button>
-            <el-button link type="success" @click="openGenerate(s.row)" v-hasPermi="['garment:sku:add']">生成商品</el-button>
+            <el-button link type="success" v-if="Number(s.row.skuCount || 0) === 0" @click="openGenerate(s.row)" v-hasPermi="['garment:sku:add']">生成商品</el-button>
             <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:style:remove']">删除</el-button>
           </template>
         </el-table-column>
