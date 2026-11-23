@@ -90,7 +90,7 @@ public class GoodsService
         }
         if (skuMapper.countByStyleNo(style.getStyleNo()) > 0)
         {
-            throw new ServiceException("该款号已生成商品，不能删除，请先停用");
+            throw new ServiceException("该款号已生成商品，不能删除");
         }
         return styleMapper.deleteStyleById(id);
     }
@@ -122,7 +122,7 @@ public class GoodsService
         int used = skuMapper.countByColor(color.getCnName());
         if (used > 0)
         {
-            throw new ServiceException("颜色「" + color.getCnName() + "」已被 " + used + " 个商品使用，不能删除，可改为停用");
+            throw new ServiceException("颜色「" + color.getCnName() + "」已被 " + used + " 个商品使用，不能删除");
         }
         return colorMapper.deleteColorById(id);
     }
@@ -153,7 +153,7 @@ public class GoodsService
         int used = skuMapper.countBySize(size.getSizeName());
         if (used > 0)
         {
-            throw new ServiceException("尺码「" + size.getSizeName() + "」已被 " + used + " 个商品使用，不能删除，可改为停用");
+            throw new ServiceException("尺码「" + size.getSizeName() + "」已被 " + used + " 个商品使用，不能删除");
         }
         int styles = styleMapper.countBySizeTable(size.getSizeName());
         if (styles > 0)
