@@ -23,16 +23,18 @@ public class FinanceController extends BaseController
 
     @PreAuthorize("@ss.hasPermi('garment:finance:list')")
     @GetMapping("/finance/rankSku")
-    public AjaxResult rankSku(@RequestParam(required = false) String beginDate, @RequestParam(required = false) String endDate)
+    public AjaxResult rankSku(@RequestParam(required = false) String beginDate, @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String sortBy)
     {
-        return success(reportService.rankSku(beginDate, endDate));
+        return success(reportService.rankSku(beginDate, endDate, sortBy));
     }
 
     @PreAuthorize("@ss.hasPermi('garment:finance:list')")
     @GetMapping("/finance/rankStyle")
-    public AjaxResult rankStyle(@RequestParam(required = false) String beginDate, @RequestParam(required = false) String endDate)
+    public AjaxResult rankStyle(@RequestParam(required = false) String beginDate, @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String sortBy)
     {
-        return success(reportService.rankStyle(beginDate, endDate));
+        return success(reportService.rankStyle(beginDate, endDate, sortBy));
     }
 
     @PreAuthorize("@ss.hasPermi('garment:finance:list')")
@@ -80,6 +82,14 @@ public class FinanceController extends BaseController
     public AjaxResult editExpense(@RequestBody BizExpense expense)
     {
         return toAjax(reportService.saveExpense(expense));
+    }
+
+    @PreAuthorize("@ss.hasPermi('garment:expense:edit')")
+    @Log(title = "费用作废", businessType = BusinessType.UPDATE)
+    @PutMapping("/expense/void/{expenseId}")
+    public AjaxResult voidExpense(@PathVariable Long expenseId, @RequestParam String reason)
+    {
+        return toAjax(reportService.voidExpense(expenseId, reason));
     }
 
     @PreAuthorize("@ss.hasPermi('garment:expense:remove')")

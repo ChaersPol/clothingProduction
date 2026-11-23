@@ -182,6 +182,9 @@ export function updateCutOrder(data) {
 export function delCutOrder(cutId) {
   return request({ url: '/garment/cutorder/' + cutId, method: 'delete' })
 }
+export function voidCut(cutId, reason) {
+  return request({ url: '/garment/cutorder/void/' + cutId, method: 'put', params: { reason } })
+}
 export function listBundle(query) {
   return request({ url: '/garment/bundle/list', method: 'get', params: query })
 }
@@ -314,6 +317,9 @@ export function updateShipment(data) {
 export function delShipment(shipId) {
   return request({ url: '/garment/shipment/' + shipId, method: 'delete' })
 }
+export function voidShipment(shipId, reason) {
+  return request({ url: '/garment/shipment/void/' + shipId, method: 'put', params: { reason } })
+}
 export function shipmentSummary(query) {
   return request({ url: '/garment/shipment/summary', method: 'get', params: query })
 }
@@ -354,6 +360,9 @@ export function updateExpense(data) {
 }
 export function delExpense(expenseId) {
   return request({ url: '/garment/expense/' + expenseId, method: 'delete' })
+}
+export function voidExpense(expenseId, reason) {
+  return request({ url: '/garment/expense/void/' + expenseId, method: 'put', params: { reason } })
 }
 
 /* ---------------- 通用 ---------------- */

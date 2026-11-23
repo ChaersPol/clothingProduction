@@ -15,6 +15,7 @@ public interface BizExpenseMapper
         <if test="styleNo != null and styleNo != ''"> and style_no = #{styleNo}</if>
         <if test="params.beginDate != null and params.beginDate != ''"> and expense_date &gt;= #{params.beginDate}</if>
         <if test="params.endDate != null and params.endDate != ''"> and expense_date &lt;= #{params.endDate}</if>
+        <if test="status != null and status != ''"> and status = #{status}</if>
         </where>
         order by expense_date desc, expense_id desc
         </script>
@@ -30,6 +31,9 @@ public interface BizExpenseMapper
 
     @Update("update biz_expense set expense_type=#{expenseType},style_no=#{styleNo},amount=#{amount},expense_date=#{expenseDate},remark=#{remark} where expense_id=#{expenseId}")
     int updateExpense(BizExpense expense);
+
+    @Update("update biz_expense set status='9', cancel_reason=#{reason}, remark=concat(ifnull(remark,''),' 作废:',#{reason}) where expense_id=#{expenseId}")
+    int voidExpense(@Param("expenseId") Long expenseId, @Param("reason") String reason);
 
     @Delete("delete from biz_expense where expense_id=#{expenseId}")
     int deleteExpense(Long expenseId);

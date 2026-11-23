@@ -51,6 +51,9 @@
 
       <el-tab-pane label="裁货建议" name="suggest">
         <div class="muted" style="margin-bottom: 8px">建议裁货量 = 最低库存 × 2 − 成品 − 产线 − 裁片</div>
+        <div style="margin-bottom: 8px">
+          <el-button type="primary" plain icon="Download" @click="exportSuggestion">导出裁货建议单</el-button>
+        </div>
         <div class="table-wrap">
           <el-table :data="suggestList" border show-summary :summary-method="suggestSummary">
             <el-table-column label="款号" prop="style_no" width="110" />
@@ -173,6 +176,31 @@ function suggestSummary({ columns, data }) {
     if (col.property === 'suggestQty') return data.reduce((s, r) => s + Number(r.suggestQty || 0), 0)
     return ''
   })
+}
+function exportSuggestion() {
+  if (!suggestList.value.length) {
+    proxy.$modal.msgWarning('暂无可导出的裁货建议')
+    return
+  }
+  const d = new Date()
+  const day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  const head = ['款号', '品名', '颜色', '尺码', '成品库存', '产线在制', '裁片库存', '建议裁货量']
+  const rows = suggestList.value.map(i => [i.style_no, i.cn_name, i.color, i.size, i.finish_qty, i.line_qty, i.cut_qty, i.suggestQty])
+  const total = suggestList.value.reduce((s, i) => s + Number(i.suggestQty || 0), 0)
+  const html = `<html><head><meta charset="utf-8"></head><body>
+    <h3>裁货建议单（${day}）</h3>
+    <table border="1" cellspacing="0">
+      <tr>${head.map(h => `<th>${h}</th>`).join('')}</tr>
+      ${rows.map(r => `<tr>${r.map(c => `<td>${c == null ? '' : c}</td>`).join('')}</tr>`).join('')}
+      <tr><td colspan="7">合计</td><td>${total}</td></tr>
+    </table>
+  </body></html>`
+  const blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel;charset=utf-8' })
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = `裁货建议单-${day}.xls`
+  a.click()
+  URL.revokeObjectURL(a.href)
 }
 
 // 从标签页切回本页时自动刷新数据，避免展示缓存中的旧列表

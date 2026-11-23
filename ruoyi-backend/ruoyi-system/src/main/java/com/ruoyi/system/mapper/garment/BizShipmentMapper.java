@@ -18,6 +18,7 @@ public interface BizShipmentMapper
         <if test="size != null and size != ''"> and s.size = #{size}</if>
         <if test="params.beginDate != null and params.beginDate != ''"> and s.ship_date &gt;= #{params.beginDate}</if>
         <if test="params.endDate != null and params.endDate != ''"> and s.ship_date &lt;= #{params.endDate}</if>
+        <if test="status != null and status != ''"> and s.status = #{status}</if>
         </where>
         order by s.ship_date desc, s.ship_id desc
         </script>
@@ -29,6 +30,7 @@ public interface BizShipmentMapper
         select ship_date as shipDate, sum(qty) as qty, sum(amount) as amount, sum(sea_freight) as seaFreight
         from biz_shipment
         <where>
+        ifnull(status,'0') &lt;&gt; '9'
         <if test="beginDate != null and beginDate != ''"> and ship_date &gt;= #{beginDate}</if>
         <if test="endDate != null and endDate != ''"> and ship_date &lt;= #{endDate}</if>
         </where>
@@ -57,6 +59,9 @@ public interface BizShipmentMapper
 
     @Update("update biz_shipment set outbound_id=#{outboundId} where ship_id=#{shipId}")
     int updateOutboundId(@Param("shipId") Long shipId, @Param("outboundId") Long outboundId);
+
+    @Update("update biz_shipment set status='9', cancel_reason=#{reason}, update_by=#{updateBy}, update_time=sysdate() where ship_id=#{shipId}")
+    int voidShipment(@Param("shipId") Long shipId, @Param("reason") String reason, @Param("updateBy") String updateBy);
 
     @Delete("delete from biz_shipment where ship_id=#{shipId}")
     int deleteShipment(Long shipId);

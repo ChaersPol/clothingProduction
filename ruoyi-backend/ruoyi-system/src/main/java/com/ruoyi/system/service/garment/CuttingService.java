@@ -89,6 +89,17 @@ public class CuttingService
         }
         boolean isNew = order.getCutId() == null;
         BizCutOrder oldOrder = isNew ? null : cutOrderMapper.selectCutOrderById(order.getCutId());
+        if (oldOrder != null)
+        {
+            if ("9".equals(oldOrder.getStatus()))
+            {
+                throw new ServiceException("该裁货单已作废，不能修改；如填错请重新开单");
+            }
+            if (!"0".equals(oldOrder.getStatus()))
+            {
+                throw new ServiceException("该裁货单已分扎入库，不能直接修改；如填错请作废后重开");
+            }
+        }
         if (order.getCutId() == null)
         {
             if (StringUtils.isEmpty(order.getCutNo()))
@@ -242,6 +253,10 @@ public class CuttingService
             throw new ServiceException("该裁货单已分扎，不能删除");
         }
         BizCutOrder order = cutOrderMapper.selectCutOrderById(id);
+        if (order != null && "9".equals(order.getStatus()))
+        {
+            throw new ServiceException("已作废的裁货单需保留记录，不能删除");
+        }
         cutOrderMapper.deleteItems(id);
         int rows = cutOrderMapper.deleteCutOrder(id);
         // 删除未分扎的裁货单时，按当初领料流水净额原路退回物资
@@ -251,6 +266,36 @@ public class CuttingService
             reverseMaterialByLogs(order.getCutNo());
         }
         return rows;
+    }
+
+    /**
+     * 作废裁货单：保留原单记录，填写作废原因并按领料流水退回物资
+     */
+    @Transactional
+    public int voidCut(Long id, String reason)
+    {
+        if (StringUtils.isEmpty(reason) || reason.trim().isEmpty())
+        {
+            throw new ServiceException("请填写作废原因");
+        }
+        BizCutOrder order = cutOrderMapper.selectCutOrderById(id);
+        if (order == null)
+        {
+            throw new ServiceException("裁货单不存在");
+        }
+        if ("9".equals(order.getStatus()))
+        {
+            throw new ServiceException("该裁货单已作废");
+        }
+        if (bundleMapper.countByCut(id) > 0)
+        {
+            throw new ServiceException("该裁货单已分扎，不能作废；请先处理扎卡");
+        }
+        if (!StringUtils.isEmpty(order.getCutNo()) && materialMapper.countLog(order.getCutNo(), "生产领料") > 0)
+        {
+            reverseMaterialByLogs(order.getCutNo());
+        }
+        return cutOrderMapper.voidCut(id, reason.trim(), SecurityUtils.getUsername());
     }
 
     /**

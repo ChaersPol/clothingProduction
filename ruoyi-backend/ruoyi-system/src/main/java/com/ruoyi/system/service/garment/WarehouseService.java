@@ -223,6 +223,10 @@ public class WarehouseService
             return 1;
         }
         BizShipment old = shipmentMapper.selectShipmentById(shipment.getShipId());
+        if (old != null && "9".equals(old.getStatus()))
+        {
+            throw new ServiceException("该出货单已作废，不能修改；如填错请作废后重新开单");
+        }
         if (old != null && old.getOutboundId() != null)
         {
             cancelOutbound(old.getOutboundId(), "出货单修改，自动作废重新出库");
@@ -271,11 +275,41 @@ public class WarehouseService
     public int deleteShipment(Long id)
     {
         BizShipment shipment = shipmentMapper.selectShipmentById(id);
+        if (shipment != null && "9".equals(shipment.getStatus()))
+        {
+            throw new ServiceException("已作废的出货单需保留记录，不能删除");
+        }
         if (shipment != null && shipment.getOutboundId() != null)
         {
             cancelOutbound(shipment.getOutboundId(), "删除出货单，自动作废出库并回滚库存");
         }
         return shipmentMapper.deleteShipment(id);
+    }
+
+    /**
+     * 作废出货单：保留原单记录并回滚自动出库库存，填写作废原因
+     */
+    @Transactional
+    public int voidShipment(Long id, String reason)
+    {
+        if (StringUtils.isEmpty(reason) || reason.trim().isEmpty())
+        {
+            throw new ServiceException("请填写作废原因");
+        }
+        BizShipment shipment = shipmentMapper.selectShipmentById(id);
+        if (shipment == null)
+        {
+            throw new ServiceException("出货单不存在");
+        }
+        if ("9".equals(shipment.getStatus()))
+        {
+            throw new ServiceException("该出货单已作废");
+        }
+        if (shipment.getOutboundId() != null)
+        {
+            cancelOutbound(shipment.getOutboundId(), "出货单作废，回滚自动出库：" + reason.trim());
+        }
+        return shipmentMapper.voidShipment(id, reason.trim(), SecurityUtils.getUsername());
     }
 
     /* ---------------- 盘点 ---------------- */

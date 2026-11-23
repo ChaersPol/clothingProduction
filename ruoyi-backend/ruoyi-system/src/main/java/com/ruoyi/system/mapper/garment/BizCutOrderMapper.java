@@ -55,6 +55,9 @@ public interface BizCutOrderMapper
     @Update("update biz_cut_order set status=#{status}, update_time=sysdate() where cut_id=#{cutId}")
     int updateStatus(@Param("cutId") Long cutId, @Param("status") String status);
 
+    @Update("update biz_cut_order set status='9', cancel_reason=#{reason}, update_by=#{updateBy}, update_time=sysdate() where cut_id=#{cutId}")
+    int voidCut(@Param("cutId") Long cutId, @Param("reason") String reason, @Param("updateBy") String updateBy);
+
     @Delete("delete from biz_cut_order where cut_id=#{cutId}")
     int deleteCutOrder(Long cutId);
 

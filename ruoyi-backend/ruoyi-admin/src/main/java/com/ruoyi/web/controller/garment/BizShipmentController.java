@@ -64,6 +64,14 @@ public class BizShipmentController extends BaseController
         return toAjax(warehouseService.saveShipment(shipment));
     }
 
+    @PreAuthorize("@ss.hasPermi('garment:shipment:edit')")
+    @Log(title = "出货表作废", businessType = BusinessType.UPDATE)
+    @PutMapping("/void/{shipId}")
+    public AjaxResult voidShipment(@PathVariable Long shipId, @RequestParam String reason)
+    {
+        return toAjax(warehouseService.voidShipment(shipId, reason));
+    }
+
     @PreAuthorize("@ss.hasPermi('garment:shipment:remove')")
     @Log(title = "出货表", businessType = BusinessType.DELETE)
     @DeleteMapping("/{shipIds}")

@@ -31,4 +31,11 @@ public class BizExpense extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "费用日期", width = 30, dateFormat = "yyyy-MM-dd")
     private Date expenseDate;
+
+    /** 状态：0正常 9已作废 */
+    @Excel(name = "状态", readConverterExp = "0=正常,9=已作废")
+    private String status;
+
+    /** 作废原因 */
+    private String cancelReason;
 }

@@ -128,14 +128,14 @@ public class ReportService
         return msg;
     }
 
-    public List<Map<String, Object>> rankSku(String beginDate, String endDate)
+    public List<Map<String, Object>> rankSku(String beginDate, String endDate, String sortBy)
     {
-        return statMapper.outboundRankSku(beginDate, endDate);
+        return statMapper.outboundRankSku(beginDate, endDate, sortBy);
     }
 
-    public List<Map<String, Object>> rankStyle(String beginDate, String endDate)
+    public List<Map<String, Object>> rankStyle(String beginDate, String endDate, String sortBy)
     {
-        return statMapper.outboundRankStyle(beginDate, endDate);
+        return statMapper.outboundRankStyle(beginDate, endDate, sortBy);
     }
 
     public List<Map<String, Object>> inventoryDetail(String styleNo, String stockType)
@@ -193,11 +193,39 @@ public class ReportService
             expense.setCreateBy(SecurityUtils.getUsername());
             return expenseMapper.insertExpense(expense);
         }
+        BizExpense old = expenseMapper.selectExpenseById(expense.getExpenseId());
+        if (old != null && "9".equals(old.getStatus()))
+        {
+            throw new com.ruoyi.common.exception.ServiceException("该费用已作废，不能修改；如填错请作废后重新登记");
+        }
         return expenseMapper.updateExpense(expense);
+    }
+
+    public int voidExpense(Long id, String reason)
+    {
+        if (reason == null || reason.trim().isEmpty())
+        {
+            throw new com.ruoyi.common.exception.ServiceException("请填写作废原因");
+        }
+        BizExpense old = expenseMapper.selectExpenseById(id);
+        if (old == null)
+        {
+            throw new com.ruoyi.common.exception.ServiceException("费用记录不存在");
+        }
+        if ("9".equals(old.getStatus()))
+        {
+            throw new com.ruoyi.common.exception.ServiceException("该费用已作废");
+        }
+        return expenseMapper.voidExpense(id, reason.trim());
     }
 
     public int deleteExpense(Long id)
     {
+        BizExpense old = expenseMapper.selectExpenseById(id);
+        if (old != null && "9".equals(old.getStatus()))
+        {
+            throw new com.ruoyi.common.exception.ServiceException("已作废的费用需保留记录，不能删除");
+        }
         return expenseMapper.deleteExpense(id);
     }
 

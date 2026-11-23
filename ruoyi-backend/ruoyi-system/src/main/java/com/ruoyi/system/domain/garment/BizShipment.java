@@ -50,6 +50,13 @@ public class BizShipment extends BaseEntity
     /** 关联的成品出库单ID（出货保存时自动生成） */
     private Long outboundId;
 
+    /** 状态：0正常 9已作废 */
+    @Excel(name = "状态", readConverterExp = "0=正常,9=已作废")
+    private String status;
+
+    /** 作废原因 */
+    private String cancelReason;
+
     @Excel(name = "自动出库单")
     private String outboundNo;
 }

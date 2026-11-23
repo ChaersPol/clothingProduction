@@ -57,9 +57,12 @@ public class BizCutOrder extends BaseEntity
     @Excel(name = "扎数")
     private Integer bundleCount;
 
-    /** 0待分扎 1已入库 2已完成 */
-    @Excel(name = "状态", readConverterExp = "0=待分扎,1=已入库,2=已完成")
+    /** 0待分扎 1已入库 2已完成 9已作废 */
+    @Excel(name = "状态", readConverterExp = "0=待分扎,1=已入库,2=已完成,9=已作废")
     private String status;
+
+    /** 作废原因 */
+    private String cancelReason;
 
     /** 是否允许超库存领料（需同时填写超领原因） */
     private Boolean allowOverdraft;

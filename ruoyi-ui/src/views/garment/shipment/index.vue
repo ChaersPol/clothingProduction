@@ -28,18 +28,13 @@
         <el-button type="primary" plain icon="Plus" v-hasPermi="['garment:shipment:add']" @click="handleAdd">新增出货</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" v-hasPermi="['garment:shipment:remove']" :disabled="multiple" @click="handleDelete">删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
         <el-button type="primary" plain icon="Download" v-hasPermi="['garment:shipment:export']" @click="handleExport">导出</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <div class="table-wrap">
-      <el-table v-loading="loading" :data="shipmentList" border show-summary :summary-method="getSummary" @selection-change="handleSelectionChange">
-            <el-table-column v-if="checkPermi(['garment:shipment:remove'])" type="selection" width="50" align="center" />
-            
+      <el-table v-loading="loading" :data="shipmentList" border show-summary :summary-method="getSummary">
         <el-table-column label="出货日期" prop="shipDate" width="110" />
         <el-table-column label="客户" prop="customer" min-width="130" show-overflow-tooltip />
         <el-table-column label="款号" prop="styleNo" width="100" />
@@ -55,10 +50,15 @@
             <el-tag v-else type="info" size="small">未出库</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="checkPermi(['garment:shipment:edit','garment:shipment:remove'])" label="操作" class-name="op-cell" width="130" align="center" fixed="right">
+        <el-table-column label="状态" prop="status" width="90" align="center">
           <template #default="s">
-            <el-button link type="primary" v-hasPermi="['garment:shipment:edit']" @click="handleUpdate(s.row)">修改</el-button>
-            <el-button link type="danger" v-hasPermi="['garment:shipment:remove']" @click="handleDelete(s.row)">删除</el-button>
+            <el-tag :type="s.row.status === '9' ? 'info' : 'success'" size="small">{{ s.row.status === '9' ? '已作废' : '正常' }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column v-if="checkPermi(['garment:shipment:edit'])" label="操作" class-name="op-cell" width="125" align="center" fixed="right">
+          <template #default="s">
+            <el-button link type="primary" v-hasPermi="['garment:shipment:edit']" :disabled="s.row.status === '9'" @click="handleUpdate(s.row)">修改</el-button>
+            <el-button link type="danger" v-hasPermi="['garment:shipment:edit']" :disabled="s.row.status === '9'" @click="handleVoid(s.row)">作废</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -121,7 +121,7 @@
 </template>
 
 <script setup name="Shipment">
-import { listShipment, addShipment, updateShipment, delShipment, shipmentSummary, listSku, commonCustomers, commonStyles } from '@/api/garment'
+import { listShipment, addShipment, updateShipment, voidShipment, shipmentSummary, listSku, commonCustomers, commonStyles } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -197,14 +197,16 @@ function submitForm() {
     getList()
   })
 }
-function handleDelete(row) {
-  const _ids = row ? [row.shipId] : ids.value
-  if (!_ids.length) return
-  proxy.$modal.confirm(row ? '确认删除该出货记录？' : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delShipment(_ids)).then(() => {
-    proxy.$modal.msgSuccess('删除成功')
-    getList()
-    ids.value = []
-    multiple.value = true
+function handleVoid(row) {
+  proxy.$modal.prompt('作废原因（作废后原单保留，自动出库库存将回滚）：').then(({ value }) => {
+    if (!value || !value.trim()) {
+      proxy.$modal.msgWarning('请填写作废原因')
+      return
+    }
+    voidShipment(row.shipId, value.trim()).then(() => {
+      proxy.$modal.msgSuccess('已作废，原单已保留')
+      getList()
+    })
   }).catch(() => {})
 }
 function getSummary({ columns, data }) {

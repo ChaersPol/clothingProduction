@@ -64,6 +64,14 @@ public class BizCutOrderController extends BaseController
         return toAjax(cuttingService.save(order));
     }
 
+    @PreAuthorize("@ss.hasPermi('garment:cutorder:edit')")
+    @Log(title = "裁货单作废", businessType = BusinessType.UPDATE)
+    @PutMapping("/void/{cutId}")
+    public AjaxResult voidCut(@PathVariable Long cutId, @RequestParam String reason)
+    {
+        return toAjax(cuttingService.voidCut(cutId, reason));
+    }
+
     @PreAuthorize("@ss.hasPermi('garment:cutorder:remove')")
     @Log(title = "裁货开单", businessType = BusinessType.DELETE)
     @DeleteMapping("/{cutIds}")

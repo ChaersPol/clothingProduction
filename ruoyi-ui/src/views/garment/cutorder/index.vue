@@ -57,15 +57,16 @@
         <el-table-column label="扎数" prop="bundleCount" width="70" align="center" />
         <el-table-column label="状态" prop="status" width="105" align="center">
           <template #default="s">
-            <el-tag size="small" :type="s.row.status === '2' ? 'success' : s.row.status === '1' ? 'warning' : 'danger'">{{ statusText(s.row.status) }}</el-tag>
+            <el-tag size="small" :type="s.row.status === '9' ? 'info' : s.row.status === '2' ? 'success' : s.row.status === '1' ? 'warning' : 'danger'">{{ statusText(s.row.status) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="checkPermi(['garment:cutorder:edit','garment:cutorder:remove'])" label="操作" class-name="op-cell" width="240" align="center" fixed="right">
+        <el-table-column v-if="checkPermi(['garment:cutorder:edit','garment:cutorder:remove'])" label="操作" class-name="op-cell" width="295" align="center" fixed="right">
           <template #default="s">
             <el-button link type="primary" v-hasPermi="['garment:cutorder:list']" @click="viewDetail(s.row)">明细</el-button>
             <el-button link type="success" v-hasPermi="['garment:bundle:list']" @click="goBundle(s.row)">去分扎</el-button>
-            <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:cutorder:edit']">修改</el-button>
-            <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:cutorder:remove']">删除</el-button>
+            <el-button link type="primary" @click="handleUpdate(s.row)" v-hasPermi="['garment:cutorder:edit']" :disabled="s.row.status !== '0'">修改</el-button>
+            <el-button link type="warning" @click="handleVoid(s.row)" v-hasPermi="['garment:cutorder:edit']" v-if="s.row.status === '0'">作废</el-button>
+            <el-button link type="danger" @click="handleDelete(s.row)" v-hasPermi="['garment:cutorder:remove']" :disabled="s.row.status !== '0'">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -197,7 +198,7 @@
 
 <script setup name="CutOrder">
 import { useRouter } from 'vue-router'
-import { listCutOrder, getCutOrder, addCutOrder, updateCutOrder, delCutOrder, commonStyles, commonColors, commonSizes, commonUsers, commonCustomers } from '@/api/garment'
+import { listCutOrder, getCutOrder, addCutOrder, updateCutOrder, delCutOrder, voidCut, commonStyles, commonColors, commonSizes, commonUsers, commonCustomers } from '@/api/garment'
 
 const showSearch = ref(true)
 
@@ -263,7 +264,19 @@ const rules = { styleNo: [{ required: true, message: '请选择款号', trigger:
 const totalQty = computed(() => (form.value.items || []).reduce((s, i) => s + Number(i.qty || 0), 0))
 watch(totalQty, v => { form.value.totalQty = v })
 
-function statusText(s) { return s === '2' ? '已完成' : s === '1' ? '已入库' : '待分扎' }
+function statusText(s) { return s === '9' ? '已作废' : s === '2' ? '已完成' : s === '1' ? '已入库' : '待分扎' }
+function handleVoid(row) {
+  proxy.$modal.prompt(`作废原因（${row.cutNo} 作废后原单保留，已领物资按流水退回）：`).then(({ value }) => {
+    if (!value || !value.trim()) {
+      proxy.$modal.msgWarning('请填写作废原因')
+      return
+    }
+    voidCut(row.cutId, value.trim()).then(() => {
+      proxy.$modal.msgSuccess('已作废，原单已保留')
+      getList()
+    })
+  }).catch(() => {})
+}
 function today() {
   const d = new Date()
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`

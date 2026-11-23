@@ -24,16 +24,11 @@
       <el-col :span="1.5">
         <el-button type="primary" plain icon="Plus" v-hasPermi="['garment:expense:add']" @click="handleAdd">新增费用</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" v-hasPermi="['garment:expense:remove']" :disabled="multiple" @click="handleDelete">删除</el-button>
-      </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <div class="table-wrap">
-      <el-table v-loading="loading" :data="expenseList" border @selection-change="handleSelectionChange">
-            <el-table-column v-if="checkPermi(['garment:expense:remove'])" type="selection" width="50" align="center" />
-            
+      <el-table v-loading="loading" :data="expenseList" border>
         <el-table-column label="费用日期" prop="expenseDate" width="120" />
         <el-table-column label="费用类型" prop="expenseType" width="130">
           <template #default="s">
@@ -45,10 +40,15 @@
           <template #default="s"><span class="money">¥{{ s.row.amount }}</span></template>
         </el-table-column>
         <el-table-column label="备注" prop="remark" min-width="180" show-overflow-tooltip />
-        <el-table-column v-if="checkPermi(['garment:expense:edit','garment:expense:remove'])" label="操作" class-name="op-cell" width="140" align="center" fixed="right">
+        <el-table-column label="状态" prop="status" width="90" align="center">
           <template #default="s">
-            <el-button link type="primary" v-hasPermi="['garment:expense:edit']" @click="handleUpdate(s.row)">修改</el-button>
-            <el-button link type="danger" v-hasPermi="['garment:expense:remove']" @click="handleDelete(s.row)">删除</el-button>
+            <el-tag :type="s.row.status === '9' ? 'info' : 'success'" size="small">{{ s.row.status === '9' ? '已作废' : '正常' }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column v-if="checkPermi(['garment:expense:edit'])" label="操作" class-name="op-cell" width="125" align="center" fixed="right">
+          <template #default="s">
+            <el-button link type="primary" v-hasPermi="['garment:expense:edit']" :disabled="s.row.status === '9'" @click="handleUpdate(s.row)">修改</el-button>
+            <el-button link type="danger" v-hasPermi="['garment:expense:edit']" :disabled="s.row.status === '9'" @click="handleVoid(s.row)">作废</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -84,7 +84,7 @@
 </template>
 
 <script setup name="Expense">
-import { listExpense, addExpense, updateExpense, delExpense, commonStyles } from '@/api/garment'
+import { listExpense, addExpense, updateExpense, voidExpense, commonStyles } from '@/api/garment'
 import { expenseTypeTag } from '@/utils/garment'
 
 const showSearch = ref(true)
@@ -142,14 +142,16 @@ function submitForm() {
     })
   })
 }
-function handleDelete(row) {
-  const _ids = row ? [row.expenseId] : ids.value
-  if (!_ids.length) return
-  proxy.$modal.confirm(row ? '确认删除该费用记录？' : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delExpense(_ids)).then(() => {
-    proxy.$modal.msgSuccess('删除成功')
-    getList()
-    ids.value = []
-    multiple.value = true
+function handleVoid(row) {
+  proxy.$modal.prompt('作废原因（作废后原记录保留，不计入利润）：').then(({ value }) => {
+    if (!value || !value.trim()) {
+      proxy.$modal.msgWarning('请填写作废原因')
+      return
+    }
+    voidExpense(row.expenseId, value.trim()).then(() => {
+      proxy.$modal.msgSuccess('已作废，原记录已保留')
+      getList()
+    })
   }).catch(() => {})
 }
 

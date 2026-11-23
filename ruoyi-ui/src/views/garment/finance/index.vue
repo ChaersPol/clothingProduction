@@ -24,6 +24,12 @@
 
     <el-tabs v-model="activeTab">
       <el-tab-pane label="出库排行" name="rank">
+        <div style="margin-bottom: 8px">
+          <el-radio-group v-model="rankSort" @change="loadRank">
+            <el-radio-button value="qty">按数量排名</el-radio-button>
+            <el-radio-button value="amount">按金额排名</el-radio-button>
+          </el-radio-group>
+        </div>
         <el-row :gutter="14">
           <el-col :xs="24" :md="12">
             <el-card shadow="never">
@@ -112,6 +118,9 @@
                   <el-table-column label="款号" prop="style_no" width="110" />
                   <el-table-column label="品名" prop="cn_name" min-width="140" show-overflow-tooltip />
                   <el-table-column label="退货数" prop="qty" width="80" align="right" />
+                  <el-table-column label="退货率" prop="rate" width="85" align="right">
+                    <template #default="s">{{ s.row.rate == null ? '-' : s.row.rate + '%' }}</template>
+                  </el-table-column>
                   <el-table-column label="好货" prop="goodQty" width="75" align="right" />
                   <el-table-column label="次品" prop="badQty" width="75" align="right" />
                   <el-table-column label="次数" prop="times" width="65" align="center" />
@@ -148,6 +157,7 @@ const activeTab = ref('rank')
 const dateRange = ref([])
 const rankSkuList = ref([])
 const rankStyleList = ref([])
+const rankSort = ref('qty')
 const inventoryList = ref([])
 const stockTypeFilter = ref('')
 const profitList = ref([])
@@ -176,8 +186,7 @@ function loadInventory() {
 }
 function loadAll() {
   const p = params()
-  rankSku(p).then(res => { rankSkuList.value = res.data || [] })
-  rankStyle(p).then(res => { rankStyleList.value = res.data || [] })
+  loadRank()
   loadInventory()
   profitReport(p).then(res => {
     profitList.value = res.data || []
@@ -191,6 +200,11 @@ function loadAll() {
     returnByStyle.value = d.byStyle || []
     returnByReason.value = d.byReason || []
   })
+}
+function loadRank() {
+  const p = { ...params(), sortBy: rankSort.value }
+  rankSku(p).then(res => { rankSkuList.value = res.data || [] })
+  rankStyle(p).then(res => { rankStyleList.value = res.data || [] })
 }
 function resetQuery() { dateRange.value = []; loadAll() }
 function sumInventory({ columns, data }) {
