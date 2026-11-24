@@ -6,7 +6,7 @@
 </template>
 
 <script setup name="GarmentScan">
-import { BrowserMultiFormatReader } from '@zxing/library'
+import { BrowserMultiFormatReader, DecodeHintType, BarcodeFormat } from '@zxing/library'
 
 defineOptions({ inheritAttrs: false })
 
@@ -15,13 +15,24 @@ const props = defineProps({
 })
 const emit = defineEmits(['scan', 'error'])
 const fileRef = ref()
-const reader = new BrowserMultiFormatReader()
+
+// 手机拍照常带轻微虚焦/倾斜，开启 TRY_HARDER 并限定常见码制，明显提高小标签二维码的识别率
+const hints = new Map()
+hints.set(DecodeHintType.TRY_HARDER, true)
+hints.set(DecodeHintType.POSSIBLE_FORMATS, [
+  BarcodeFormat.QR_CODE,
+  BarcodeFormat.CODE_128,
+  BarcodeFormat.CODE_39,
+  BarcodeFormat.EAN_13
+])
+const reader = new BrowserMultiFormatReader(hints)
 
 function choose() {
   fileRef.value?.click()
 }
 
 // 手机 HTTP 环境无法调用摄像头实时流，改为调起系统相机拍照后在本地识别条码
+// 注意：不要先缩小图片，缩小会糊掉二维码导致识别失败，直接用原图识别
 function onFile(e) {
   const file = e.target.files && e.target.files[0]
   e.target.value = ''
