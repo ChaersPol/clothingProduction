@@ -27,11 +27,12 @@
         <span class="muted">份数</span>
         <el-input-number v-model="copies" :min="1" size="small" controls-position="right" style="width: 100px" />
       </el-col>
-      <el-col :span="4" style="display: flex; align-items: center; gap: 6px">
+      <el-col :span="5" style="display: flex; align-items: center; gap: 6px">
         <span class="muted">纸张</span>
         <el-select v-model="sizeKey" size="small" style="width: 120px">
           <el-option v-for="p in SIZE_PRESETS" :key="p.key" :label="p.label" :value="p.key" />
         </el-select>
+        <span class="muted" style="font-size: 12px">需与打印预览纸张一致</span>
       </el-col>
       <el-col :span="4" style="display: flex; align-items: center">
         <el-radio-group v-model="labelType" size="small">
@@ -90,8 +91,8 @@
 import QRCode from 'qrcode'
 import { labelList } from '@/api/garment'
 
-// key 带版本号：旧版本残留的其他规格会在 50×30 纸卷上被判成两页，升级后重置为默认 50×30
-const PRINT_KEY = 'garment:label-print-settings-v2'
+// key 带版本号：旧版本残留的纸张设置会与佳博 GP-1324D 的 100×100 纸不符，升级后重置为默认 100×100
+const PRINT_KEY = 'garment:label-print-settings-v3'
 const savedPrint = (() => {
   try { return JSON.parse(localStorage.getItem(PRINT_KEY)) || {} } catch (e) { return {} }
 })()
@@ -104,8 +105,8 @@ const SIZE_PRESETS = [
   { key: '60x40', label: '60×40 mm', w: 60, h: 40 },
   { key: '100x100', label: '100×100 mm', w: 100, h: 100 }
 ]
-const sizeKey = ref(SIZE_PRESETS.some(p => p.key === savedPrint.sizeKey) ? savedPrint.sizeKey : '50x30')
-const paper = computed(() => SIZE_PRESETS.find(p => p.key === sizeKey.value) || SIZE_PRESETS[0])
+const sizeKey = ref(SIZE_PRESETS.some(p => p.key === savedPrint.sizeKey) ? savedPrint.sizeKey : '100x100')
+const paper = computed(() => SIZE_PRESETS.find(p => p.key === sizeKey.value) || SIZE_PRESETS[2])
 const labelW = computed(() => paper.value.w)
 const labelH = computed(() => paper.value.h)
 
