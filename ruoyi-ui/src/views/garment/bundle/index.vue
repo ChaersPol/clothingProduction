@@ -88,7 +88,7 @@
         <div class="card-title">服装厂扎卡</div>
         <div class="card-no">{{ b.bundleNo }}</div>
         <div class="card-qr-wrap">
-          <canvas class="card-qr" :data-url="b.qrUrl"></canvas>
+          <div class="card-qr" :data-url="b.qrUrl"></div>
           <div class="card-qr-tip">手机扫码领片</div>
         </div>
         <div class="card-row">{{ b.styleNo }} / {{ b.color }} / {{ b.size }}</div>
@@ -217,19 +217,30 @@ function pickUrl(code) {
   return `${window.location.origin}/workshop/pick?code=${encodeURIComponent(code)}`
 }
 
+// 用填充方块拼出二维码：qrcode 自带 svg 用描边绘制，热敏机栅格化后会糊成灰线，
+// 填充路径在任意 DPI 下都锐利，192dpi 打印头也能扫
+function qrSvg(text) {
+  const qr = QRCode.create(text, { errorCorrectionLevel: 'M' })
+  const n = qr.modules.size
+  const d = qr.modules.data
+  let path = ''
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < n; x++) {
+      if (d[y * n + x]) path += `M${x} ${y}h1v1h-1z`
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><path d="${path}" fill="#000000"/></svg>`
+}
+
 function printCards() {
   applyPageStyle()
   printRows.value = selectedRows.value.map(r => ({ ...r, qrUrl: pickUrl(r.bundleNo) }))
   nextTick(() => {
-    const qrTasks = Array.from(document.querySelectorAll('#bundle-print-area .card-qr')).map(canvas =>
-      QRCode.toCanvas(canvas, canvas.dataset.url, { width: 320, margin: 0 }).then(() => {
-        // 尺寸交给打印样式按纸张大小计算，这里清掉库写入的 320px 行内样式
-        canvas.style.width = ''
-        canvas.style.height = ''
-      }).catch(() => {})
-    )
-    // 等二维码渲染完再唤起打印，避免二维码仍是 320px 就把小纸撑成两页
-    Promise.all(qrTasks).then(() => setTimeout(() => window.print(), 60))
+    Array.from(document.querySelectorAll('#bundle-print-area .card-qr')).forEach(el => {
+      el.innerHTML = qrSvg(el.dataset.url)
+    })
+    // 等二维码渲染完再唤起打印，避免二维码仍是原始尺寸就把小纸撑成两页
+    setTimeout(() => window.print(), 60)
   })
 }
 
@@ -455,9 +466,16 @@ onMounted(focusScan)
     align-items: center;
   }
   .bundle-card .card-qr {
-    /* 短边的 34%，给二维码与下方文字留出间距，避免贴在一起 */
-    width: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.34);
-    height: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.34);
+    /* 短边的 38%，模块更大热敏打印更实，手机远距离也更容易扫到 */
+    width: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.38);
+    height: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.38);
+    line-height: 0;
+  }
+  .bundle-card .card-qr svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    shape-rendering: crispEdges;
   }
   .bundle-card .card-qr-tip {
     font-size: 0.95em;

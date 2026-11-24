@@ -78,7 +78,7 @@
           <div class="label-name">{{ item.cnName }}</div>
           <div class="label-attr">{{ item.color }} / {{ item.size }}</div>
           <div class="label-barcode">
-            <canvas class="label-qr" :ref="el => setQrRef(el, outboundUrl(item.barcode))"></canvas>
+            <div class="label-qr" :ref="el => setQrRef(el, outboundUrl(item.barcode))"></div>
           </div>
         </template>
       </div>
@@ -180,17 +180,25 @@ function resetQuery() { proxy.resetForm('queryRef'); handleQuery() }
 function setQrRef(el, url) {
   if (el) qrRefs.push({ el, url })
 }
+// 用填充方块拼出二维码：qrcode 自带 svg 用描边绘制，热敏机栅格化后会糊成灰线，
+// 填充路径在任意 DPI 下都锐利，192dpi 打印头也能扫
+function qrSvg(text) {
+  const qr = QRCode.create(text, { errorCorrectionLevel: 'M' })
+  const n = qr.modules.size
+  const d = qr.modules.data
+  let path = ''
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < n; x++) {
+      if (d[y * n + x]) path += `M${x} ${y}h1v1h-1z`
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><path d="${path}" fill="#000000"/></svg>`
+}
 function renderQr(done) {
   nextTick(() => {
-    const qrTasks = qrRefs.map(({ el, url }) =>
-      QRCode.toCanvas(el, url, { width: 320, margin: 0 }).then(() => {
-        // 尺寸交给打印样式按纸张大小计算，这里清掉库写入的 320px 行内样式
-        el.style.width = ''
-        el.style.height = ''
-      }).catch(() => {})
-    )
+    qrRefs.forEach(({ el, url }) => { el.innerHTML = qrSvg(url) })
     qrRefs.length = 0
-    Promise.all(qrTasks).then(() => { if (done) done() })
+    if (done) done()
   })
 }
 function expandCopies(rows) {
@@ -273,6 +281,13 @@ onActivated(() => {
     flex: none;
     width: calc(min(var(--lw, 50mm), var(--lh, 30mm)) * 0.46);
     height: calc(min(var(--lw, 50mm), var(--lh, 30mm)) * 0.46);
+    line-height: 0;
+  }
+  .label-card .label-qr svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    shape-rendering: crispEdges;
   }
   .label-card.factory-card {
     /* 厂内标签只有两行，字号再放大一档并用宽度封顶 */
