@@ -43,7 +43,7 @@
           v-model="registerForm.code"
           autocomplete="off"
           placeholder="验证码"
-          style="width: 63%"
+          class="code-input"
           @keyup.enter="handleRegister"
         >
           <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
@@ -200,6 +200,9 @@ getCode()
     vertical-align: middle;
   }
 }
+.code-input {
+  width: 63%;
+}
 .el-register-footer {
   height: 40px;
   line-height: 40px;
@@ -215,6 +218,8 @@ getCode()
 .register-code-img {
   height: 40px;
   padding-left: 12px;
+  max-width: calc(100% - 12px);
+  object-fit: contain;
 }
 
 html.dark .register {
@@ -236,7 +241,7 @@ html.dark .register {
   .register-form {
     width: 100%;
     max-width: 330px;
-    padding: 34px 22px 20px;
+    padding: 34px 16px 20px;
     .el-input {
       height: 46px;
       input {
@@ -258,10 +263,15 @@ html.dark .register {
   }
   .register-code {
     height: 46px;
+    width: 48%;
+  }
+  .code-input {
+    width: 51%;
   }
   .register-code-img {
     height: 46px;
     padding-left: 10px;
+    max-width: calc(100% - 10px);
   }
   .el-register-footer {
     font-size: 11px;

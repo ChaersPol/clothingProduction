@@ -31,7 +31,7 @@
           size="large"
           auto-complete="off"
           placeholder="验证码"
-          style="width: 63%"
+          class="code-input"
           @keyup.enter="handleLogin"
         >
           <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
@@ -227,6 +227,9 @@ getConfigKey("sys.account.registerUser").then(res => {
     vertical-align: middle;
   }
 }
+.code-input {
+  width: 63%;
+}
 .el-login-footer {
   height: 40px;
   line-height: 40px;
@@ -242,6 +245,8 @@ getConfigKey("sys.account.registerUser").then(res => {
 .login-code-img {
   height: 40px;
   padding-left: 12px;
+  max-width: calc(100% - 12px);
+  object-fit: contain;
 }
 
 html.dark .login {
@@ -260,7 +265,7 @@ html.dark .login {
   .login-form {
     width: 100%;
     max-width: 330px;
-    padding: 34px 22px 20px;
+    padding: 34px 16px 20px;
     .el-input {
       height: 46px;
       input {
@@ -282,10 +287,15 @@ html.dark .login {
   }
   .login-code {
     height: 46px;
+    width: 48%;
+  }
+  .code-input {
+    width: 51%;
   }
   .login-code-img {
     height: 46px;
     padding-left: 10px;
+    max-width: calc(100% - 10px);
   }
   .el-login-footer {
     font-size: 11px;
