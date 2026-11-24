@@ -455,17 +455,23 @@ onMounted(focusScan)
     align-items: center;
   }
   .bundle-card .card-qr {
-    /* 去掉条码后二维码放到短边的 46%，撑满纸张便于手机扫码 */
-    width: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.46);
-    height: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.46);
+    /* 短边的 34%，给二维码与下方文字留出间距，避免贴在一起 */
+    width: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.34);
+    height: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.34);
   }
   .bundle-card .card-qr-tip {
-    font-size: 0.5em;
+    font-size: 0.95em;
+    font-weight: 700;
     line-height: 1.2;
+    /* 与二维码之间留 0.7mm，打印出来不会糊在一起 */
+    margin-top: 0.7mm;
   }
   .bundle-card .card-row {
-    font-size: 0.55em;
+    /* 比扎号略小一档，50×30 / 60×40 热敏打印也清晰，且不超纸张边距 */
+    font-size: 1.05em;
+    font-weight: 600;
     line-height: 1.25;
+    letter-spacing: 0.01em;
   }
 }
 </style>
