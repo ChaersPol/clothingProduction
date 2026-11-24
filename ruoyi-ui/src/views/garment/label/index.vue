@@ -27,19 +27,11 @@
         <span class="muted">份数</span>
         <el-input-number v-model="copies" :min="1" size="small" controls-position="right" style="width: 100px" />
       </el-col>
-      <el-col :span="3" style="display: flex; align-items: center; gap: 6px">
+      <el-col :span="4" style="display: flex; align-items: center; gap: 6px">
         <span class="muted">纸张</span>
-        <el-select v-model="paperMode" size="small" style="width: 100px">
-          <el-option label="标签纸" value="LABEL" />
-          <el-option label="A4" value="A4" />
+        <el-select v-model="sizeKey" size="small" style="width: 120px">
+          <el-option v-for="p in SIZE_PRESETS" :key="p.key" :label="p.label" :value="p.key" />
         </el-select>
-      </el-col>
-      <el-col :span="6" style="display: flex; align-items: center; gap: 4px">
-        <span class="muted">尺寸</span>
-        <el-input-number v-model="labelW" :min="20" :max="104" size="small" controls-position="right" style="width: 80px" />
-        <span class="muted">×</span>
-        <el-input-number v-model="labelH" :min="20" :max="150" size="small" controls-position="right" style="width: 80px" />
-        <span class="muted">mm</span>
       </el-col>
       <el-col :span="4" style="display: flex; align-items: center">
         <el-radio-group v-model="labelType" size="small">
@@ -74,7 +66,7 @@
 
     <!-- 打印区域：挂到 body 下，打印时隐藏其余内容并自动分页 -->
     <teleport to="body">
-      <div id="label-print-area" :class="paperMode === 'LABEL' ? 'label-mode' : 'a4-mode'" :style="{ '--lw': labelW + 'mm', '--lh': labelH + 'mm' }">
+      <div id="label-print-area" class="label-mode" :style="{ '--lw': labelW + 'mm', '--lh': labelH + 'mm' }">
       <div v-for="item in printItems" :key="item._key" class="label-card" :class="{ 'factory-card': labelType === 'FACTORY' }">
         <template v-if="labelType === 'FACTORY'">
           <div class="label-name factory-name">{{ item.cnName }}</div>
@@ -108,11 +100,18 @@ const savedPrint = (() => {
 const showSearch = ref(true)
 const labelType = ref(savedPrint.labelType || 'FACTORY')
 const copies = ref(savedPrint.copies || 1)
-const paperMode = ref(savedPrint.paperMode || 'LABEL')
-const labelW = ref(savedPrint.labelW || 50)
-const labelH = ref(savedPrint.labelH || 30)
+// 客户规格按「高×宽」书写：50×30 即宽 30mm、高 50mm（竖向）
+const SIZE_PRESETS = [
+  { key: '50x30', label: '50×30 mm', w: 30, h: 50 },
+  { key: '60x40', label: '60×40 mm', w: 40, h: 60 },
+  { key: '100x100', label: '100×100 mm', w: 100, h: 100 }
+]
+const sizeKey = ref(SIZE_PRESETS.some(p => p.key === savedPrint.sizeKey) ? savedPrint.sizeKey : '50x30')
+const paper = computed(() => SIZE_PRESETS.find(p => p.key === sizeKey.value) || SIZE_PRESETS[0])
+const labelW = computed(() => paper.value.w)
+const labelH = computed(() => paper.value.h)
 // 二维码尺寸跟随标签宽度，避免小标签放不下
-const qrSize = computed(() => Math.max(5, Math.min(12, Number(labelW.value) * 0.22)))
+const qrSize = computed(() => Math.round(Math.min(26, Math.max(7, labelW.value * 0.26)) * 10) / 10)
 
 // 打印前才注入 @page，避免离开页面后影响扎卡等其他打印
 function applyPageStyle() {
@@ -124,9 +123,7 @@ function applyPageStyle() {
     el.id = 'label-page-style'
     document.head.appendChild(el)
   }
-  el.textContent = paperMode.value === 'LABEL'
-    ? `@page { size: ${labelW.value}mm ${labelH.value}mm; margin: 0; }`
-    : '@page { size: A4; margin: 8mm; }'
+  el.textContent = `@page { size: ${labelW.value}mm ${labelH.value}mm; margin: 0; }`
 }
 function clearPageStyle() {
   document.getElementById('label-page-style')?.remove()
@@ -142,11 +139,9 @@ function handleAfterPrint() {
   clearPageStyle()
 }
 window.addEventListener('afterprint', handleAfterPrint)
-watch([paperMode, labelW, labelH, copies, labelType], () => {
+watch([sizeKey, copies, labelType], () => {
   localStorage.setItem(PRINT_KEY, JSON.stringify({
-    paperMode: paperMode.value,
-    labelW: labelW.value,
-    labelH: labelH.value,
+    sizeKey: sizeKey.value,
     copies: copies.value,
     labelType: labelType.value
   }))
@@ -197,15 +192,28 @@ function renderBarcodes(done) {
   nextTick(() => {
     barcodeRefs.forEach(({ el, code }) => {
       try {
-        JsBarcode(el, code, { format: 'CODE128', width: 1.2, height: Math.max(20, Math.min(42, Math.round(labelH.value * 1.1))), displayValue: false, margin: 0 })
+        JsBarcode(el, code, { format: 'CODE128', width: 1, height: 40, displayValue: false, margin: 0 })
+        // 用 viewBox 让条码随标签宽度等比缩放，避免不同纸张下大小不一致
+        const w = parseFloat(el.getAttribute('width')) || 0
+        const h = parseFloat(el.getAttribute('height')) || 40
+        if (w > 0) {
+          el.setAttribute('viewBox', `0 0 ${w} ${h}`)
+          el.setAttribute('preserveAspectRatio', 'none')
+          el.removeAttribute('width')
+          el.removeAttribute('height')
+        }
       } catch (e) { /* 忽略非法条码 */ }
     })
     barcodeRefs.length = 0
-    qrRefs.forEach(({ el, url }) => {
-      QRCode.toCanvas(el, url, { width: 96, margin: 0 }).catch(() => {})
-    })
+    // qrcode 库会给 canvas 写入行内 px 尺寸，这里渲染后强制改回毫米尺寸
+    const qrTasks = qrRefs.map(({ el, url }) =>
+      QRCode.toCanvas(el, url, { width: 320, margin: 0 }).then(() => {
+        el.style.width = qrSize.value + 'mm'
+        el.style.height = qrSize.value + 'mm'
+      }).catch(() => {})
+    )
     qrRefs.length = 0
-    if (done) done()
+    Promise.all(qrTasks).then(() => { if (done) done() })
   })
 }
 function expandCopies(rows) {
@@ -246,73 +254,51 @@ onActivated(() => {
     display: block;
   }
   .label-card {
-    display: inline-block;
-    vertical-align: top;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3em;
     width: var(--lw, 50mm);
-    height: var(--lh, 30mm);
-    padding: 1.5mm;
+    height: calc(var(--lh, 30mm) - 0.3mm);
+    padding: 1.2mm;
     margin: 0;
     box-sizing: border-box;
+    border: none;
     text-align: center;
+    overflow: hidden;
+    /* 字号按标签宽度比例缩放，保证 50×30 / 60×40 / 100×100 视觉一致 */
+    font-size: calc(var(--lw, 30mm) * 0.06);
     page-break-inside: avoid;
     break-inside: avoid;
-  }
-  /* 标签纸模式：一张标签一页，适配佳博 GP-1324D */
-  #label-print-area.label-mode .label-card {
-    display: block;
-    border: none;
-    height: calc(var(--lh, 30mm) - 0.3mm);
     page-break-after: always;
     break-after: page;
   }
-  #label-print-area.label-mode .label-card:last-child {
+  .label-card:last-child {
     page-break-after: auto;
     break-after: auto;
   }
-  /* A4 模式：多张自动换行、自动分页 */
-  #label-print-area.a4-mode .label-card {
-    margin: 0 2mm 2mm 0;
-    border: 1px dashed #999;
-  }
-  .label-card .label-style { font-size: 11px; font-weight: bold; }
-  .label-card .label-name { font-size: 9px; white-space: nowrap; overflow: hidden; }
-  .label-card .label-attr { font-size: 9px; }
-  .label-card .label-code { font-size: 7px; letter-spacing: 0.5px; }
+  .label-card .label-style { font-size: 1.05em; font-weight: 700; line-height: 1.1; }
+  .label-card .label-name { font-size: 0.92em; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  .label-card .label-attr { font-size: 0.92em; }
+  .label-card .label-code { font-size: 0.62em; letter-spacing: 0.02em; }
   .label-card .label-barcode {
     display: flex;
     align-items: center;
-    gap: 1mm;
-  }
-  .label-card .label-barcode svg { flex: 1; width: auto; height: 8mm; }
-  .label-card .label-qr { flex: none; }
-  /* 厂内标签：内容垂直居中并撑满标签 */
-  .label-card.factory-card {
-    height: var(--lh, 30mm);
-    display: flex;
-    flex-direction: column;
     justify-content: center;
+    gap: 0.5em;
+    width: 100%;
   }
+  .label-card .label-barcode svg { flex: 1 1 0; min-width: 0; height: calc(var(--lw, 50mm) * 0.18); }
+  .label-card .label-qr { flex: none; }
   .label-card.factory-card .factory-name {
-    font-size: 12px;
+    font-size: 1.35em;
     font-weight: 700;
-    margin-bottom: 1.5mm;
-    white-space: nowrap;
+    line-height: 1.15;
   }
   .label-card.factory-card .factory-attr {
-    font-size: 10px;
-    letter-spacing: 0.3px;
-  }
-  /* 标签纸模式：撑满整页且不加边框，避免热敏打印浪费 */
-  #label-print-area.label-mode .label-card,
-  #label-print-area.label-mode .label-card.factory-card {
-    height: calc(var(--lh, 30mm) - 0.3mm);
-    border: none;
-  }
-  /* 厂内标签保持 flex，内容在整张标签内垂直居中 */
-  #label-print-area.label-mode .label-card.factory-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    font-size: 1.05em;
+    letter-spacing: 0.02em;
   }
 }
 </style>

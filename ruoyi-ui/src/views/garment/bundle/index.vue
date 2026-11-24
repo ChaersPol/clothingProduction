@@ -42,19 +42,11 @@
       <el-col :span="1.5">
         <el-button type="danger" plain icon="Delete" v-hasPermi="['garment:bundle:remove']" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-col>
-      <el-col :span="2.5" style="display: flex; align-items: center; gap: 6px">
+      <el-col :span="4" style="display: flex; align-items: center; gap: 6px">
         <span class="muted">纸张</span>
-        <el-select v-model="paperMode" size="small" style="width: 90px">
-          <el-option label="A4" value="A4" />
-          <el-option label="标签纸" value="LABEL" />
+        <el-select v-model="sizeKey" size="small" style="width: 120px">
+          <el-option v-for="p in SIZE_PRESETS" :key="p.key" :label="p.label" :value="p.key" />
         </el-select>
-      </el-col>
-      <el-col :span="7" style="display: flex; align-items: center; gap: 4px">
-        <span class="muted">尺寸</span>
-        <el-input-number v-model="cardW" :min="40" :max="210" size="small" controls-position="right" style="width: 80px" />
-        <span class="muted">×</span>
-        <el-input-number v-model="cardH" :min="40" :max="297" size="small" controls-position="right" style="width: 80px" />
-        <span class="muted">mm</span>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -90,7 +82,7 @@
 
     <!-- 打印区域：挂到 body 下，打印时隐藏其余内容并自动分页 -->
     <teleport to="body">
-      <div id="bundle-print-area" :class="paperMode === 'LABEL' ? 'label-mode' : 'a4-mode'" :style="{ '--cw': cardW + 'mm', '--ch': cardH + 'mm' }">
+      <div id="bundle-print-area" class="label-mode" :style="{ '--cw': cardW + 'mm', '--ch': cardH + 'mm' }">
       <div v-for="b in printRows" :key="b.bundleId" class="bundle-card">
         <div class="card-title">服装厂扎卡</div>
         <div class="card-no">{{ b.bundleNo }}</div>
@@ -163,15 +155,18 @@ const PRINT_KEY = 'garment:bundle-print-settings'
 const savedPrint = (() => {
   try { return JSON.parse(localStorage.getItem(PRINT_KEY)) || {} } catch (e) { return {} }
 })()
-const paperMode = ref(savedPrint.paperMode || 'A4')
-const cardW = ref(savedPrint.cardW || 90)
-const cardH = ref(savedPrint.cardH || 100)
-watch([paperMode, cardW, cardH], () => {
-  localStorage.setItem(PRINT_KEY, JSON.stringify({
-    paperMode: paperMode.value,
-    cardW: cardW.value,
-    cardH: cardH.value
-  }))
+// 客户规格按「高×宽」书写：50×30 即宽 30mm、高 50mm（竖向）
+const SIZE_PRESETS = [
+  { key: '50x30', label: '50×30 mm', w: 30, h: 50 },
+  { key: '60x40', label: '60×40 mm', w: 40, h: 60 },
+  { key: '100x100', label: '100×100 mm', w: 100, h: 100 }
+]
+const sizeKey = ref(SIZE_PRESETS.some(p => p.key === savedPrint.sizeKey) ? savedPrint.sizeKey : '60x40')
+const paper = computed(() => SIZE_PRESETS.find(p => p.key === sizeKey.value) || SIZE_PRESETS[1])
+const cardW = computed(() => paper.value.w)
+const cardH = computed(() => paper.value.h)
+watch(sizeKey, () => {
+  localStorage.setItem(PRINT_KEY, JSON.stringify({ sizeKey: sizeKey.value }))
 })
 
 // 打印前才注入 @page，避免影响其他模块打印
@@ -184,9 +179,7 @@ function applyPageStyle() {
     el.id = 'bundle-page-style'
     document.head.appendChild(el)
   }
-  el.textContent = paperMode.value === 'LABEL'
-    ? `@page { size: ${cardW.value}mm ${cardH.value}mm; margin: 0; }`
-    : '@page { size: A4; margin: 8mm; }'
+  el.textContent = `@page { size: ${cardW.value}mm ${cardH.value}mm; margin: 0; }`
 }
 function clearPageStyle() {
   document.getElementById('bundle-page-style')?.remove()
@@ -229,10 +222,24 @@ function printCards() {
   printRows.value = selectedRows.value.map(r => ({ ...r, qrUrl: pickUrl(r.bundleNo) }))
   nextTick(() => {
     document.querySelectorAll('#bundle-print-area .card-barcode').forEach(svg => {
-      JsBarcode(svg, svg.dataset.code, { format: 'CODE128', width: 1.6, height: 46, displayValue: false, margin: 0 })
+      JsBarcode(svg, svg.dataset.code, { format: 'CODE128', width: 1, height: 40, displayValue: false, margin: 0 })
+      // 用 viewBox 让条码随标签宽度等比缩放
+      const w = parseFloat(svg.getAttribute('width')) || 0
+      const h = parseFloat(svg.getAttribute('height')) || 40
+      if (w > 0) {
+        svg.setAttribute('viewBox', `0 0 ${w} ${h}`)
+        svg.setAttribute('preserveAspectRatio', 'none')
+        svg.removeAttribute('width')
+        svg.removeAttribute('height')
+      }
     })
     document.querySelectorAll('#bundle-print-area .card-qr').forEach(canvas => {
-      QRCode.toCanvas(canvas, canvas.dataset.url, { width: 120, margin: 1 }).catch(() => {})
+      const qrMm = Math.min(26, cardW.value * 0.28)
+      QRCode.toCanvas(canvas, canvas.dataset.url, { width: 320, margin: 0 }).then(() => {
+        // qrcode 库会写入行内 px 尺寸，必须覆盖成毫米，否则二维码会撑满整张标签
+        canvas.style.width = qrMm + 'mm'
+        canvas.style.height = qrMm + 'mm'
+      }).catch(() => {})
     })
     setTimeout(() => window.print(), 300)
   })
@@ -415,61 +422,61 @@ onMounted(focusScan)
     display: block;
   }
   .bundle-card {
-    display: inline-block;
-    vertical-align: top;
-    width: 46%;
-    margin: 0 2% 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.06em;
+    width: var(--cw, 60mm);
+    height: calc(var(--ch, 40mm) - 0.3mm);
+    margin: 0;
+    padding: 1.2mm;
     box-sizing: border-box;
-    border: 1px solid #000;
-    border-radius: 6px;
-    padding: 10px 12px;
+    border: none;
     text-align: center;
+    overflow: hidden;
+    /* 字号按纸张宽度比例缩放，保证三种纸张视觉一致 */
+    font-size: calc(var(--cw, 30mm) * 0.06);
     page-break-inside: avoid;
     break-inside: avoid;
-  }
-  .bundle-card .card-title {
-    font-size: 14px;
-    font-weight: 700;
-  }
-  .bundle-card .card-no {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    margin: 6px 0;
-  }
-  .bundle-card .card-barcode {
-    width: 100%;
-    height: 52px;
-  }
-  .bundle-card .card-qr-wrap {
-    margin-top: 6px;
-  }
-  .bundle-card .card-qr {
-    width: min(30mm, calc(var(--cw, 90mm) * 0.4));
-    height: min(30mm, calc(var(--cw, 90mm) * 0.4));
-  }
-  .bundle-card .card-qr-tip {
-    font-size: 10px;
-    line-height: 1.4;
-  }
-  .bundle-card .card-row {
-    font-size: 13px;
-    line-height: 1.7;
-  }
-  /* 标签纸模式：一张扎卡一页，按设置的宽高打印 */
-  #bundle-print-area.label-mode .bundle-card {
-    display: block;
-    width: var(--cw, 90mm);
-    height: var(--ch, 100mm);
-    margin: 0;
-    padding: 3mm;
-    border: none;
     page-break-after: always;
     break-after: page;
   }
-  #bundle-print-area.label-mode .bundle-card:last-child {
+  .bundle-card:last-child {
     page-break-after: auto;
     break-after: auto;
+  }
+  .bundle-card .card-title {
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .bundle-card .card-no {
+    font-size: 1.25em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+  }
+  .bundle-card .card-barcode {
+    width: 100%;
+    height: calc(var(--ch, 40mm) * 0.13);
+  }
+  .bundle-card .card-qr-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .bundle-card .card-qr {
+    width: min(26mm, calc(var(--cw, 30mm) * 0.28));
+    height: min(26mm, calc(var(--cw, 30mm) * 0.28));
+  }
+  .bundle-card .card-qr-tip {
+    font-size: 0.5em;
+    line-height: 1.2;
+  }
+  .bundle-card .card-row {
+    font-size: 0.55em;
+    line-height: 1.25;
   }
 }
 </style>
