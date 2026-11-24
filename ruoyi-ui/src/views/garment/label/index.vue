@@ -77,10 +77,8 @@
           <div class="label-name">{{ item.cnName }}</div>
           <div class="label-attr">{{ item.color }} / {{ item.size }}</div>
           <div class="label-barcode">
-            <svg :ref="el => setBarcodeRef(el, item.barcode)"></svg>
-            <canvas class="label-qr" :style="{ width: qrSize + 'mm', height: qrSize + 'mm' }" :ref="el => setQrRef(el, outboundUrl(item.barcode))"></canvas>
+            <canvas class="label-qr" :ref="el => setQrRef(el, outboundUrl(item.barcode))"></canvas>
           </div>
-          <div class="label-code">{{ item.barcode }}</div>
         </template>
       </div>
       </div>
@@ -89,11 +87,11 @@
 </template>
 
 <script setup name="Label">
-import JsBarcode from 'jsbarcode'
 import QRCode from 'qrcode'
 import { labelList } from '@/api/garment'
 
-const PRINT_KEY = 'garment:label-print-settings'
+// key 带版本号：旧版本残留的其他规格会在 50×30 纸卷上被判成两页，升级后重置为默认 50×30
+const PRINT_KEY = 'garment:label-print-settings-v2'
 const savedPrint = (() => {
   try { return JSON.parse(localStorage.getItem(PRINT_KEY)) || {} } catch (e) { return {} }
 })()
@@ -110,8 +108,6 @@ const sizeKey = ref(SIZE_PRESETS.some(p => p.key === savedPrint.sizeKey) ? saved
 const paper = computed(() => SIZE_PRESETS.find(p => p.key === sizeKey.value) || SIZE_PRESETS[0])
 const labelW = computed(() => paper.value.w)
 const labelH = computed(() => paper.value.h)
-// 二维码尺寸跟随标签短边，避免小标签放不下
-const qrSize = computed(() => Math.round(Math.min(26, Math.max(7, Math.min(labelW.value, labelH.value) * 0.3)) * 10) / 10)
 
 // 打印前才注入 @page，避免离开页面后影响扎卡等其他打印
 function applyPageStyle() {
@@ -131,7 +127,6 @@ function clearPageStyle() {
 // 打印结束后清空打印缓存，避免与扎卡打印内容混在一起
 function resetPrintCache() {
   printItems.value = []
-  barcodeRefs.length = 0
   qrRefs.length = 0
 }
 function handleAfterPrint() {
@@ -164,7 +159,6 @@ const printItems = ref([])
 const loading = ref(false)
 const total = ref(0)
 const queryParams = ref({ pageNum: 1, pageSize: 20, styleNo: undefined, color: undefined, size: undefined, barcode: undefined })
-const barcodeRefs = []
 const qrRefs = []
 
 // 手机系统相机扫标签二维码后直接打开成品出库页并带入条码，无需 HTTPS 摄像头权限
@@ -182,34 +176,16 @@ function getList() {
 }
 function handleQuery() { queryParams.value.pageNum = 1; getList() }
 function resetQuery() { proxy.resetForm('queryRef'); handleQuery() }
-function setBarcodeRef(el, code) {
-  if (el) barcodeRefs.push({ el, code })
-}
 function setQrRef(el, url) {
   if (el) qrRefs.push({ el, url })
 }
-function renderBarcodes(done) {
+function renderQr(done) {
   nextTick(() => {
-    barcodeRefs.forEach(({ el, code }) => {
-      try {
-        JsBarcode(el, code, { format: 'CODE128', width: 1, height: 40, displayValue: false, margin: 0 })
-        // 用 viewBox 让条码随标签宽度等比缩放，避免不同纸张下大小不一致
-        const w = parseFloat(el.getAttribute('width')) || 0
-        const h = parseFloat(el.getAttribute('height')) || 40
-        if (w > 0) {
-          el.setAttribute('viewBox', `0 0 ${w} ${h}`)
-          el.setAttribute('preserveAspectRatio', 'none')
-          el.removeAttribute('width')
-          el.removeAttribute('height')
-        }
-      } catch (e) { /* 忽略非法条码 */ }
-    })
-    barcodeRefs.length = 0
-    // qrcode 库会给 canvas 写入行内 px 尺寸，这里渲染后强制改回毫米尺寸
     const qrTasks = qrRefs.map(({ el, url }) =>
       QRCode.toCanvas(el, url, { width: 320, margin: 0 }).then(() => {
-        el.style.width = qrSize.value + 'mm'
-        el.style.height = qrSize.value + 'mm'
+        // 尺寸交给打印样式按纸张大小计算，这里清掉库写入的 320px 行内样式
+        el.style.width = ''
+        el.style.height = ''
       }).catch(() => {})
     )
     qrRefs.length = 0
@@ -223,12 +199,12 @@ function expandCopies(rows) {
 function handlePrint() {
   applyPageStyle()
   printItems.value = expandCopies(selection.value)
-  renderBarcodes(() => setTimeout(() => window.print(), 60))
+  renderQr(() => setTimeout(() => window.print(), 60))
 }
 function printOne(row) {
   applyPageStyle()
   printItems.value = expandCopies([row])
-  renderBarcodes(() => setTimeout(() => window.print(), 60))
+  renderQr(() => setTimeout(() => window.print(), 60))
 }
 
 getList()
@@ -256,19 +232,23 @@ onActivated(() => {
   .label-card {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
-    gap: 0.3em;
+    gap: 0.15em;
     width: var(--lw, 50mm);
-    height: calc(var(--lh, 30mm) - 0.3mm);
+    /* 比纸张高度少 1.5mm，给热敏机不可打印边距留余量，避免最后一行被挤到第二张 */
+    height: calc(var(--lh, 30mm) - 1.5mm);
     padding: 1.2mm;
     margin: 0;
     box-sizing: border-box;
     border: none;
     text-align: center;
     overflow: hidden;
-    /* 字号按标签短边比例缩放，保证 50×30 / 60×40 / 100×100 内容都能完整放下 */
-    font-size: calc(min(var(--lw, 50mm), var(--lh, 30mm)) * 0.055);
+    /* 禁止手机端打印时自动放大字号，避免内容被撑出纸张 */
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+    /* 去掉条码后按短边放大字号，并用标签宽度封顶防止长品名撑出纸外 */
+    font-size: min(calc(min(var(--lw, 50mm), var(--lh, 30mm)) * 0.07), calc(var(--lw, 50mm) * 0.06));
     page-break-inside: avoid;
     break-inside: avoid;
     page-break-after: always;
@@ -278,26 +258,37 @@ onActivated(() => {
     page-break-after: auto;
     break-after: auto;
   }
-  .label-card .label-style { font-size: 1.05em; font-weight: 700; line-height: 1.1; }
-  .label-card .label-name { font-size: 0.92em; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
-  .label-card .label-attr { font-size: 0.92em; }
-  .label-card .label-code { font-size: 0.62em; letter-spacing: 0.02em; }
+  .label-card .label-style { font-size: 1.15em; font-weight: 700; line-height: 1.1; }
+  .label-card .label-name { font-size: 1em; line-height: 1.2; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  .label-card .label-attr { font-size: 1em; line-height: 1.2; }
   .label-card .label-barcode {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5em;
     width: 100%;
   }
-  .label-card .label-barcode svg { flex: 1 1 0; min-width: 0; height: calc(min(var(--lw, 50mm), var(--lh, 30mm)) * 0.18); }
-  .label-card .label-qr { flex: none; }
+  .label-card .label-qr {
+    /* 二维码放到短边的 46%，撑满纸张便于手机扫码 */
+    flex: none;
+    width: calc(min(var(--lw, 50mm), var(--lh, 30mm)) * 0.46);
+    height: calc(min(var(--lw, 50mm), var(--lh, 30mm)) * 0.46);
+  }
+  .label-card.factory-card {
+    /* 厂内标签只有两行，字号再放大一档并用宽度封顶 */
+    font-size: min(calc(min(var(--lw, 50mm), var(--lh, 30mm)) * 0.15), calc(var(--lw, 50mm) * 0.1));
+    gap: 0.2em;
+  }
   .label-card.factory-card .factory-name {
-    font-size: 1.35em;
+    font-size: 1.2em;
     font-weight: 700;
-    line-height: 1.15;
+    line-height: 1.2;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .label-card.factory-card .factory-attr {
-    font-size: 1.05em;
+    font-size: 1em;
+    line-height: 1.2;
     letter-spacing: 0.02em;
   }
 }

@@ -86,7 +86,6 @@
       <div v-for="b in printRows" :key="b.bundleId" class="bundle-card">
         <div class="card-title">服装厂扎卡</div>
         <div class="card-no">{{ b.bundleNo }}</div>
-        <svg class="card-barcode" :data-code="b.bundleNo"></svg>
         <div class="card-qr-wrap">
           <canvas class="card-qr" :data-url="b.qrUrl"></canvas>
           <div class="card-qr-tip">手机扫码领片</div>
@@ -141,7 +140,6 @@
 
 <script setup name="Bundle">
 import { useRoute } from 'vue-router'
-import JsBarcode from 'jsbarcode'
 import QRCode from 'qrcode'
 import { listBundle, listCutOrder, autoBundle, bundleStockIn, patchBundle, delBundle, commonBundle } from '@/api/garment'
 import { currentOperatorName } from '@/utils/garment'
@@ -151,7 +149,8 @@ import { useAutoScan } from '@/utils/autoScan'
 const showSearch = ref(true)
 
 // 扎卡打印尺寸设置，参考标签打印模块，持久化到本地
-const PRINT_KEY = 'garment:bundle-print-settings'
+// key 带版本号：旧版本残留的 60×40 设置会在 50×30 纸卷上被判成两页，升级后重置为默认 50×30
+const PRINT_KEY = 'garment:bundle-print-settings-v2'
 const savedPrint = (() => {
   try { return JSON.parse(localStorage.getItem(PRINT_KEY)) || {} } catch (e) { return {} }
 })()
@@ -161,8 +160,8 @@ const SIZE_PRESETS = [
   { key: '60x40', label: '60×40 mm', w: 60, h: 40 },
   { key: '100x100', label: '100×100 mm', w: 100, h: 100 }
 ]
-const sizeKey = ref(SIZE_PRESETS.some(p => p.key === savedPrint.sizeKey) ? savedPrint.sizeKey : '60x40')
-const paper = computed(() => SIZE_PRESETS.find(p => p.key === sizeKey.value) || SIZE_PRESETS[1])
+const sizeKey = ref(SIZE_PRESETS.some(p => p.key === savedPrint.sizeKey) ? savedPrint.sizeKey : '50x30')
+const paper = computed(() => SIZE_PRESETS.find(p => p.key === sizeKey.value) || SIZE_PRESETS[0])
 const cardW = computed(() => paper.value.w)
 const cardH = computed(() => paper.value.h)
 watch(sizeKey, () => {
@@ -221,27 +220,15 @@ function printCards() {
   applyPageStyle()
   printRows.value = selectedRows.value.map(r => ({ ...r, qrUrl: pickUrl(r.bundleNo) }))
   nextTick(() => {
-    document.querySelectorAll('#bundle-print-area .card-barcode').forEach(svg => {
-      JsBarcode(svg, svg.dataset.code, { format: 'CODE128', width: 1, height: 40, displayValue: false, margin: 0 })
-      // 用 viewBox 让条码随标签宽度等比缩放
-      const w = parseFloat(svg.getAttribute('width')) || 0
-      const h = parseFloat(svg.getAttribute('height')) || 40
-      if (w > 0) {
-        svg.setAttribute('viewBox', `0 0 ${w} ${h}`)
-        svg.setAttribute('preserveAspectRatio', 'none')
-        svg.removeAttribute('width')
-        svg.removeAttribute('height')
-      }
-    })
-    document.querySelectorAll('#bundle-print-area .card-qr').forEach(canvas => {
-      const qrMm = Math.min(26, Math.min(cardW.value, cardH.value) * 0.3)
+    const qrTasks = Array.from(document.querySelectorAll('#bundle-print-area .card-qr')).map(canvas =>
       QRCode.toCanvas(canvas, canvas.dataset.url, { width: 320, margin: 0 }).then(() => {
-        // qrcode 库会写入行内 px 尺寸，必须覆盖成毫米，否则二维码会撑满整张标签
-        canvas.style.width = qrMm + 'mm'
-        canvas.style.height = qrMm + 'mm'
+        // 尺寸交给打印样式按纸张大小计算，这里清掉库写入的 320px 行内样式
+        canvas.style.width = ''
+        canvas.style.height = ''
       }).catch(() => {})
-    })
-    setTimeout(() => window.print(), 300)
+    )
+    // 等二维码渲染完再唤起打印，避免二维码仍是 320px 就把小纸撑成两页
+    Promise.all(qrTasks).then(() => setTimeout(() => window.print(), 60))
   })
 }
 
@@ -424,19 +411,23 @@ onMounted(focusScan)
   .bundle-card {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
-    gap: 0.06em;
+    gap: 0.08em;
     width: var(--cw, 60mm);
-    height: calc(var(--ch, 40mm) - 0.3mm);
+    /* 比纸张高度少 1.5mm，给热敏机不可打印边距留余量，避免最后一两行被挤到第二张 */
+    height: calc(var(--ch, 40mm) - 1.5mm);
     margin: 0;
     padding: 1.2mm;
     box-sizing: border-box;
     border: none;
     text-align: center;
     overflow: hidden;
-    /* 字号按纸张短边比例缩放，保证三种纸张内容都能完整放下 */
-    font-size: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.05);
+    /* 禁止手机端打印时自动放大字号，避免内容被撑出纸张 */
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+    /* 字号按纸张短边比例放大，并用宽度封顶防止长品名撑出纸外 */
+    font-size: min(calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.062), calc(var(--cw, 60mm) * 0.055));
     page-break-inside: avoid;
     break-inside: avoid;
     page-break-after: always;
@@ -457,18 +448,15 @@ onMounted(focusScan)
     letter-spacing: 0.02em;
     line-height: 1.1;
   }
-  .bundle-card .card-barcode {
-    width: 100%;
-    height: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.15);
-  }
   .bundle-card .card-qr-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
   .bundle-card .card-qr {
-    width: min(26mm, calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.3));
-    height: min(26mm, calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.3));
+    /* 去掉条码后二维码放到短边的 46%，撑满纸张便于手机扫码 */
+    width: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.46);
+    height: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.46);
   }
   .bundle-card .card-qr-tip {
     font-size: 0.5em;
