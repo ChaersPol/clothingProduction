@@ -6,7 +6,7 @@
 </template>
 
 <script setup name="GarmentScan">
-import { BrowserMultiFormatReader, DecodeHintType, BarcodeFormat } from '@zxing/library'
+import { BrowserMultiFormatReader, DecodeHintType, BarcodeFormat, BinaryBitmap, HybridBinarizer, HTMLCanvasElementLuminanceSource } from '@zxing/library'
 
 defineOptions({ inheritAttrs: false })
 
@@ -32,19 +32,54 @@ function choose() {
 }
 
 // 手机 HTTP 环境无法调用摄像头实时流，改为调起系统相机拍照后在本地识别条码
-// 注意：不要先缩小图片，缩小会糊掉二维码导致识别失败，直接用原图识别
+// 注意：不要先缩小整图，缩小会糊掉二维码导致识别失败
 function onFile(e) {
   const file = e.target.files && e.target.files[0]
   e.target.value = ''
   if (!file) return
   const url = URL.createObjectURL(file)
-  reader.decodeFromImageUrl(url).then(result => {
-    const info = parseText(result.getText())
-    emit('scan', info.code, { path: info.path, fullPath: info.fullPath })
-  }).catch(() => {
-    emit('error', '未识别到条码，请靠近并对准条码后重试')
-  }).finally(() => {
+  const img = new Image()
+  img.onload = () => {
+    decodeImage(img).then(text => {
+      const info = parseText(text)
+      emit('scan', info.code, { path: info.path, fullPath: info.fullPath })
+    }).catch(() => {
+      emit('error', '未识别到条码，请靠近并对准条码后重试')
+    }).finally(() => URL.revokeObjectURL(url))
+  }
+  img.onerror = () => {
     URL.revokeObjectURL(url)
+    emit('error', '图片读取失败，请重新拍照识别')
+  }
+  img.src = url
+}
+
+// 手机拍照时距离、对焦、光线不稳定，单次识别容易时好时坏：
+// 先用原图识别，失败后再对画面中心区域裁剪放大做多轮重试，覆盖“标签占画面小 / 轻微虚焦”的情况
+function decodeImage(img) {
+  return Promise.resolve()
+    .then(() => reader.decodeFromImageElement(img).getText())
+    .catch(() => decodeCrop(img, 0.75, 1400))
+    .catch(() => decodeCrop(img, 0.5, 1200))
+    .catch(() => decodeCrop(img, 0.35, 1000))
+}
+
+// 取图片中心 ratio 区域，放大到长边 max 像素后再识别
+function decodeCrop(img, ratio, max) {
+  const w0 = img.naturalWidth
+  const h0 = img.naturalHeight
+  const cw = Math.round(w0 * ratio)
+  const ch = Math.round(h0 * ratio)
+  const scale = max / Math.max(cw, ch)
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.round(cw * scale)
+  canvas.height = Math.round(ch * scale)
+  const ctx = canvas.getContext('2d')
+  ctx.imageSmoothingQuality = 'high'
+  ctx.drawImage(img, Math.round((w0 - cw) / 2), Math.round((h0 - ch) / 2), cw, ch, 0, 0, canvas.width, canvas.height)
+  return Promise.resolve().then(() => {
+    const bitmap = new BinaryBitmap(new HybridBinarizer(new HTMLCanvasElementLuminanceSource(canvas)))
+    return reader.decodeBitmap(bitmap).getText()
   })
 }
 
