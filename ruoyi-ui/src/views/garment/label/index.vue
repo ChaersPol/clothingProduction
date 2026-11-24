@@ -100,18 +100,18 @@ const savedPrint = (() => {
 const showSearch = ref(true)
 const labelType = ref(savedPrint.labelType || 'FACTORY')
 const copies = ref(savedPrint.copies || 1)
-// 客户规格按「高×宽」书写：50×30 即宽 30mm、高 50mm（竖向）
+// 客户规格按「宽×高」书写：60×40 即宽 60mm、高 40mm（横向）
 const SIZE_PRESETS = [
-  { key: '50x30', label: '50×30 mm', w: 30, h: 50 },
-  { key: '60x40', label: '60×40 mm', w: 40, h: 60 },
+  { key: '50x30', label: '50×30 mm', w: 50, h: 30 },
+  { key: '60x40', label: '60×40 mm', w: 60, h: 40 },
   { key: '100x100', label: '100×100 mm', w: 100, h: 100 }
 ]
 const sizeKey = ref(SIZE_PRESETS.some(p => p.key === savedPrint.sizeKey) ? savedPrint.sizeKey : '50x30')
 const paper = computed(() => SIZE_PRESETS.find(p => p.key === sizeKey.value) || SIZE_PRESETS[0])
 const labelW = computed(() => paper.value.w)
 const labelH = computed(() => paper.value.h)
-// 二维码尺寸跟随标签宽度，避免小标签放不下
-const qrSize = computed(() => Math.round(Math.min(26, Math.max(7, labelW.value * 0.26)) * 10) / 10)
+// 二维码尺寸跟随标签短边，避免小标签放不下
+const qrSize = computed(() => Math.round(Math.min(26, Math.max(7, Math.min(labelW.value, labelH.value) * 0.3)) * 10) / 10)
 
 // 打印前才注入 @page，避免离开页面后影响扎卡等其他打印
 function applyPageStyle() {
@@ -267,8 +267,8 @@ onActivated(() => {
     border: none;
     text-align: center;
     overflow: hidden;
-    /* 字号按标签宽度比例缩放，保证 50×30 / 60×40 / 100×100 视觉一致 */
-    font-size: calc(var(--lw, 30mm) * 0.06);
+    /* 字号按标签短边比例缩放，保证 50×30 / 60×40 / 100×100 内容都能完整放下 */
+    font-size: calc(min(var(--lw, 50mm), var(--lh, 30mm)) * 0.055);
     page-break-inside: avoid;
     break-inside: avoid;
     page-break-after: always;
@@ -289,7 +289,7 @@ onActivated(() => {
     gap: 0.5em;
     width: 100%;
   }
-  .label-card .label-barcode svg { flex: 1 1 0; min-width: 0; height: calc(var(--lw, 50mm) * 0.18); }
+  .label-card .label-barcode svg { flex: 1 1 0; min-width: 0; height: calc(min(var(--lw, 50mm), var(--lh, 30mm)) * 0.18); }
   .label-card .label-qr { flex: none; }
   .label-card.factory-card .factory-name {
     font-size: 1.35em;

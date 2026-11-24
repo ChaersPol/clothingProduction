@@ -155,10 +155,10 @@ const PRINT_KEY = 'garment:bundle-print-settings'
 const savedPrint = (() => {
   try { return JSON.parse(localStorage.getItem(PRINT_KEY)) || {} } catch (e) { return {} }
 })()
-// 客户规格按「高×宽」书写：50×30 即宽 30mm、高 50mm（竖向）
+// 客户规格按「宽×高」书写：60×40 即宽 60mm、高 40mm（横向）
 const SIZE_PRESETS = [
-  { key: '50x30', label: '50×30 mm', w: 30, h: 50 },
-  { key: '60x40', label: '60×40 mm', w: 40, h: 60 },
+  { key: '50x30', label: '50×30 mm', w: 50, h: 30 },
+  { key: '60x40', label: '60×40 mm', w: 60, h: 40 },
   { key: '100x100', label: '100×100 mm', w: 100, h: 100 }
 ]
 const sizeKey = ref(SIZE_PRESETS.some(p => p.key === savedPrint.sizeKey) ? savedPrint.sizeKey : '60x40')
@@ -234,7 +234,7 @@ function printCards() {
       }
     })
     document.querySelectorAll('#bundle-print-area .card-qr').forEach(canvas => {
-      const qrMm = Math.min(26, cardW.value * 0.28)
+      const qrMm = Math.min(26, Math.min(cardW.value, cardH.value) * 0.3)
       QRCode.toCanvas(canvas, canvas.dataset.url, { width: 320, margin: 0 }).then(() => {
         // qrcode 库会写入行内 px 尺寸，必须覆盖成毫米，否则二维码会撑满整张标签
         canvas.style.width = qrMm + 'mm'
@@ -435,8 +435,8 @@ onMounted(focusScan)
     border: none;
     text-align: center;
     overflow: hidden;
-    /* 字号按纸张宽度比例缩放，保证三种纸张视觉一致 */
-    font-size: calc(var(--cw, 30mm) * 0.06);
+    /* 字号按纸张短边比例缩放，保证三种纸张内容都能完整放下 */
+    font-size: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.05);
     page-break-inside: avoid;
     break-inside: avoid;
     page-break-after: always;
@@ -459,7 +459,7 @@ onMounted(focusScan)
   }
   .bundle-card .card-barcode {
     width: 100%;
-    height: calc(var(--ch, 40mm) * 0.13);
+    height: calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.15);
   }
   .bundle-card .card-qr-wrap {
     display: flex;
@@ -467,8 +467,8 @@ onMounted(focusScan)
     align-items: center;
   }
   .bundle-card .card-qr {
-    width: min(26mm, calc(var(--cw, 30mm) * 0.28));
-    height: min(26mm, calc(var(--cw, 30mm) * 0.28));
+    width: min(26mm, calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.3));
+    height: min(26mm, calc(min(var(--cw, 60mm), var(--ch, 40mm)) * 0.3));
   }
   .bundle-card .card-qr-tip {
     font-size: 0.5em;
