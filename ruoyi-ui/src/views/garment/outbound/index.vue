@@ -55,7 +55,7 @@
     </div>
     <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
 
-    <el-dialog title="成品出库开单" v-model="open" width="860px" append-to-body>
+    <el-dialog title="成品出库开单" v-model="open" width="940px" append-to-body>
       <el-form label-width="90px">
         <el-row :gutter="12">
           <el-col :xs="24" :sm="12">
@@ -75,23 +75,34 @@
           <el-button size="small" icon="Plus" v-hasPermi="['garment:outbound:add']" @click="addEmptyItem">手动添加</el-button>
         </div>
         <el-table :data="form.items" border size="small" max-height="300">
-          <el-table-column label="条码" prop="barcode" min-width="150" />
-          <el-table-column label="款号" prop="styleNo" width="95" />
-          <el-table-column label="颜色" prop="color" width="90" />
-          <el-table-column label="尺码" prop="size" width="60" align="center" />
-          <el-table-column label="单价" width="110">
+          <el-table-column label="条码" min-width="160">
+            <template #default="s">
+              <el-input v-if="s.row._manual" v-model="s.row.barcode" size="small" placeholder="扫码或输入条码" @change="resolveRowBarcode(s.row)" />
+              <span v-else>{{ s.row.barcode }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="款号 / 颜色 / 尺码" width="180">
+            <template #default="s">
+              <el-select v-if="s.row._manual" v-model="s.row.skuId" size="small" filterable clearable
+                placeholder="选择商品" style="width: 100%" @change="id => onRowSkuChange(s.row, id)">
+                <el-option v-for="k in skuOptions" :key="k.skuId" :label="`${k.styleNo} ${k.color} ${k.size}`" :value="k.skuId" />
+              </el-select>
+              <span v-else>{{ s.row.styleNo }} / {{ s.row.color }} / {{ s.row.size }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="单价" width="100">
             <template #default="s"><el-input-number v-model="s.row.price" :min="0" :precision="2" size="small" controls-position="right" style="width: 100%" /></template>
           </el-table-column>
-          <el-table-column label="数量" width="110">
+          <el-table-column label="数量" width="100">
             <template #default="s"><el-input-number v-model="s.row.qty" :min="1" size="small" controls-position="right" style="width: 100%" /></template>
           </el-table-column>
-          <el-table-column label="箱号" width="110">
+          <el-table-column label="箱号" width="100">
             <template #default="s"><el-input v-model="s.row.boxNo" size="small" placeholder="整箱填写" /></template>
           </el-table-column>
-          <el-table-column label="金额" width="90" align="right">
+          <el-table-column label="金额" width="85" align="right">
             <template #default="s">{{ ((s.row.price || 0) * (s.row.qty || 0)).toFixed(2) }}</template>
           </el-table-column>
-          <el-table-column label="操作" class-name="op-cell" width="80" align="center">
+          <el-table-column label="操作" class-name="op-cell" width="70" align="center">
             <template #default="s"><el-button link type="danger" @click="form.items.splice(s.$index, 1)">删除</el-button></template>
           </el-table-column>
         </el-table>
@@ -126,7 +137,7 @@
 </template>
 
 <script setup name="Outbound">
-import { listOutbound, getOutbound, addOutbound, cancelOutbound, skuByBarcode, commonCustomers } from '@/api/garment'
+import { listOutbound, getOutbound, addOutbound, cancelOutbound, skuByBarcode, commonCustomers, commonSkuOptions } from '@/api/garment'
 import { checkPermi } from '@/utils/permission'
 import GarmentScan from '@/components/GarmentScan/index.vue'
 import { useAutoScan } from '@/utils/autoScan'
@@ -217,7 +228,47 @@ function handleAdd() {
   setTimeout(focusScan, 200)
 }
 function addEmptyItem() {
-  form.value.items.push({ barcode: '', styleNo: '', color: '', size: '', qty: 1, price: 0 })
+  // 手动添加的行允许在行内扫码或直接下拉选商品，选中后回填款号/颜色/尺码/单价
+  form.value.items.push({ barcode: '', styleNo: '', color: '', size: '', qty: 1, price: 0, _manual: true })
+  loadSkuOptions()
+}
+// 手动添加行的商品下拉数据，按需加载一次
+const skuOptions = ref([])
+let skuOptionsLoaded = false
+function loadSkuOptions() {
+  if (skuOptionsLoaded) return
+  skuOptionsLoaded = true
+  commonSkuOptions().then(res => { skuOptions.value = res.data || [] }).catch(() => { skuOptionsLoaded = false })
+}
+function fillRow(row, sku) {
+  row.skuId = sku.skuId
+  row.barcode = sku.barcode
+  row.styleNo = sku.styleNo
+  row.color = sku.color
+  row.size = sku.size
+  if (!row.price) row.price = Number(sku.salePrice || 0)
+}
+// 手动行：输入或扫码枪录入条码后自动匹配商品
+function resolveRowBarcode(row) {
+  const code = (row.barcode || '').trim()
+  if (!code) return
+  skuByBarcode(code).then(res => {
+    const sku = res.data
+    if (!sku) {
+      row.skuId = undefined
+      row.styleNo = ''
+      row.color = ''
+      row.size = ''
+      proxy.$modal.msgWarning(`条码不存在：${code}`)
+      return
+    }
+    fillRow(row, sku)
+  })
+}
+// 手动行：从下拉里选商品后回填
+function onRowSkuChange(row, skuId) {
+  const sku = skuOptions.value.find(k => k.skuId === skuId)
+  if (sku) fillRow(row, sku)
 }
 // 扫码枪：添加成功后保持焦点，支持连续扫描
 function focusScan() {
@@ -259,7 +310,11 @@ function onBarcodeEnter(code) {
 }
 function submitForm() {
   if (!form.value.items.length) { proxy.$modal.msgWarning('请录入出库明细'); return }
-  addOutbound(form.value).then(() => {
+  const bad = form.value.items.findIndex(i => !i.skuId)
+  if (bad >= 0) { proxy.$modal.msgWarning(`第 ${bad + 1} 行还未选定商品，请扫码或从下拉中选择`); return }
+  // 去掉行内临时标记，避免提交多余字段
+  const items = form.value.items.map(({ _manual, ...rest }) => rest)
+  addOutbound({ ...form.value, items }).then(() => {
     proxy.$modal.msgSuccess('出库成功')
     clearDraft()
     open.value = false

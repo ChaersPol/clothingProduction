@@ -127,13 +127,15 @@ public class WarehouseService
         int totalQty = 0;
         BigDecimal totalAmount = BigDecimal.ZERO;
         List<BizOutboundItem> items = new ArrayList<>();
+        int rowNo = 0;
         for (BizOutboundItem item : outbound.getItems())
         {
+            rowNo++;
             BizSku sku = item.getSkuId() != null ? skuMapper.selectSkuById(item.getSkuId())
                     : (StringUtils.isEmpty(item.getBarcode()) ? null : skuMapper.selectSkuByBarcode(item.getBarcode()));
             if (sku == null)
             {
-                throw new ServiceException("未找到商品：" + (item.getBarcode() == null ? item.getSkuId() : item.getBarcode()));
+                throw new ServiceException("第 " + rowNo + " 行未找到商品：" + (item.getBarcode() == null || item.getBarcode().isEmpty() ? "未选择商品" : item.getBarcode()));
             }
             if (item.getQty() == null || item.getQty() <= 0)
             {

@@ -154,6 +154,13 @@ public class BizBasicsController extends BaseController
         return success(skuMapper.selectSkuByBarcode(barcode));
     }
 
+    /** 成品出库手动添加商品用：返回全部 SKU 供下拉选择 */
+    @GetMapping("/common/sku-options")
+    public AjaxResult skuOptions()
+    {
+        return success(skuMapper.selectSkuList(new BizSku()));
+    }
+
     @GetMapping("/common/bundle")
     public AjaxResult bundleByCode(@RequestParam String code)
     {

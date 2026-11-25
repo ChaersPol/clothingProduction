@@ -378,6 +378,9 @@ export function commonSizes() {
 export function commonSkus(styleNo) {
   return request({ url: '/garment/common/skus', method: 'get', params: { styleNo } })
 }
+export function commonSkuOptions() {
+  return request({ url: '/garment/common/sku-options', method: 'get' })
+}
 export function skuByBarcode(barcode) {
   return request({ url: '/garment/common/sku', method: 'get', params: { barcode } })
 }
