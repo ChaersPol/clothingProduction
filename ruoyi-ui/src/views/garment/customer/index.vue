@@ -136,9 +136,10 @@ function submitForm() {
   })
 }
 function handleDelete(row) {
-  const _ids = row ? [row.customerId] : ids.value
+  const isRow = !!(row && row.customerId)
+  const _ids = isRow ? [row.customerId] : ids.value
   if (!_ids.length) return
-  proxy.$modal.confirm(row ? `确认删除客户「${row.customerName}」？` : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delCustomer(_ids)).then(() => {
+  proxy.$modal.confirm(isRow ? `确认删除客户「${row.customerName}」？` : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delCustomer(_ids)).then(() => {
     proxy.$modal.msgSuccess('删除成功')
     getList()
     ids.value = []

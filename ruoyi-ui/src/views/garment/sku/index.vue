@@ -255,9 +255,10 @@ function submitGenerate() {
   })
 }
 function handleDelete(row) {
-  const _ids = row ? [row.skuId] : ids.value
+  const isRow = !!(row && row.skuId)
+  const _ids = isRow ? [row.skuId] : ids.value
   if (!_ids.length) return
-  proxy.$modal.confirm(row ? '确认删除该 SKU？' : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delSku(_ids)).then(() => {
+  proxy.$modal.confirm(isRow ? '确认删除该 SKU？' : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delSku(_ids)).then(() => {
     proxy.$modal.msgSuccess('删除成功')
     getList()
     ids.value = []

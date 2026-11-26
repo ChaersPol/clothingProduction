@@ -295,9 +295,10 @@ function submitStyle() {
   })
 }
 function handleDelete(row) {
-  const _ids = row ? [row.styleId] : ids.value
+  const isRow = !!(row && row.styleId)
+  const _ids = isRow ? [row.styleId] : ids.value
   if (!_ids.length) return
-  proxy.$modal.confirm(row ? `确认删除选品「${row.styleNo} ${row.cnName || ''}」吗？` : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delStyle(_ids)).then(() => {
+  proxy.$modal.confirm(isRow ? `确认删除选品「${row.styleNo} ${row.cnName || ''}」吗？` : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delStyle(_ids)).then(() => {
     proxy.$modal.msgSuccess('删除成功')
     getList()
     ids.value = []

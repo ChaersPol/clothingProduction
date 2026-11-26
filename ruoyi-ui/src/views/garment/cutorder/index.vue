@@ -415,9 +415,10 @@ function goBundle(row) {
   router.push({ path: '/cut/bundle', query: { cutId: row.cutId } })
 }
 function handleDelete(row) {
-  const _ids = row ? [row.cutId] : ids.value
+  const isRow = !!(row && row.cutId)
+  const _ids = isRow ? [row.cutId] : ids.value
   if (!_ids.length) return
-  proxy.$modal.confirm(row ? `确认删除裁货单「${row.cutNo}」？关联扎包也会一并清理。` : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delCutOrder(_ids)).then(() => {
+  proxy.$modal.confirm(isRow ? `确认删除裁货单「${row.cutNo}」？关联扎包也会一并清理。` : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delCutOrder(_ids)).then(() => {
     proxy.$modal.msgSuccess('删除成功')
     getList()
     ids.value = []

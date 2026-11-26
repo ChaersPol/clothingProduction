@@ -376,9 +376,10 @@ function submitReceive() {
   })
 }
 function handleDelete(row) {
-  const _ids = row ? [row.purchaseId] : ids.value
+  const isRow = !!(row && row.purchaseId)
+  const _ids = isRow ? [row.purchaseId] : ids.value
   if (!_ids.length) return
-  proxy.$modal.confirm(row ? `确认删除采购单「${row.purchaseNo}」？` : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delPurchase(_ids)).then(() => {
+  proxy.$modal.confirm(isRow ? `确认删除采购单「${row.purchaseNo}」？` : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delPurchase(_ids)).then(() => {
     proxy.$modal.msgSuccess('删除成功')
     getList()
     ids.value = []

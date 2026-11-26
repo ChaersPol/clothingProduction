@@ -188,9 +188,10 @@ function handleComplete(row) {
   }).catch(() => {})
 }
 function handleDelete(row) {
-  const _ids = row ? [row.checkId] : ids.value
+  const isRow = !!(row && row.checkId)
+  const _ids = isRow ? [row.checkId] : ids.value
   if (!_ids.length) return
-  proxy.$modal.confirm(row ? '确认删除盘点单？' : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delCheck(_ids)).then(() => {
+  proxy.$modal.confirm(isRow ? '确认删除盘点单？' : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delCheck(_ids)).then(() => {
     proxy.$modal.msgSuccess('删除成功')
     getList()
     ids.value = []

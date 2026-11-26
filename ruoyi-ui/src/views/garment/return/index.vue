@@ -192,9 +192,10 @@ function submitForm() {
   })
 }
 function handleDelete(row) {
-  const _ids = row ? [row.returnId] : ids.value
+  const isRow = !!(row && row.returnId)
+  const _ids = isRow ? [row.returnId] : ids.value
   if (!_ids.length) return
-  proxy.$modal.confirm(row ? '删除退货单将回滚已入库的好货数量，是否继续？' : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delReturn(_ids)).then(() => {
+  proxy.$modal.confirm(isRow ? '删除退货单将回滚已入库的好货数量，是否继续？' : `是否确认删除选中的 ${_ids.length} 条数据？`).then(() => delReturn(_ids)).then(() => {
     proxy.$modal.msgSuccess('删除成功')
     getList()
     ids.value = []
